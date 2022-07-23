@@ -1,0 +1,38 @@
+.scoreboard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 85%;
+  font-size: 1.5rem;
+  background-color: white;
+  background: rgba(255, 250, 250, 0.13);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10.8px);
+  -webkit-backdrop-filter: blur(10.8px);
+  border: 1px solid rgba(255, 250, 250, 0.44);
+  margin-bottom: 5px;
+} 
+
+.score {
+  width: 100%;
+  text-align: center;
+  padding: 1rem 0rem;
+}
+
+.x-score {
+  color: rgb(255, 70, 37);
+  border-bottom: 5px solid rgb(255, 70, 37);
+  border-radius: 0.5rem 0rem 0rem 0.5rem;
+}
+
+.o-score {
+  color: rgb(44, 135, 255);
+  border-bottom: 5px solid rgb(44, 135, 255);
+  border-radius: 0rem 0.5rem 0.5rem 0rem;
+}
+
+.inactive {
+  border-bottom: 5px solid transparent;
+}
