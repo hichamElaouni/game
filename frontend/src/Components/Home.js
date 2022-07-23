@@ -10,7 +10,7 @@ const getQuestion = async (id, setQuestions) => {
   const {
     data: { data, success },
   } = await getQuestionById(id);
-  if (!success) console.log("error data");
+  if (!success) console.log("error dddata");
   else setQuestions(data);
 };
 function App() {
