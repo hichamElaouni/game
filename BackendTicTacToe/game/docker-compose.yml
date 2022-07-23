@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  be:
+    image: dev/backend
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
+    ports:
+      - "${BE_PORT:-3000}:3000"
+    env_file:
+      - ./.env
+    environment:
+      - NODE_ENV=
+    volumes:
+      - ./backend/:/app
+  db:
+    image: mariadb:10.3
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./db:/var/lib/mysql
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    command: "mysqld --innodb-flush-method=fsync"
+  fe:
+    image: dev/frontend
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    ports:
+      - "${FE_PORT:-3000}:3000"
+    volumes:
+      - ./frontend/:/app
+    env_file:
+      - ./.env

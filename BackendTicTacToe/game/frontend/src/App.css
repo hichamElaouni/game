@@ -1,0 +1,65 @@
+.App {
+  text-align: center;
+}
+
+.logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: stretch;
+}
+
+.container > div {
+  border-left: 1px solid #ddddddef;
+  border-radius: 5px;
+  padding: 1px;
+}
+
+.coils {
+  order: 0;
+  flex-grow: 1;
+}
+/* Login interface Styles */
+
+.login {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.vertical-center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+@media only screen and (min-width: 992px) {
+  .container > div {
+    border-left: 1px solid #ddddddef;
+    border-radius: 0px 0px 0px 25px;
+    padding: 1px;
+    width: 90vh;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  .container {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+  .flex-container {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+}
