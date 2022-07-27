@@ -6,6 +6,14 @@ import WaitQuestion from "./waiting/WaitQuestion";
 import { ScoreBoard } from "./Score/ScoreBoard";
 
 import Menu from "./Menu/Menu";
+import io from "socket.io-client"
+
+
+const { REACT_APP_BACKEND_URL, REACT_APP_BACKEND_PORT } = process.env || {};
+const fullUrl = `${REACT_APP_BACKEND_URL}:${REACT_APP_BACKEND_PORT}`;
+
+const socket = io.connect(fullUrl);
+
 const getQuestion = async (id, setQuestions) => {
   const {
     data: { data, success },
@@ -17,45 +25,60 @@ function App() {
   const [visible, setVisible] = useState(true);
   const [questions, setQuestions] = useState({});
   const [occurence, setOccurence] = useState(0);
-  const [timer, setTimer] = useState(true);
+  const [pauseGame, setPauseGame] = useState(true);
   const [xPlaying, setXPlaying] = useState(true);
   const [scores, setScores] = useState({ xScore: 0, oScore: 0 });
-  const [turn, setTurn] = useState(true);
-  // console.log("turn ==> ", turn, "visible ==> ", visible);
+
+
+  const [idroom, setIdroom] = useState("");
+  const [namePlayer, setNamePlayer] = useState("");
+  const [idPlayer, setIdPlayer] = useState(0);
+
+
+
   useEffect(() => {
     getQuestion(occurence, setQuestions);
-  }, [occurence]);
-  const namePlayer = ["hicham ; karim"];
+    socket.on("receive", ({ player, id }) => {
+      setNamePlayer(player)
+      setIdPlayer(id)
+      id == 1 ? setXPlaying(true) : setXPlaying(false);
+    });
+
+  }, [occurence, socket]);
+
   const pointGame = 2;
-  let player = ";";
-  if (namePlayer === undefined) {
-  } else {
-    player = namePlayer.toString().split(";");
+
+  const join_Room = () => {
+    if (idroom !== "") {
+      socket.emit("join_Room", idroom);
+
+    }
   }
-  // const scores = "0";
-  // const idtimer = document.querySelector("#timer").innerHTML;
+
+
 
   return (
     <>
       <Menu style={{ justifyContent: "flex-end", background: "#404a46" }} />
-
+      <input type="text" placeholder="room" onChange={(event) => { setIdroom(event.target.value) }} ></input>
+      <button value="send" onClick={join_Room}></button>
       <div className="PartGames">
         <section className="SectionP1">
-          {visible && turn ? (
+          {visible && (idPlayer == 1 ? true : false) ? (
             <Question
-              idPlayer={1}
-              namePlayer={player[0]}
+              idPlayer={idPlayer}
+              namePlayer={namePlayer}
               questions={questions}
               setVisible={setVisible}
               setOccurence={setOccurence}
-              setTimer={setTimer}
-              turn={turn}
-              setTurn={setTurn}
+              setPauseGame={setPauseGame}
+              // turn={turn}
+              // setTurn={setTurn}
               scores={scores}
               setScores={setScores}
             />
           ) : (
-            <WaitQuestion namePlayer={player[0]} />
+            <WaitQuestion namePlayer={namePlayer} />
           )}
         </section>
         <div className="flex-score-game">
@@ -63,22 +86,23 @@ function App() {
             scores={scores}
             xPlaying={xPlaying}
             namePlayer={namePlayer}
+            idPlayer={idPlayer}
           />
-          <section className={`SectionG  ${timer ? "pauseGame" : ""}`}>
+          <section className={`SectionG  ${pauseGame ? "pauseGame" : ""}`}>
             <Game
               xPlaying={xPlaying}
               setXPlaying={setXPlaying}
               scores={scores}
               setScores={setScores}
-              turn={turn}
-              setTurn={setTurn}
-              setTimer={setTimer}
+              // turn={turn}
+              // setTurn={setTurn}
+              setPauseGame={setPauseGame}
               setVisible={setVisible}
               pointGame={pointGame}
             />
           </section>
         </div>
-        <section className="SectionP2">
+        {/* <section className="SectionP2">
           {!visible && !turn ? (
             <Question
               idPlayer={2}
@@ -86,7 +110,7 @@ function App() {
               questions={questions}
               setVisible={setVisible}
               setOccurence={setOccurence}
-              setTimer={setTimer}
+              PauseGame={PauseGame}
               turn={turn}
               setTurn={setTurn}
               scores={scores}
@@ -95,7 +119,7 @@ function App() {
           ) : (
             <WaitQuestion namePlayer={player[1]} />
           )}
-        </section>
+        </section> */}
       </div>
     </>
   );

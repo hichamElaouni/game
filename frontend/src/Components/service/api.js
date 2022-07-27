@@ -61,10 +61,13 @@ const updateRoom = async (id, questionData) => {
   await axios.put(`http://${fullUrl}/db/room`, { id, questionData });
 };
 
-const getAllQUestionsGame = async () => {
-  const id = 1;
-  await axios.get(`http://${fullUrl}/db/questionsGame/`, id);
+const getAllRoomsGames = async (idroom) => {
+  console.log("id from api 1 ==>", idroom);
+  await axios.get(`http://${fullUrl}/db/roomgames?idroom=${idroom}`);
+
+  console.log("id from api 2==>", idroom);
 };
+
 /**Rooms */
 export {
   /**Questions */
@@ -75,7 +78,7 @@ export {
   updateQuestion,
   /**Questions */
 
-  getAllQUestionsGame,
+  getAllRoomsGames,
   /**Games */
   getGameById,
   getAllGames,

@@ -1,5 +1,5 @@
 import * as db from "../../../../models";
-const { Op } = require("sequelize");
+const { Op, LOCK } = require("sequelize");
 /**
  *
  * @param {number} limit
@@ -110,7 +110,7 @@ const getAllStudents = async (req, res) => {
   try {
     const { limit, page } = req.query;
     const offset = getOffset(limit, page);
-    console.log(limit, page);
+
     const students = await db.Students.findAll({
       limit: parseInt(limit) || null,
       offset: parseInt(offset) || null,
@@ -177,7 +177,7 @@ const getAllRooms = async (req, res) => {
   try {
     const { limit, page } = req.query;
     const offset = getOffset(limit, page);
-    console.log(limit, page);
+
     const rooms = await db.Rooms.findAll({
       limit: parseInt(limit) || null,
       offset: parseInt(offset) || null,
@@ -240,25 +240,9 @@ const deleteRoom = async (req, res) => {
   }
 };
 
-const getQuestionsGame = async (req, res) => {
-  try {
-    const { id } = req.body;
-
-    const questions = await db.Questions.findAll({
-      where: {
-        idGame: 1,
-      },
-    });
-    res.status(200).json({ success: true, data: questions });
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ success: false, message: error.message });
-  }
-};
-
 const getRoomGame = async (req, res) => {
   try {
-    const { id } = req.query;
+    const { idroom } = req.query;
     const { Questions, Games, Rooms } = db;
     /*
       select * FROM Questions q, Rooms rm, Games gm
@@ -268,6 +252,7 @@ const getRoomGame = async (req, res) => {
     
     */
     //Games.hasMany(Questions, { foreignKey: "idGame", sourceKey: "id" });
+
     Questions.belongsTo(Games, { foreignKey: "idGame", sourceKey: "id" });
 
     Games.hasMany(Rooms, { foreignKey: "idGame", sourceKey: "id" });
@@ -280,12 +265,13 @@ const getRoomGame = async (req, res) => {
           include: [
             {
               model: Rooms,
-              where: { id: id },
+              where: { id: idroom },
             },
           ],
           required: true,
         },
       ],
+
       raw: true,
     });
 
@@ -303,8 +289,6 @@ module.exports = {
   addQuestion,
   updateQuestion,
   deleteQuestion,
-
-  getQuestionsGame,
 
   getAllStudents,
   getStudentById,

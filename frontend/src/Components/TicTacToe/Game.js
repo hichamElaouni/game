@@ -16,7 +16,7 @@ const Game = (props) => {
     scores,
     setScores,
     setTurn,
-    setTimer,
+    setPauseGame,
     setVisible,
     pointGame,
   } = props;
@@ -36,26 +36,6 @@ const Game = (props) => {
   const [winningShow, setWinningShow] = useState(false);
   const [messageWin, setMessageWin] = useState();
 
-  const [dataSend, setDataSend] = useState();
-  const [dataReceive, setDataReceive] = useState();
-
-  socket.emit("joinroom", 1);
-  console.log("emit");
-  useEffect(() => {
-    socket.on("receive_message", (data) => {
-      setTimer(true);
-      console.log("emit2222");
-      xPlaying
-        ? setVisible((prevCheck) => !prevCheck)
-        : setTurn((prevCheck) => !prevCheck);
-    });
-  }, [socket]);
-
-  const sendMessage = () => {
-    console.log("emit 3333");
-    socket.emit("send_message", { roomId: 1, dataSend: "sdgdgdf" });
-  };
-
   const handleBoxClick = (boxIdx) => {
     // Step 1: Update the board
     const updatedBoard = board.map((value, idx) => {
@@ -65,16 +45,9 @@ const Game = (props) => {
     //setTurn((prevCheck) => !prevCheck);
     setBoard(updatedBoard);
 
-    // const sendMessage = () => {
-    //   socket.emit("send_message", {
+    setPauseGame(true);
+    setVisible((prevCheck) => !prevCheck);
 
-    //    });
-    // };
-    setTimer(true);
-    xPlaying
-      ? setVisible((prevCheck) => !prevCheck)
-      : setTurn((prevCheck) => !prevCheck);
-    sendMessage();
     // Step 2: Check if either player has won the game
     const winner = checkWinner(updatedBoard);
 

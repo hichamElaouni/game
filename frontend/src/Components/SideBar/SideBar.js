@@ -6,7 +6,7 @@ import { BiCog } from "react-icons/bi";
 import { AiFillHeart, AiTwotoneFileExclamation } from "react-icons/ai";
 import { BsCartCheck } from "react-icons/bs";
 import DeckIcon from "@mui/icons-material/Deck";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SidebarMenu from "./SidebarMenu";
 
@@ -172,13 +172,15 @@ const SideBar = ({ children }) => {
             {routes.map((route, index) => {
               if (route.subRoutes) {
                 return (
+                  <Fragment key={index}>
                   <SidebarMenu
-                    key={index}
+                    
                     setIsOpen={setIsOpen}
                     route={route}
                     showAnimation={showAnimation}
                     isOpen={isOpen}
                   />
+                  </Fragment>
                 );
               }
 

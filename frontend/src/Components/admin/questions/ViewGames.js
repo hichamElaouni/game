@@ -41,18 +41,14 @@ export default function ViewGames(props) {
 
   return (
     <>
-      {/* <Fragment>
-        <div className="view" onClick={getQuestionsGame}>
-          <h3 className="titleGame">All Questions</h3>
-          <div className="imggame">
-            <div className="infoGame"></div>
-            <p className="info">{lengthQuestionsGame} Questions</p>
-          </div>
-        </div>
-      </Fragment> */}
       {rooms.map((room, key) => (
         <Fragment key={key}>
-          <div className="view" id="12" onClick={getNameGame}>
+          <div
+            className="view"
+            key="hh"
+            id={room.id}
+            onClick={(event) => console.log(event.currentTarget.id)}
+          >
             <h3 className="titleRoom">
               {room.nameRoom}/{getNameGame}
             </h3>

@@ -9,7 +9,7 @@ import Home from "./Components/Home";
 import Dashboard from "./Components/admin/pages/Dashboard";
 
 import ListStudents from "./Components/admin/pages/Student/ListStudents";
-import Messages from "./Components/admin/pages/Messages";
+import Messages from "./Components/admin/pages/Messages/Messages";
 import Questions from "./Components/admin/questions/Questions";
 import Rooms from "./Components/admin/pages/Room/ListRooms";
 import Setting from "./Components/admin/pages/Setting";

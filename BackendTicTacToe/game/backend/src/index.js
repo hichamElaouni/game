@@ -20,32 +20,58 @@ const io = new Server(server, {
     origin: "*",
   },
 });
+let connectClient = 0;
+let player = "";
+let id = 0;
 io.on("connection", (socket) => {
-  console.log("a user connected", socket.id);
+  socket.on("join_Room", (idroom) => {
+    if (connectClient < 2) {
+      connectClient++;
+      if (connectClient == 1) {
+        console.log("First Client $$== ", connectClient);
+        player = "Hicham";
+        id = 1;
+      } else {
+        console.log("second Client $$== ", connectClient);
+        player = "Ayman";
+        id = 2;
+      }
+      socket.join(idroom);
+      socket.emit("receive", { player, id });
 
-  var numClients = {};
-
-  socket.on("joinroom", function (room) {
-    socket.join(room);
-    socket.room = room;
-    console.log(numClients[room]);
-    if (numClients[room] == undefined) {
-      numClients[room] = 1;
+      console.log(idroom, " player == >", player);
     } else {
-      numClients[room]++;
+      console.log("room it not Avaliable for now");
     }
   });
 
-  socket.on("disconnect", function () {
-    numClients[socket.room]--;
+  socket.on("setplayer", (namePlayer) => {
+    socket.emit("getplayer", namePlayer);
   });
 
-  console.log("Clients => ", numClients);
+  // var numClients = {};
 
-  socket.on("send_message", (data) => {
-    socket.to(data.roomId).emit("receive_message", data);
-    console.log("room id == ", data.roomId);
-  });
+  // socket.on("joinroom", function (room) {
+  //   socket.join(room);
+  //   socket.room = room;
+  //   console.log(numClients[room]);
+  //   if (numClients[room] == undefined) {
+  //     numClients[room] = 1;
+  //   } else {
+  //     numClients[room]++;
+  //   }
+  // });
+
+  // socket.on("disconnect", function () {
+  //   numClients[socket.room]--;
+  // });
+
+  // console.log("Clients => ", numClients);
+
+  // socket.on("send_message", (data) => {
+  //   socket.to(data.roomId).emit("receive_message", data);
+  //   console.log("room id == ", data.roomId);
+  // });
 });
 
 dotenv.config();

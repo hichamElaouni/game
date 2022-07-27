@@ -2,13 +2,12 @@ import { useState } from "react";
 import ListChoices from "../Choice/ListChoices";
 import Timer from "../Timer/Timer";
 
-
 const NextQuestion = (
   setVisible,
   setOccurence,
-  setTimer,
+  setPauseGame,
   checkAnswer,
-  setTurn,
+  // setTurn,
   idPlayer,
   scores,
   setScores,
@@ -16,9 +15,9 @@ const NextQuestion = (
   idQuestion
 ) => {
   setOccurence(idQuestion);
-  setTimer(false);
-  setTurn(false);
-  setVisible(true);
+  setPauseGame(false);
+  // setTurn(false);
+  setVisible(false);
 
   if (checkAnswer) {
     if (idPlayer == 1) {
@@ -31,8 +30,6 @@ const NextQuestion = (
       setScores({ ...scores, oScore });
     }
   }
-  
-
 };
 
 export default function Question(props) {
@@ -42,14 +39,12 @@ export default function Question(props) {
     questions = {},
     setVisible,
     setOccurence,
-    setTimer,
-    setTurn,
+    setPauseGame,
+    // setTurn,
     scores,
     setScores,
   } = props;
 
-
-  
   const [checkAnswer, setChaeckAnswer] = useState(false);
   const onclick = (event) => {
     if (questions.answer == event.target.value) {
@@ -67,13 +62,15 @@ export default function Question(props) {
   }
 
   const point = questions.point;
+
+  console.log(idPlayer);
   return (
     <div className="players ">
       <h1>{namePlayer}</h1>
       <div className="boardquetion">
         <Timer
-          setTimer={setTimer}
-          setTurn={setTurn}
+          setPauseGame={setPauseGame}
+          // setTurn={setTurn}
           setVisible={setVisible}
           checkAnswer={checkAnswer}
           idPlayer={idPlayer}
@@ -96,9 +93,9 @@ export default function Question(props) {
             NextQuestion(
               setVisible,
               setOccurence,
-              setTimer,
+              setPauseGame,
               checkAnswer,
-              setTurn,
+              // setTurn,
               idPlayer,
               scores,
               setScores,
@@ -111,93 +108,3 @@ export default function Question(props) {
     </div>
   );
 }
-
-//===========================
-/*
-
-import { useState } from "react";
-import ListChoices from "../Choice/ListChoices";
-import Timer from "../Timer/Timer";
-
-const NextQuestion = (
-  setVisible,
-  setOccurence,
-  setTimer,
-  setTurn,
-  checkAnswer
-) => {
-  setOccurence((prevCheck) => (prevCheck += 1));
-
-  setTimer(false);
-  setTurn(false);
-  setVisible(true);
-
-if(checkAnswer)
-console.log('good');
-else
-console.log("not good");
-  
-};
-
-
-export default function Question(props) {
-  const {
-    namePlayer,
-    questions = {},
-    setVisible,
-    setOccurence,
-    setTimer,
-    turn,
-    setTurn,
-  } = props;
-  const [defaultTime, setDefaultTime] = useState(100);
-  const [checkAnswer,setChaeckAnswer]=useState(false);
-  const [trueAnswer,setTruekAnser]=useState(0);
-
-
-  let Choices = ";";
-  if (questions.choices === undefined) {
-  } else {
-    Choices = questions.choices.toString();
-  }
-  
-  return (
-    <div className="players ">
-      <h1>{namePlayer}</h1>
-      <div className="boardquetion">
-        <Timer
-          defaultTimer={defaultTime}
-          setTimer={setTimer}
-          setTurn={setTurn}
-          setVisible={setVisible}
-        />
-        <h2 className="TitleQuestion">{questions.title}</h2>
-       {console.log("answer is ",questions.answer)}
-        <div className="container">
-          <ListChoices choice={Choices.split(";")} defualtAnswer={questions.answer} setChaeckAnswer={setChaeckAnswer} />
-        </div>
-
-        <input
-          type="submit"
-          className="btnNext"
-          value="Next"
-          onClick={() =>
-            NextQuestion(
-              setVisible,
-              setOccurence,
-              setTimer,
-              setDefaultTime,
-              turn,
-              setTurn,
-              checkAnswer
-            )
-          }
-        ></input>
-      </div>
-    </div>
-  );
-}
-
-
-
-*/

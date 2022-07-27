@@ -31,7 +31,7 @@ export default function Rooms(props) {
   };
   return (
     <div className="room rom">
-      <h1 style={{ fontSize: "2.4em" }}>Rooms</h1>
+      {/* <h1 style={{ fontSize: "2.4em" }}>Rooms</h1>
       <div style={{ display: "grid" }}>
         <input
           type="text"
@@ -54,7 +54,7 @@ export default function Rooms(props) {
       </div>
       <label htmlFor="" id="txtrecerve">
         {dataReceive}
-      </label>
+      </label> */}
       <div className="backgroundInfo"></div>
 
       <div className="infoRoom">

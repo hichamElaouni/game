@@ -9,8 +9,6 @@ route.post("/question", ctrl.addQuestion);
 route.put("/question", ctrl.updateQuestion);
 route.delete("/question/:id", ctrl.deleteQuestion);
 
-route.get("/questionsGame", ctrl.getQuestionsGame);
-
 route.get("/games", ctrl.getAllGames);
 route.get("/game/:id", ctrl.getGameById);
 
@@ -25,6 +23,6 @@ route.get("/room/:id", ctrl.getRoomById);
 route.post("/room", ctrl.addRoom);
 route.put("/room", ctrl.updateRoom);
 route.delete("/room/:id", ctrl.deleteRoom);
-route.get("/roomGames", ctrl.getRoomGame);
+route.get("/roomgames", ctrl.getRoomGame);
 
 export default route;
