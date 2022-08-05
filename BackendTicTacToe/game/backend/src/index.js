@@ -27,6 +27,35 @@ let player = "";
 let id = 0;
 let IDROOM = "";
 let Turn = true;
+
+// if (NumberPlayers <= 2) {
+//   RoomNumbers++;
+//   connectClient++;
+
+//   if (connectClient == 1) {
+//     console.log("First Client $$== ", connectClient);
+
+//     id = 1;
+//     Turn = true;
+//   } else {
+//     console.log("second Client $$== ", connectClient);
+
+//     id = 2;
+//     Turn = false;
+//   }
+
+//   socket.emit("connected", { namePlayer, id, Turn });
+// } else {
+//   socket.emit("RoomNotAvailable");
+//   socket.leave(token);
+// }
+// });
+
+// players[socket.id] = namePlayer;
+// socket.join(token);
+// RoomName = Array.from(socket.rooms)[1];
+// NumberPlayers = Object.keys(players).length;
+
 //USE ID_ROOM TO CHECK IF ROOM AVIABE OR NOT
 io.on("connection", (socket) => {
   socket.on("join_Room", (idroom) => {
