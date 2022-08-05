@@ -13,13 +13,15 @@ import Messages from "./Components/admin/pages/Messages/Messages";
 import Questions from "./Components/admin/questions/Questions";
 import Rooms from "./Components/admin/pages/Room/ListRooms";
 import Setting from "./Components/admin/pages/Setting";
+import Waiting from "./Components/Join/WaitingJoin";
 
 const App = () => {
   return (
     <Router>
       <SideBar>
         <Routes>
-          <Route path="/Home" element={<Home />} />
+          <Route path="/game" element={<Home />} />
+          <Route path="/JoinRoom" element={<Waiting />} />
           <Route path="/" element={<Dashboard />} />
 
           <Route path="/ListStudents" element={<ListStudents />} />

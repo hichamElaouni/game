@@ -2,17 +2,10 @@ import React, { useState, useEffect } from "react";
 import { getQuestionById } from "./service/api";
 import Question from "./Question/Question";
 import Game from "./TicTacToe/Game";
-import WaitQuestion from "./waiting/WaitQuestion";
+import Waiting from "./waiting/Waiting";
 import { ScoreBoard } from "./Score/ScoreBoard";
-
+import { socket } from "./service/socket";
 import Menu from "./Menu/Menu";
-import io from "socket.io-client"
-
-
-const { REACT_APP_BACKEND_URL, REACT_APP_BACKEND_PORT } = process.env || {};
-const fullUrl = `${REACT_APP_BACKEND_URL}:${REACT_APP_BACKEND_PORT}`;
-
-const socket = io.connect(fullUrl);
 
 const getQuestion = async (id, setQuestions) => {
   const {
@@ -28,22 +21,19 @@ function App() {
   const [pauseGame, setPauseGame] = useState(true);
   const [xPlaying, setXPlaying] = useState(true);
   const [scores, setScores] = useState({ xScore: 0, oScore: 0 });
-
-
+  const [turn, setTurn] = useState(true);
   const [idroom, setIdroom] = useState("");
   const [namePlayer, setNamePlayer] = useState("");
   const [idPlayer, setIdPlayer] = useState(0);
 
-
-
   useEffect(() => {
     getQuestion(occurence, setQuestions);
-    socket.on("receive", ({ player, id }) => {
-      setNamePlayer(player)
-      setIdPlayer(id)
+    socket.on("connected", ({ player, id, Turn }) => {
+      setNamePlayer(player);
+      setIdPlayer(id);
       id == 1 ? setXPlaying(true) : setXPlaying(false);
+      setTurn(Turn);
     });
-
   }, [occurence, socket]);
 
   const pointGame = 2;
@@ -51,20 +41,25 @@ function App() {
   const join_Room = () => {
     if (idroom !== "") {
       socket.emit("join_Room", idroom);
-
     }
-  }
-
-
+  };
 
   return (
     <>
       <Menu style={{ justifyContent: "flex-end", background: "#404a46" }} />
-      <input type="text" placeholder="room" onChange={(event) => { setIdroom(event.target.value) }} ></input>
-      <button value="send" onClick={join_Room}></button>
+      <input
+        type="text"
+        placeholder="room"
+        onChange={(event) => {
+          setIdroom(event.target.value);
+        }}
+      ></input>
+      <button onClick={join_Room} style={{ width: "100px", height: "30px" }}>
+        send
+      </button>
       <div className="PartGames">
         <section className="SectionP1">
-          {visible && (idPlayer == 1 ? true : false) ? (
+          {visible && turn ? (
             <Question
               idPlayer={idPlayer}
               namePlayer={namePlayer}
@@ -78,7 +73,7 @@ function App() {
               setScores={setScores}
             />
           ) : (
-            <WaitQuestion namePlayer={namePlayer} />
+            <Waiting namePlayer={namePlayer} text="Waiting " />
           )}
         </section>
         <div className="flex-score-game">
@@ -94,11 +89,13 @@ function App() {
               setXPlaying={setXPlaying}
               scores={scores}
               setScores={setScores}
-              // turn={turn}
-              // setTurn={setTurn}
+              idPlayer={idPlayer}
+              setIdPlayer={setIdPlayer}
               setPauseGame={setPauseGame}
               setVisible={setVisible}
               pointGame={pointGame}
+              turn={turn}
+              setTurn={setTurn}
             />
           </section>
         </div>

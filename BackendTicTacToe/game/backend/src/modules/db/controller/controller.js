@@ -199,12 +199,29 @@ const getRoomById = async (req, res) => {
         },
       })
     );
-    res.status(200).json({ success: true, data: Room });
+    res.status(200).json({ success: true, data: room });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, message: error.message });
   }
 };
+const getRoomByToken = async (req, res) => {
+  try {
+    const { token } = req.query;
+    const room = Object(
+      await db.Rooms.findOne({
+        where: {
+          token: token,
+        },
+      })
+    );
+    res.status(200).json({ success: true, data: room });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
 const addRoom = async (req, res) => {
   try {
     const rooms = req.body;
@@ -299,6 +316,7 @@ module.exports = {
 
   getAllRooms,
   getRoomById,
+  getRoomByToken,
 
   addRoom,
   updateRoom,

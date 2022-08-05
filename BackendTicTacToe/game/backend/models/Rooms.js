@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       nameRoom: DataTypes.STRING,
       point: DataTypes.INTEGER(11),
+      token: DataTypes.STRING,
       idGame: DataTypes.INTEGER(11),
     },
     {

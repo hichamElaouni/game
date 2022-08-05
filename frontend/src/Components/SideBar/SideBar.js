@@ -3,9 +3,7 @@ import { FaBars, FaHome, FaLock, FaMoneyBill, FaUser } from "react-icons/fa";
 import { MdMessage, MdDeck } from "react-icons/md";
 import { BiAnalyse, BiSearch } from "react-icons/bi";
 import { BiCog } from "react-icons/bi";
-import { AiFillHeart, AiTwotoneFileExclamation } from "react-icons/ai";
-import { BsCartCheck } from "react-icons/bs";
-import DeckIcon from "@mui/icons-material/Deck";
+import { AiFillHeart } from "react-icons/ai";
 import { Fragment, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SidebarMenu from "./SidebarMenu";
@@ -61,7 +59,7 @@ const routes = [
     ],
   },
   {
-    path: "/home",
+    path: "/game",
     name: "game",
     icon: <AiFillHeart />,
   },
@@ -173,13 +171,12 @@ const SideBar = ({ children }) => {
               if (route.subRoutes) {
                 return (
                   <Fragment key={index}>
-                  <SidebarMenu
-                    
-                    setIsOpen={setIsOpen}
-                    route={route}
-                    showAnimation={showAnimation}
-                    isOpen={isOpen}
-                  />
+                    <SidebarMenu
+                      setIsOpen={setIsOpen}
+                      route={route}
+                      showAnimation={showAnimation}
+                      isOpen={isOpen}
+                    />
                   </Fragment>
                 );
               }

@@ -20,6 +20,8 @@ route.delete("/student/:id", ctrl.deleteStudent);
 
 route.get("/rooms", ctrl.getAllRooms);
 route.get("/room/:id", ctrl.getRoomById);
+route.get("/room", ctrl.getRoomByToken);
+
 route.post("/room", ctrl.addRoom);
 route.put("/room", ctrl.updateRoom);
 route.delete("/room/:id", ctrl.deleteRoom);

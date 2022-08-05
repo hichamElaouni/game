@@ -21,33 +21,64 @@ const io = new Server(server, {
   },
 });
 let connectClient = 0;
+let roomNumber = 0;
+
 let player = "";
 let id = 0;
+let IDROOM = "";
+let Turn = true;
+//USE ID_ROOM TO CHECK IF ROOM AVIABE OR NOT
 io.on("connection", (socket) => {
   socket.on("join_Room", (idroom) => {
     if (connectClient < 2) {
+      IDROOM = idroom;
       connectClient++;
       if (connectClient == 1) {
         console.log("First Client $$== ", connectClient);
         player = "Hicham";
         id = 1;
+        Turn = true;
       } else {
         console.log("second Client $$== ", connectClient);
         player = "Ayman";
         id = 2;
+        Turn = false;
       }
-      socket.join(idroom);
-      socket.emit("receive", { player, id });
-
-      console.log(idroom, " player == >", player);
+      socket.join(IDROOM);
+      socket.emit("connected", { player, id, Turn });
     } else {
       console.log("room it not Avaliable for now");
     }
   });
-
-  socket.on("setplayer", (namePlayer) => {
-    socket.emit("getplayer", namePlayer);
+  socket.on("setPlayer", (namePlayer) => {
+    socket.to(IDROOM).emit("getPlayer", namePlayer);
   });
+
+  socket.on("setScore", (scores) => {
+    socket.to(IDROOM).emit("getScore", scores);
+  });
+
+  socket.on("setxScore", (xScore) => {
+    console.log(xScore);
+    socket.to(IDROOM).emit("getxScore", xScore);
+  });
+
+  socket.on("setoScore", (oScore) => {
+    console.log(oScore);
+    socket.to(IDROOM).emit("getoScore", oScore);
+  });
+
+  socket.on("switch_turn", ({ turn, updatedBoard }) => {
+    socket.to(IDROOM).emit("switch", { turn, updatedBoard });
+  });
+
+  socket.on("setwin", () => {
+    socket.to(IDROOM).emit("getwin");
+  });
+
+  // socket.on("setplayer", (namePlayer) => {
+  //   socket.emit("getplayer", namePlayer);
+  // });
 
   // var numClients = {};
 

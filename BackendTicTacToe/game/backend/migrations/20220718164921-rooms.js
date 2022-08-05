@@ -14,6 +14,10 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      token: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
       idGame: {
         allowNull: false,
         type: Sequelize.INTEGER(11),

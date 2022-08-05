@@ -12,7 +12,7 @@ export default function Timer(props) {
     checkAnswer,
     setOccurence,
   } = props;
-  const [currentCount, setCount] = useState(1000);
+  const [currentCount, setCount] = useState(20);
   const timer = () => setCount(currentCount - 1);
   if (!currentCount) {
     setOccurence((prevCheck) => (prevCheck += 1));

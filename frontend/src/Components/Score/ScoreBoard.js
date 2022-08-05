@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from "react";
-import io from "socket.io-client";
 import "./scoreBoard.css";
-
-const { REACT_APP_BACKEND_URL, REACT_APP_BACKEND_PORT } = process.env || {};
-const fullUrl = `${REACT_APP_BACKEND_URL}:${REACT_APP_BACKEND_PORT}`;
-
-const socket = io.connect(fullUrl);
+import { socket } from "../service/socket";
 
 export const ScoreBoard = ({ scores, xPlaying, namePlayer }) => {
   const { xScore, oScore } = scores;
+  console.log("ss ==> ", scores);
   const [secondPlayer, setSecondPlayer] = useState("");
-
-  console.log(xPlaying);
 
   socket.emit("setPlayer", namePlayer);
 
@@ -19,7 +13,7 @@ export const ScoreBoard = ({ scores, xPlaying, namePlayer }) => {
     socket.on("getPlayer", (namePlayer) => {
       setSecondPlayer(namePlayer);
     });
-  }, [socket]);
+  }, []);
 
   return (
     <div className="scoreboard">

@@ -46,6 +46,9 @@ const updateQuestion = async (id, questionData) => {
 const getRoomById = async (id) =>
   await axios.get(`http://${fullUrl}/db/room/${id}`);
 
+const getRoomByToken = async (token) =>
+  await axios.get(`http://${fullUrl}/db/room?token=${token}`);
+
 const getAllRooms = async (limit = 100, page = 1) =>
   await axios.get(`http://${fullUrl}/db/rooms?limit=${limit}&page=${page}`);
 
@@ -62,10 +65,7 @@ const updateRoom = async (id, questionData) => {
 };
 
 const getAllRoomsGames = async (idroom) => {
-  console.log("id from api 1 ==>", idroom);
   await axios.get(`http://${fullUrl}/db/roomgames?idroom=${idroom}`);
-
-  console.log("id from api 2==>", idroom);
 };
 
 /**Rooms */
@@ -93,5 +93,6 @@ export {
   addRoom,
   deleteRoom,
   updateRoom,
+  getRoomByToken,
   /**Rooms */
 };

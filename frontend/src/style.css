@@ -276,8 +276,9 @@ form {
 }
 
 .btnNext {
-  width: 20vw;
-  height: 7vh;
+  width: 70%;
+  height: 4vh;
+  min-height: 33px;
   font-size: 23px;
   background: #fff;
   border: 1px solid #85dbdb;

@@ -1,24 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { Board } from "./Board";
-
-import io from "socket.io-client";
-
-const { REACT_APP_BACKEND_URL, REACT_APP_BACKEND_PORT } = process.env || {};
-const fullUrl = `${REACT_APP_BACKEND_URL}:${REACT_APP_BACKEND_PORT}`;
-
-const socket = io.connect(fullUrl);
+import { socket } from "../service/socket";
 
 const Game = (props) => {
   const {
     xPlaying = true,
-    setXPlaying,
     scores,
     setScores,
-    setTurn,
     setPauseGame,
     setVisible,
     pointGame,
+    turn,
+    setTurn,
   } = props;
   const WIN_CONDITIONS = [
     [0, 1, 2],
@@ -35,16 +29,39 @@ const Game = (props) => {
   const [gameOver, setGameOver] = useState(false);
   const [winningShow, setWinningShow] = useState(false);
   const [messageWin, setMessageWin] = useState();
+  socket.on("getScore", (scores) => {
+    console.log("score in on ===> ", props.scores);
+
+    setScores(scores);
+  });
+
+  socket.on("getxScore", async (xScore) => {
+    await setScores({ ...scores, xScore });
+  });
+  socket.on("getoScore", (oScore) => {
+    setScores({ ...scores, oScore });
+  });
+
+  socket.on("switch", ({ turn, updatedBoard }) => {
+    setBoard(updatedBoard);
+
+    setTurn(turn);
+  });
+
+  socket.on("getwin", () => {
+    setGameOver(true);
+    setWinningShow(true);
+  });
 
   const handleBoxClick = (boxIdx) => {
     // Step 1: Update the board
     const updatedBoard = board.map((value, idx) => {
       if (idx === boxIdx) return xPlaying ? "x" : "circle";
+
       return value;
     });
-    //setTurn((prevCheck) => !prevCheck);
-    setBoard(updatedBoard);
 
+    setBoard(updatedBoard);
     setPauseGame(true);
     setVisible((prevCheck) => !prevCheck);
 
@@ -57,18 +74,23 @@ const Game = (props) => {
         oScore += pointGame;
         setMessageWin("Circle win");
         setScores({ ...scores, oScore });
+        socket.emit("setoScore", oScore);
       } else {
         let { xScore } = scores;
         xScore += pointGame;
         setMessageWin("X win");
-
         setScores({ ...scores, xScore });
+        socket.emit("setxScore", xScore);
       }
       setWinningShow(true);
     }
 
+    setTurn(!turn);
+
+    socket.emit("switch_turn", { turn, updatedBoard });
+
     // Step 3: Change active player
-    setXPlaying(!xPlaying);
+    // setXPlaying(!xPlaying);
   };
 
   const checkWinner = (board) => {
@@ -78,6 +100,8 @@ const Game = (props) => {
       // Iterate through win conditions and check if either player satisfies them
       if (board[x] && board[x] === board[y] && board[y] === board[z]) {
         setGameOver(true);
+
+        socket.emit("setwin");
         return board[x];
       }
     }

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import ListChoices from "../Choice/ListChoices";
 import Timer from "../Timer/Timer";
+import { socket } from "../service/socket";
 
 const NextQuestion = (
   setVisible,
   setOccurence,
   setPauseGame,
   checkAnswer,
-  // setTurn,
   idPlayer,
   scores,
   setScores,
@@ -16,7 +16,6 @@ const NextQuestion = (
 ) => {
   setOccurence(idQuestion);
   setPauseGame(false);
-  // setTurn(false);
   setVisible(false);
 
   if (checkAnswer) {
@@ -24,10 +23,12 @@ const NextQuestion = (
       let { xScore } = scores;
       xScore += point;
       setScores({ ...scores, xScore });
+      socket.emit("setxScore", xScore);
     } else if (idPlayer == 2) {
       let { oScore } = scores;
       oScore += point;
       setScores({ ...scores, oScore });
+      socket.emit("setoScore", oScore);
     }
   }
 };
@@ -63,7 +64,6 @@ export default function Question(props) {
 
   const point = questions.point;
 
-  console.log(idPlayer);
   return (
     <div className="players ">
       <h1>{namePlayer}</h1>
