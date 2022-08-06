@@ -70,7 +70,7 @@ export default function Question(props) {
       <div className="boardquetion">
         <Timer
           setPauseGame={setPauseGame}
-          // setTurn={setTurn}
+          idQuestion={idQuestion}
           setVisible={setVisible}
           checkAnswer={checkAnswer}
           idPlayer={idPlayer}

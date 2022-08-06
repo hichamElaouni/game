@@ -48,18 +48,18 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar
+            {/* <Avatar
               sx={{
                 width: 42,
                 height: 42,
                 backgroundSize: "contain",
                 backgroundPosition: "centre",
-                backgroundImage: `url(${Image})`,
+                //backgroundImage: `url(${Image})`,
                 color: "#fff0",
               }}
             >
               .
-            </Avatar>
+            </Avatar> */}
           </IconButton>
         </Tooltip>
       </Box>
@@ -103,7 +103,7 @@ export default function AccountMenu() {
             sx={{
               backgroundSize: "contain",
               backgroundPosition: "centre",
-              backgroundImage: `url(${Image})`,
+              // backgroundImage: `url(${Image})`,
               color: "#fff0",
             }}
           />{" "}
@@ -124,7 +124,7 @@ export default function AccountMenu() {
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          <a href="/ListStudents"> Logout</a>
+          <a> Logout</a>
         </MenuItem>
       </Menu>
     </React.Fragment>
