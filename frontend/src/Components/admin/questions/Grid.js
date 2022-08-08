@@ -18,7 +18,6 @@ import {
   NotificationManager,
 } from "react-notifications";
 import "react-notifications/lib/notifications.css";
-import ListRooms from "../pages/Room/ListRooms";
 
 const getQuestions = async (setQuestions) => {
   const {

@@ -4,7 +4,7 @@ import { socket } from "../service/socket";
 
 export const ScoreBoard = ({ scores, xPlaying, namePlayer }) => {
   const { xScore, oScore } = scores;
-  console.log("ss ==> ", scores);
+
   const [secondPlayer, setSecondPlayer] = useState("");
 
   socket.emit("setPlayer", namePlayer);
@@ -19,9 +19,11 @@ export const ScoreBoard = ({ scores, xPlaying, namePlayer }) => {
     <div className="scoreboard">
       <span className={`score x-score ${!xPlaying && "inactive"}`}>
         Turn {xPlaying ? namePlayer : secondPlayer} is : {xScore}
+        {console.log(">>==<<<<<<<<", xPlaying)}
       </span>
       <span className={`score o-score ${xPlaying && "inactive"}`}>
         Turn {!xPlaying ? namePlayer : secondPlayer} is : {oScore}
+        {console.log(">>==<<<<<<<<", xPlaying)}
       </span>
     </div>
   );

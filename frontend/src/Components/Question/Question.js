@@ -19,12 +19,12 @@ const NextQuestion = (
   setVisible(false);
 
   if (checkAnswer) {
-    if (idPlayer == 1) {
+    if (idPlayer === 1) {
       let { xScore } = scores;
       xScore += point;
       setScores({ ...scores, xScore });
       socket.emit("setxScore", xScore);
-    } else if (idPlayer == 2) {
+    } else if (idPlayer === 2) {
       let { oScore } = scores;
       oScore += point;
       setScores({ ...scores, oScore });
@@ -48,7 +48,7 @@ export default function Question(props) {
 
   const [checkAnswer, setChaeckAnswer] = useState(false);
   const onclick = (event) => {
-    if (questions.answer == event.target.value) {
+    if (questions.answer === event.target.value) {
       setChaeckAnswer(true);
     } else {
       setChaeckAnswer(false);

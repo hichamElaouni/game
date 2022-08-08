@@ -5,7 +5,7 @@ import Game from "./TicTacToe/Game";
 import Waiting from "./waiting/Waiting";
 import { ScoreBoard } from "./Score/ScoreBoard";
 import { socket } from "./service/socket";
-import Menu from "./Menu/Menu";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const getQuestion = async (id, setQuestions) => {
   const {
@@ -26,40 +26,33 @@ function App() {
   const [namePlayer, setNamePlayer] = useState("");
   const [idPlayer, setIdPlayer] = useState(0);
 
+  let navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+
+  const PlayerName = searchParams.get("NamePlayer");
+
   useEffect(() => {
     getQuestion(occurence, setQuestions);
-    socket.on("connected", ({ player, id, Turn }) => {
-      setNamePlayer(player);
+    socket.emit("connected_Player", PlayerName);
+    socket.on("startGame", ({ id, PlayerName, Turn }) => {
+      setNamePlayer(PlayerName);
       setIdPlayer(id);
-      id == 1 ? setXPlaying(true) : setXPlaying(false);
+
+      console.log("🚀 ~ file: Home.js ~ line 43 ~ socket.on ~ id", id);
+      console.log("🚀 ~ file: Home.js ~ line 45 ~ socket.on ~ Turn", Turn);
+      id === 1 ? setXPlaying(false) : setXPlaying(true);
       setTurn(Turn);
     });
-  }, [occurence, socket]);
+  }, [occurence, socket, PlayerName]);
 
   const pointGame = 2;
 
-  const join_Room = () => {
-    if (idroom !== "") {
-      socket.emit("join_Room", idroom);
-    }
-  };
-
   return (
     <>
-      <Menu style={{ justifyContent: "flex-end", background: "#404a46" }} />
-      <input
-        type="text"
-        placeholder="room"
-        onChange={(event) => {
-          setIdroom(event.target.value);
-        }}
-      ></input>
-      <button onClick={join_Room} style={{ width: "100px", height: "30px" }}>
-        send
-      </button>
       <div className="PartGames">
         <section className="SectionP1">
-          {visible && turn ? (
+          {visible && !turn ? (
             <Question
               idPlayer={idPlayer}
               namePlayer={namePlayer}
@@ -67,8 +60,6 @@ function App() {
               setVisible={setVisible}
               setOccurence={setOccurence}
               setPauseGame={setPauseGame}
-              // turn={turn}
-              // setTurn={setTurn}
               scores={scores}
               setScores={setScores}
             />

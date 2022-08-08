@@ -55,30 +55,61 @@ let Turn = true;
 // socket.join(token);
 // RoomName = Array.from(socket.rooms)[1];
 // NumberPlayers = Object.keys(players).length;
-
+// TODO const checkRoomAvailablity = ()
 //USE ID_ROOM TO CHECK IF ROOM AVIABE OR NOT
 io.on("connection", (socket) => {
-  socket.on("join_Room", (idroom) => {
-    if (connectClient < 2) {
-      IDROOM = idroom;
-      connectClient++;
-      if (connectClient == 1) {
-        console.log("First Client $$== ", connectClient);
-        player = "Hicham";
+  socket.on("joinRoom", ({ token }) => {
+    socket.join(token);
+    let roomMemeberNumber = io.sockets.adapter.rooms.get(token) || 0;
+
+    if (roomMemeberNumber && roomMemeberNumber.size > 2) {
+      console.log("🚀 roomMemeberNumber", roomMemeberNumber);
+      socket.leave(token);
+      socket.emit("RoomNotAvailable");
+    } else {
+      console.log("🚀 roomMemeberNumber == ", roomMemeberNumber.size);
+
+      if (roomMemeberNumber.size === 1) {
         id = 1;
         Turn = true;
-      } else {
-        console.log("second Client $$== ", connectClient);
-        player = "Ayman";
+        // socket.on("connected_Player", (PlayerName) => {
+        //   socket.emit("startGame", { id, PlayerName, Turn });
+        // });
+      }
+      if (roomMemeberNumber.size === 2) {
         id = 2;
         Turn = false;
       }
-      socket.join(IDROOM);
-      socket.emit("connected", { player, id, Turn });
-    } else {
-      console.log("room it not Avaliable for now");
+
+      io.to(token).emit("playing");
+      socket.on("connected_Player", (PlayerName) => {
+        socket.emit("startGame", { id, PlayerName, Turn });
+      });
+      IDROOM = token;
     }
   });
+
+  // socket.on("join_Room", (idroom) => {
+  //   if (connectClient < 2) {
+  //     IDROOM = idroom;
+  //     connectClient++;
+  //     if (connectClient == 1) {
+  //       console.log("First Client $$== ", connectClient);
+  //       player = "Hicham";
+  //       id = 1;
+  //       Turn = true;
+  //     } else {
+  //       console.log("second Client $$== ", connectClient);
+  //       player = "Ayman";
+  //       id = 2;
+  //       Turn = false;
+  //     }
+  //     socket.join(IDROOM);
+  //     socket.emit("connected", { player, id, Turn });
+  //   } else {
+  //     console.log("room it not Avaliable for now");
+  //   }
+  // });
   socket.on("setPlayer", (namePlayer) => {
     socket.to(IDROOM).emit("getPlayer", namePlayer);
   });
@@ -88,12 +119,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("setxScore", (xScore) => {
-    console.log(xScore);
     socket.to(IDROOM).emit("getxScore", xScore);
   });
 
   socket.on("setoScore", (oScore) => {
-    console.log(oScore);
     socket.to(IDROOM).emit("getoScore", oScore);
   });
 
@@ -177,4 +206,6 @@ app.post("/", (req, res) => {
   });
 });
 
-server.listen(PORT, () => console.log(`The app is listning on Port ${PORT}`));
+server.listen(process.env.PORT || PORT, () =>
+  console.log(`The app is listning on Port ${PORT}`)
+);

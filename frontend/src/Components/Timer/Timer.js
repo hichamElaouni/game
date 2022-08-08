@@ -13,7 +13,7 @@ export default function Timer(props) {
     setOccurence,
     idQuestion,
   } = props;
-  const [currentCount, setCount] = useState(30);
+  const [currentCount, setCount] = useState(1000);
   const timer = () => setCount(currentCount - 1);
   if (!currentCount) {
     setOccurence(idQuestion);
@@ -21,12 +21,12 @@ export default function Timer(props) {
     setVisible(false);
 
     if (checkAnswer) {
-      if (idPlayer == 1) {
+      if (idPlayer === 1) {
         let { xScore } = scores;
         xScore += point;
         setScores({ ...scores, xScore });
         socket.emit("setxScore", xScore);
-      } else if (idPlayer == 2) {
+      } else if (idPlayer === 2) {
         let { oScore } = scores;
         oScore += point;
         setScores({ ...scores, oScore });

@@ -44,7 +44,7 @@ const Game = (props) => {
 
   socket.on("switch", ({ turn, updatedBoard }) => {
     setBoard(updatedBoard);
-
+    console.log("Turn ==", turn);
     setTurn(turn);
   });
 
@@ -84,11 +84,11 @@ const Game = (props) => {
       }
       setWinningShow(true);
     }
-
+    console.log("🚀 ~ file: Game.js ~ line 900 ~ handleBoxClick ~ turn", turn);
     setTurn(!turn);
 
     socket.emit("switch_turn", { turn, updatedBoard });
-
+    console.log("🚀 ~ file: Game.js ~ line 89 ~ handleBoxClick ~ turn", turn);
     // Step 3: Change active player
     // setXPlaying(!xPlaying);
   };
