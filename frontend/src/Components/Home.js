@@ -4,8 +4,8 @@ import Question from "./Question/Question";
 import Game from "./TicTacToe/Game";
 import Waiting from "./waiting/Waiting";
 import { ScoreBoard } from "./Score/ScoreBoard";
-import { socket } from "./service/socket";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { socket } from "./service/socket";
 
 const getQuestion = async (id, setQuestions) => {
   const {
@@ -22,37 +22,51 @@ function App() {
   const [xPlaying, setXPlaying] = useState(true);
   const [scores, setScores] = useState({ xScore: 0, oScore: 0 });
   const [turn, setTurn] = useState(true);
-  const [idroom, setIdroom] = useState("");
+  const [flag, setFlag] = useState(true);
   const [namePlayer, setNamePlayer] = useState("");
   const [idPlayer, setIdPlayer] = useState(0);
+  const [stateRoom, setStateRoom] = useState(false);
+  const [currentCount, setCount] = useState(10000);
 
   let navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
-
   const PlayerName = searchParams.get("NamePlayer");
+  const PlayerId = searchParams.get("PlayerId");
 
   useEffect(() => {
     getQuestion(occurence, setQuestions);
-    socket.emit("connected_Player", PlayerName);
-    socket.on("startGame", ({ id, PlayerName, Turn }) => {
-      setNamePlayer(PlayerName);
-      setIdPlayer(id);
+    setIdPlayer(PlayerId);
+    setNamePlayer(PlayerName);
 
-      console.log("🚀 ~ file: Home.js ~ line 43 ~ socket.on ~ id", id);
-      console.log("🚀 ~ file: Home.js ~ line 45 ~ socket.on ~ Turn", Turn);
-      id === 1 ? setXPlaying(false) : setXPlaying(true);
-      setTurn(Turn);
+    if (PlayerId == 1 && flag) {
+      setTurn(true);
+      setXPlaying(true);
+      setFlag(false);
+      setStateRoom(true);
+      setVisible(false);
+    }
+    if (PlayerId == 2 && flag) {
+      setTurn(false);
+      setXPlaying(false);
+      setFlag(false);
+      setStateRoom(false);
+      socket.emit("setStateRoom");
+    }
+    socket.on("getStateRoom", () => {
+      setStateRoom(false);
+      setCount(3000);
+      setVisible(true);
     });
-  }, [occurence, socket, PlayerName]);
+  }, [occurence]);
 
   const pointGame = 2;
 
   return (
     <>
-      <div className="PartGames">
+      <div className={`PartGames `}>
         <section className="SectionP1">
-          {visible && !turn ? (
+          {visible && turn ? (
             <Question
               idPlayer={idPlayer}
               namePlayer={namePlayer}
@@ -62,6 +76,8 @@ function App() {
               setPauseGame={setPauseGame}
               scores={scores}
               setScores={setScores}
+              currentCount={currentCount}
+              setCount={setCount}
             />
           ) : (
             <Waiting namePlayer={namePlayer} text="Waiting " />
@@ -108,6 +124,12 @@ function App() {
             <WaitQuestion namePlayer={player[1]} />
           )}
         </section> */}
+      </div>
+      <div className={`div-wait ${stateRoom ? "start-Playing" : ""} `}>
+        <Waiting
+          namePlayer={namePlayer}
+          text="Wait to anothor Player to Join "
+        />
       </div>
     </>
   );

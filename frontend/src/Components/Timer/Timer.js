@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { socket } from "../service/socket";
 
 export default function Timer(props) {
@@ -12,8 +12,9 @@ export default function Timer(props) {
     checkAnswer,
     setOccurence,
     idQuestion,
+    currentCount,
+    setCount,
   } = props;
-  const [currentCount, setCount] = useState(1000);
   const timer = () => setCount(currentCount - 1);
   if (!currentCount) {
     setOccurence(idQuestion);

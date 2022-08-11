@@ -19,12 +19,12 @@ const NextQuestion = (
   setVisible(false);
 
   if (checkAnswer) {
-    if (idPlayer === 1) {
+    if (idPlayer * 1 === 1) {
       let { xScore } = scores;
       xScore += point;
       setScores({ ...scores, xScore });
       socket.emit("setxScore", xScore);
-    } else if (idPlayer === 2) {
+    } else if (idPlayer * 1 === 2) {
       let { oScore } = scores;
       oScore += point;
       setScores({ ...scores, oScore });
@@ -41,14 +41,15 @@ export default function Question(props) {
     setVisible,
     setOccurence,
     setPauseGame,
-    // setTurn,
+    currentCount,
+    setCount,
     scores,
     setScores,
   } = props;
 
   const [checkAnswer, setChaeckAnswer] = useState(false);
   const onclick = (event) => {
-    if (questions.answer === event.target.value) {
+    if (questions.answer === event.target.value * 1) {
       setChaeckAnswer(true);
     } else {
       setChaeckAnswer(false);
@@ -78,6 +79,8 @@ export default function Question(props) {
           setScores={setScores}
           point={point}
           setOccurence={setOccurence}
+          currentCount={currentCount}
+          setCount={setCount}
         />
         <h2 className="TitleQuestion">{questions.title}</h2>
 

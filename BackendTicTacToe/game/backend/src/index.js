@@ -72,19 +72,14 @@ io.on("connection", (socket) => {
       if (roomMemeberNumber.size === 1) {
         id = 1;
         Turn = true;
-        // socket.on("connected_Player", (PlayerName) => {
-        //   socket.emit("startGame", { id, PlayerName, Turn });
-        // });
       }
       if (roomMemeberNumber.size === 2) {
         id = 2;
         Turn = false;
       }
 
-      io.to(token).emit("playing");
-      socket.on("connected_Player", (PlayerName) => {
-        socket.emit("startGame", { id, PlayerName, Turn });
-      });
+      socket.emit("playing", id);
+
       IDROOM = token;
     }
   });
@@ -130,8 +125,12 @@ io.on("connection", (socket) => {
     socket.to(IDROOM).emit("switch", { turn, updatedBoard });
   });
 
-  socket.on("setwin", () => {
-    socket.to(IDROOM).emit("getwin");
+  socket.on("setwin", (winMessage) => {
+    socket.to(IDROOM).emit("getwin", winMessage);
+  });
+
+  socket.on("setStateRoom", () => {
+    socket.to(IDROOM).emit("getStateRoom");
   });
 
   // socket.on("setplayer", (namePlayer) => {

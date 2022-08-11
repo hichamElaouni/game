@@ -19,11 +19,9 @@ export const ScoreBoard = ({ scores, xPlaying, namePlayer }) => {
     <div className="scoreboard">
       <span className={`score x-score ${!xPlaying && "inactive"}`}>
         Turn {xPlaying ? namePlayer : secondPlayer} is : {xScore}
-        {console.log(">>==<<<<<<<<", xPlaying)}
       </span>
       <span className={`score o-score ${xPlaying && "inactive"}`}>
         Turn {!xPlaying ? namePlayer : secondPlayer} is : {oScore}
-        {console.log(">>==<<<<<<<<", xPlaying)}
       </span>
     </div>
   );

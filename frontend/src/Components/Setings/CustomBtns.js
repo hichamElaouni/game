@@ -5,7 +5,8 @@ import Delete from "@material-ui/icons/Delete";
 import Update from "@material-ui/icons/UpdateSharp";
 import Send from "@material-ui/icons/SendRounded";
 
-export default function CustomBtns() {
+export default function CustomBtns(props) {
+  const { idRoom, deleteRoom } = props;
   return (
     <div className="btnRoom">
       <IconButton
@@ -16,11 +17,15 @@ export default function CustomBtns() {
           height: "100%",
         }}
       >
-        <Delete />
+        <Delete id={idRoom} onClick={deleteRoom} />
       </IconButton>
       <IconButton
         aria-label="updete"
-        style={{ color: "whitesmoke", background: "#4fcd3596", height: "100%" }}
+        style={{
+          color: "whitesmoke",
+          background: "#4fcd3596",
+          height: "100%",
+        }}
       >
         <Update />
       </IconButton>

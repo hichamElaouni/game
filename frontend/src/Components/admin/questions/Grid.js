@@ -147,7 +147,7 @@ const Grid = () => {
     const index = questions.findIndex((question) => question.id === questionId);
     newQuestions.splice(index, 1);
     setOpen(false);
-    console.log(questionId);
+
     NotificationManager.info(
       " succufully  deleted ",
       "info",

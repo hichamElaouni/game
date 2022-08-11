@@ -409,3 +409,20 @@ form {
   align-self: auto;
   width: 25vw;
 }
+/*==============  Wait Join ====================*/
+
+.div-wait {
+  display: none;
+
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  justify-content: center;
+}
+
+.start-Playing {
+  display: flex;
+  opacity: 0.9;
+  cursor: wait;
+}

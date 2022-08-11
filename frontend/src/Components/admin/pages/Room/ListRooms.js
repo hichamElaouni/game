@@ -1,9 +1,31 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Room from "./Room";
 import CustumCombobox from "../../../Setings/CustumCombobox";
-import { getAllRooms } from "../../../service/api";
+import { getAllRooms, deleteRoom, addRoom } from "../../../service/api";
 import IconButton from "@material-ui/core/IconButton";
 import Add from "@material-ui/icons/Add";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
+
+const deleted_Room = async (event) => {
+  const RoomId = event.currentTarget.id;
+  console.log("RoomId==> ", RoomId);
+  NotificationManager.info(
+    " succufully  deleted ",
+    "info",
+    3000,
+    await deleteRoom(RoomId)
+  );
+  await deleteRoom(RoomId);
+};
+
+const add_Room = async () => {
+
+
+  //await addRoom(DataRoom)
+}
 
 export default function ListRooms() {
   const [rooms, setRooms] = useState([]);
@@ -34,7 +56,7 @@ export default function ListRooms() {
             <Fragment key={index}>
               <div className="tr">
                 <h2 className="nameRoom">{room.nameRoom}</h2>
-                <Room room={room} />
+                <Room room={room} deleted_Room={deleted_Room} add_Room={add_Room} />
               </div>
             </Fragment>
           ))}
@@ -50,6 +72,10 @@ export default function ListRooms() {
             <Add />
           </IconButton>
         </div>
+      </div>
+      <NotificationContainer />
+      <div className="div-Add-Room">
+
       </div>
     </>
   );

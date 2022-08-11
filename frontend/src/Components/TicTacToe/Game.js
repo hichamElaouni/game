@@ -44,13 +44,18 @@ const Game = (props) => {
 
   socket.on("switch", ({ turn, updatedBoard }) => {
     setBoard(updatedBoard);
-    console.log("Turn ==", turn);
+
     setTurn(turn);
   });
 
-  socket.on("getwin", () => {
+  socket.on("getwin", (winMessage) => {
     setGameOver(true);
     setWinningShow(true);
+    setMessageWin(winMessage);
+    console.log(
+      "🚀 ~ file: Game.js ~ line 55 ~ socket.on ~ messageWin",
+      messageWin
+    );
   });
 
   const handleBoxClick = (boxIdx) => {
@@ -67,28 +72,32 @@ const Game = (props) => {
 
     // Step 2: Check if either player has won the game
     const winner = checkWinner(updatedBoard);
-
+    let winMessage = "";
     if (winner) {
       if (winner === "circle") {
         let { oScore } = scores;
         oScore += pointGame;
-        setMessageWin("Circle win");
+        winMessage = "Circle win";
         setScores({ ...scores, oScore });
-        socket.emit("setoScore", oScore);
+        socket.emit("setoScore");
       } else {
         let { xScore } = scores;
         xScore += pointGame;
-        setMessageWin("X win");
+        winMessage = "X win";
+
         setScores({ ...scores, xScore });
         socket.emit("setxScore", xScore);
       }
+      setMessageWin(winMessage);
+
+      socket.emit("setwin", winMessage);
       setWinningShow(true);
     }
-    console.log("🚀 ~ file: Game.js ~ line 900 ~ handleBoxClick ~ turn", turn);
+
     setTurn(!turn);
 
     socket.emit("switch_turn", { turn, updatedBoard });
-    console.log("🚀 ~ file: Game.js ~ line 89 ~ handleBoxClick ~ turn", turn);
+
     // Step 3: Change active player
     // setXPlaying(!xPlaying);
   };
@@ -101,7 +110,6 @@ const Game = (props) => {
       if (board[x] && board[x] === board[y] && board[y] === board[z]) {
         setGameOver(true);
 
-        socket.emit("setwin");
         return board[x];
       }
     }

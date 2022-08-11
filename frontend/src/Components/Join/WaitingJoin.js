@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { getRoomByToken } from "../service/api";
 
-import Waiting from "../waiting/Waiting";
 import {
   NotificationContainer,
   NotificationManager,
@@ -16,7 +15,6 @@ export default function WaitingJoin() {
   let navigate = useNavigate();
   const [namePlayer, setNamePlayer] = useState();
 
-  const [stateRoom, setStateRoom] = useState(false);
   const [room, setRoom] = useState({
     id: "",
     nameRoom: "",
@@ -44,10 +42,8 @@ export default function WaitingJoin() {
   useEffect(() => {
     getRoom(token, setRoom);
 
-    socket.on("playing", () => {
-      navigate(
-        "/game?NamePlayer=" +namePlayer 
-      );
+    socket.on("playing", (id) => {
+      navigate("/game?NamePlayer=" + namePlayer + "&PlayerId=" + id);
     });
 
     socket.on("RoomNotAvailable", () => {
@@ -59,10 +55,6 @@ export default function WaitingJoin() {
     navigate("/RoomNotAvailable");
   }
 
-  socket.on("newPlayer", () => {
-    setStateRoom(true);
-  });
-
   socket.on("connected_Room", () => {
     navigate("/game");
   });
@@ -70,7 +62,6 @@ export default function WaitingJoin() {
   const Join_room = () => {
     if (namePlayer !== "") {
       socket.emit("joinRoom", { namePlayer, token });
-      setStateRoom(true);
     } else {
       NotificationManager.warning(
         "Warning message",
@@ -85,7 +76,7 @@ export default function WaitingJoin() {
       <div className="join">
         <section className="glass">
           <h1>entrer Your Name</h1>
-          <div className="div-inputs">
+          <div className="div-inputs-join">
             <input
               type="text"
               placeholder="entrer your Name ..."
@@ -93,7 +84,7 @@ export default function WaitingJoin() {
                 setNamePlayer(e.target.value);
               }}
             />
-            <button className="btn" onClick={Join_room}>
+            <button className="btn-join" onClick={Join_room}>
               Join Room
             </button>
           </div>
@@ -102,12 +93,6 @@ export default function WaitingJoin() {
       <div className="circle1"></div>
       <div className="circle2"></div>
 
-      <div className={`div-wait  ${stateRoom ? "active" : ""}`}>
-        <Waiting
-          namePlayer={namePlayer}
-          text="Wait to anothor Player to Join "
-        />
-      </div>
       <NotificationContainer />
     </>
   );

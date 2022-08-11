@@ -45,7 +45,6 @@ export default function ViewGames(props) {
         <Fragment key={key}>
           <div
             className="view"
-            key="hh"
             id={room.id}
             onClick={(event) => console.log(event.currentTarget.id)}
           >
