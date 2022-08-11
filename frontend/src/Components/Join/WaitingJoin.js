@@ -78,6 +78,7 @@ export default function WaitingJoin() {
           <h1>entrer Your Name</h1>
           <div className="div-inputs-join">
             <input
+              className="inputs-join"
               type="text"
               placeholder="entrer your Name ..."
               onChange={(e) => {

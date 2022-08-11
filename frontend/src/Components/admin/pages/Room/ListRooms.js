@@ -21,15 +21,10 @@ const deleted_Room = async (event) => {
   await deleteRoom(RoomId);
 };
 
-const add_Room = async () => {
-
-
-  //await addRoom(DataRoom)
-}
-
 export default function ListRooms() {
   const [rooms, setRooms] = useState([]);
-
+  const [adding, setAdding] = useState(false);
+  const [titlePage, setTitlePage] = useState("Rooms");
   const getRooms = async (setRooms) => {
     const {
       data: { data, success },
@@ -42,10 +37,16 @@ export default function ListRooms() {
     getRooms(setRooms);
   }, []);
 
+  const add_Room = async () => {
+    setAdding(true);
+    setTitlePage("Add Room");
+
+    //await addRoom(DataRoom)
+  };
   return (
     <>
       <div className="listRooms">
-        <h1 style={{ fontSize: "2.4em" }}>Rooms</h1>
+        <h1 style={{ fontSize: "2.4em" }}>{titlePage}</h1>
         <div className="filterRooms ">
           <CustumCombobox title="Games" data={games} />
           <CustumCombobox title="Points" data={Points} />
@@ -56,7 +57,7 @@ export default function ListRooms() {
             <Fragment key={index}>
               <div className="tr">
                 <h2 className="nameRoom">{room.nameRoom}</h2>
-                <Room room={room} deleted_Room={deleted_Room} add_Room={add_Room} />
+                <Room room={room} deleted_Room={deleted_Room} />
               </div>
             </Fragment>
           ))}
@@ -69,13 +70,13 @@ export default function ListRooms() {
               background: "rgba(58, 239, 51, 0.87)",
             }}
           >
-            <Add />
+            <Add onClick={add_Room} />
           </IconButton>
         </div>
       </div>
       <NotificationContainer />
-      <div className="div-Add-Room">
-
+      <div className={`div-Add-Room ${adding ? "adding" : ""}`}>
+        <CustumCombobox />
       </div>
     </>
   );

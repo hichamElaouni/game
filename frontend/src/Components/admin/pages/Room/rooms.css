@@ -105,3 +105,32 @@
   align-items: center;
   box-shadow: 1px 1px 1px black;
 }
+.div-Add-Room {
+  display: flex;
+  width: 100vw;
+  height: 94vh;
+  position: absolute;
+  bottom: 0;
+
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0.3)
+  );
+  z-index: 2;
+  backdrop-filter: blur(6px);
+  justify-content: space-around;
+}
+.rw-combobox-input,
+.rw-widget-input,
+.rw-picker-btn {
+  height: 30px;
+  text-align: center;
+}
+.rw-widget-input {
+  width: 20%;
+}
+.rw-picker-btn {
+  width: 18px;
+  margin-left: 2px;
+}
