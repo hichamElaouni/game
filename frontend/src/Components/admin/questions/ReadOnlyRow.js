@@ -1,11 +1,21 @@
 import React from "react";
 import Choices from "../../Choice/Choices";
 
-const ReadOnlyRow = ({ question, handleEditClick, handleDeleteClick }) => {
+const ReadOnlyRow = ({
+  question,
+  handleEditClick,
+  handleDeleteClick,
+  getselectedQuestions,
+}) => {
   return (
     <tr>
       <td className="container FromStudent">
-        <Choices type="checkbox" data={0} />
+        <Choices
+          type="checkbox"
+          data={0}
+          value={question.id}
+          onclick={getselectedQuestions}
+        />
       </td>
       <td>{question.title}</td>
       <td>{question.choices}</td>

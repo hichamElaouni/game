@@ -225,7 +225,7 @@ const getRoomByToken = async (req, res) => {
 const addRoom = async (req, res) => {
   try {
     const rooms = req.body;
-    const result = await db.rooms.create(rooms);
+    const result = await db.Rooms.create(rooms);
     res.status(201).json({ success: true, result });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -299,6 +299,29 @@ const getRoomGame = async (req, res) => {
   }
 };
 
+const addQuestionsRoom = async (req, res) => {
+  try {
+    const questionsRoom = req.body;
+    const result = await db.rooms.create(questionsRoom);
+    res.status(201).json({ success: true, result });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+const updateQuestionsRoom = async (req, res) => {
+  try {
+    const { idRoom, questionsRoomData } = req.body;
+
+    const result = await db.Rooms.update(questionsRoomData, {
+      where: { id: idRoom },
+    });
+    res.status(200).json({ success: true, result });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   getAllQUestions,
   getQuestionById,
@@ -326,4 +349,5 @@ module.exports = {
   getGameById,
 
   getRoomGame,
+  addQuestionsRoom,
 };

@@ -68,6 +68,10 @@ const getAllRoomsGames = async (idroom) => {
   await axios.get(`http://${fullUrl}/db/roomgames?idroom=${idroom}`);
 };
 
+const addQuestionsRoom = async (data) => {
+  await axios.post(`http://${fullUrl}/db/addQuestionsRoom`, data);
+};
+
 /**Rooms */
 export {
   /**Questions */
@@ -94,5 +98,6 @@ export {
   deleteRoom,
   updateRoom,
   getRoomByToken,
+  addQuestionsRoom,
   /**Rooms */
 };

@@ -4,19 +4,14 @@ import "./grid.css";
 
 import ReadOnlyRow from "./ReadOnlyRow";
 import EditableRow from "./EditableRow";
-import AddQuestion from "./AddQuestion";
 import {
   getAllQUestions,
-  addQuestion,
   deleteQuestion,
   updateQuestion,
 } from "../../service/api";
 import ViewGames from "./ViewGames";
 
-import {
-  NotificationContainer,
-  NotificationManager,
-} from "react-notifications";
+import { NotificationManager } from "react-notifications";
 import "react-notifications/lib/notifications.css";
 
 const getQuestions = async (setQuestions) => {
@@ -27,21 +22,12 @@ const getQuestions = async (setQuestions) => {
   else setQuestions(data);
 };
 
-const Grid = () => {
-  const [questions, setQuestions] = useState([]);
+const Grid = (props) => {
   const [open, setOpen] = useState(false);
-
+  const { questions, setQuestions, getselectedQuestions } = props;
   useEffect(() => {
     getQuestions(setQuestions);
   }, []);
-
-  const [addFormData, setAddFormData] = useState({
-    id: "",
-    title: "",
-    choices: "",
-    answer: "",
-    point: "",
-  });
 
   const [editFormData, setEditFormData] = useState({
     title: "",
@@ -51,40 +37,6 @@ const Grid = () => {
   });
 
   const [editQuestionid, seteditQuestionid] = useState(null);
-
-  const handleAddFormChange = (event) => {
-    event.preventDefault();
-    const fieldName = event.target.getAttribute("name");
-    const fieldValue = event.target.value;
-
-    const newFormData = { ...addFormData };
-    newFormData[fieldName] = fieldValue;
-
-    setAddFormData(newFormData);
-  };
-
-  const handleAddFormSubmit = async (event) => {
-    event.preventDefault();
-    const newQuestion = {
-      id: 0,
-      title: event.target[0].value,
-      choices: event.target[1].value,
-      answer: event.target[2].value,
-      point: event.target[3].value,
-    };
-
-    await addQuestion(newQuestion);
-    const newQuestions = [...questions, newQuestion];
-    setQuestions(newQuestions);
-
-    event.target[0].value = "";
-    event.target[1].value = "";
-    event.target[2].value = "";
-    event.target[3].value = "";
-    // alert("A new question has been successfully added")
-
-    NotificationManager.success("succufully added", newQuestion.title, 3000);
-  };
 
   const handleEditFormChange = (event) => {
     event.preventDefault();
@@ -187,6 +139,7 @@ const Grid = () => {
                       question={question}
                       handleEditClick={handleEditClick}
                       handleDeleteClick={handleDeleteClick}
+                      getselectedQuestions={getselectedQuestions}
                     />
                   )}
                   {/* <DailogConfirm
@@ -205,16 +158,6 @@ const Grid = () => {
           {/* <ListRooms/> */}
         </div>
       </div>
-
-      <div className="addquestion">
-        <h2>Add a question</h2>
-
-        <AddQuestion
-          handleAddFormSubmit={handleAddFormSubmit}
-          handleAddFormChange={handleAddFormChange}
-        />
-      </div>
-      <NotificationContainer />
     </>
   );
 };

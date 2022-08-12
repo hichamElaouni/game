@@ -106,7 +106,7 @@
   box-shadow: 1px 1px 1px black;
 }
 .div-Add-Room {
-  display: flex;
+  display: none;
   width: 100vw;
   height: 94vh;
   position: absolute;
@@ -121,16 +121,53 @@
   backdrop-filter: blur(6px);
   justify-content: space-around;
 }
+.adding {
+  display: flex;
+  flex-direction: column;
+}
+.rw-widget-picker {
+  width: 100px;
+}
 .rw-combobox-input,
 .rw-widget-input,
-.rw-picker-btn {
+.rw-picker-btn,
+.Name-Room {
   height: 30px;
   text-align: center;
 }
 .rw-widget-input {
-  width: 20%;
+  width: 55%;
 }
 .rw-picker-btn {
   width: 18px;
   margin-left: 2px;
+}
+.contant-add {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 1.3em;
+  padding: 2px;
+  background: linear-gradient(
+    to right bottom,
+    rgb(209 203 203 / 84%),
+    rgb(25 74 93 / 37%)
+  );
+  height: -moz-fit-content;
+  height: fit-content;
+  border-radius: 7px;
+}
+
+.div-selections {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+.div-grid {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-left: 20%;
 }
