@@ -54,7 +54,7 @@ export default function AddQuestion(props) {
         type="text"
         name="Question"
         required="required"
-        placeholder="Enter a Question 77..."
+        placeholder="Enter a Question ..."
         onChange={handleAddFormChange}
       />
       <input
