@@ -2,21 +2,40 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return await queryInterface.createTable("games", {
+    return await queryInterface.createTable("Rooms", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER(11),
       },
-      nameGame: {
+      nameRoom: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
       },
-      typeGame: {
+      token: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
+      idGame: {
+        allowNull: false,
         type: Sequelize.INTEGER(11),
-        defaultValue: 2,
+        defaultValue: 1,
+        references: {
+          model: {
+            tableName: "Games",
+          },
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
       },
+      point: {
+        type: Sequelize.INTEGER(11),
+        defaultValue: 5,
+      },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
