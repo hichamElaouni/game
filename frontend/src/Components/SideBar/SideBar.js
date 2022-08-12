@@ -59,8 +59,8 @@ const routes = [
     ],
   },
   {
-    path: "/game",
-    name: "game",
+    path: "/",
+    name: "",
     icon: <AiFillHeart />,
   },
 ];
