@@ -25,7 +25,7 @@ route.get("/room", ctrl.getRoomByToken);
 route.post("/room", ctrl.addRoom);
 route.put("/room", ctrl.updateRoom);
 route.delete("/room/:id", ctrl.deleteRoom);
-route.get("/roomgames", ctrl.getRoomGame);
+// route.get("/roomgames", ctrl.getRoomGame);
 
 route.post("/addQuestionsRoom", ctrl.addQuestionsRoom);
 export default route;

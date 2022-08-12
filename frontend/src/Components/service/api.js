@@ -64,9 +64,9 @@ const updateRoom = async (id, questionData) => {
   await axios.put(`http://${fullUrl}/db/room`, { id, questionData });
 };
 
-const getAllRoomsGames = async (idroom) => {
-  await axios.get(`http://${fullUrl}/db/roomgames?idroom=${idroom}`);
-};
+// const getAllRoomsGames = async (idroom) => {
+//   await axios.get(`http://${fullUrl}/db/roomgames?idroom=${idroom}`);
+// };
 
 const addQuestionsRoom = async (data) => {
   await axios.post(`http://${fullUrl}/db/addQuestionsRoom`, data);
@@ -82,7 +82,7 @@ export {
   updateQuestion,
   /**Questions */
 
-  getAllRoomsGames,
+  // getAllRoomsGames,
   /**Games */
   getGameById,
   getAllGames,

@@ -257,47 +257,47 @@ const deleteRoom = async (req, res) => {
   }
 };
 
-const getRoomGame = async (req, res) => {
-  try {
-    const { idroom } = req.query;
-    const { Questions, Games, Rooms } = db;
-    /*
-      select * FROM Questions q, Rooms rm, Games gm
-      where q.idGame = gm.id
-      and gm.id = rm.idGame
-      and rm.id = 3
-    
-    */
-    //Games.hasMany(Questions, { foreignKey: "idGame", sourceKey: "id" });
+// const getRoomGame = async (req, res) => {
+//   try {
+//     const { idroom } = req.query;
+//     const { Questions, Games, Rooms } = db;
+//     /*
+//       select * FROM Questions q, Rooms rm, Games gm
+//       where q.idGame = gm.id
+//       and gm.id = rm.idGame
+//       and rm.id = 3
 
-    Questions.belongsTo(Games, { foreignKey: "idGame", sourceKey: "id" });
+//     */
+//     //Games.hasMany(Questions, { foreignKey: "idGame", sourceKey: "id" });
 
-    Games.hasMany(Rooms, { foreignKey: "idGame", sourceKey: "id" });
-    //Rooms.belongsTo(Games, { foreignKey: "idGame", sourceKey: "id" });
+//     Questions.belongsTo(Games, { foreignKey: "idGame", sourceKey: "id" });
 
-    const data = await Questions.findAll({
-      include: [
-        {
-          model: Games,
-          include: [
-            {
-              model: Rooms,
-              where: { id: idroom },
-            },
-          ],
-          required: true,
-        },
-      ],
+//     Games.hasMany(Rooms, { foreignKey: "idGame", sourceKey: "id" });
+//     //Rooms.belongsTo(Games, { foreignKey: "idGame", sourceKey: "id" });
 
-      raw: true,
-    });
+//     const data = await Questions.findAll({
+//       include: [
+//         {
+//           model: Games,
+//           include: [
+//             {
+//               model: Rooms,
+//               where: { id: idroom },
+//             },
+//           ],
+//           required: true,
+//         },
+//       ],
 
-    res.status(200).json({ success: true, data });
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ success: false, message: error.message });
-  }
-};
+//       raw: true,
+//     });
+
+//     res.status(200).json({ success: true, data });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(400).json({ success: false, message: error.message });
+//   }
+// };
 
 const addQuestionsRoom = async (req, res) => {
   try {
@@ -348,6 +348,7 @@ module.exports = {
   getAllGames,
   getGameById,
 
-  getRoomGame,
+  // getRoomGame,
   addQuestionsRoom,
+  updateQuestionsRoom,
 };

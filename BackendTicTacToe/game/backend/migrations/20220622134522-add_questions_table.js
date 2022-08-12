@@ -27,19 +27,7 @@ module.exports = {
         type: Sequelize.INTEGER(11),
         defaultValue: 1,
       },
-      idGame: {
-        allowNull: false,
-        type: Sequelize.INTEGER(11),
-        defaultValue: 1,
-        references: {
-          model: {
-            tableName: "games",
-          },
-          key: "id",
-        },
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
