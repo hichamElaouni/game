@@ -4,9 +4,10 @@ import IconButton from "@material-ui/core/IconButton";
 import Delete from "@material-ui/icons/Delete";
 import Update from "@material-ui/icons/UpdateSharp";
 import Send from "@material-ui/icons/SendRounded";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 export default function CustomBtns(props) {
-  const { idRoom, deleteRoom } = props;
+  const { idRoom, deleteRoom, linkRoom, NotificationManager } = props;
   return (
     <div className="btnRoom">
       <IconButton
@@ -37,7 +38,14 @@ export default function CustomBtns(props) {
           height: "100%",
         }}
       >
-        <Send />
+        <CopyToClipboard
+          text={linkRoom}
+          onCopy={() =>
+            NotificationManager.info("link Room it Copied ", "Info", 3000)
+          }
+        >
+          <Send />
+        </CopyToClipboard>
       </IconButton>
     </div>
   );

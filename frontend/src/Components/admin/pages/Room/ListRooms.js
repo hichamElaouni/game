@@ -4,21 +4,23 @@ import CustumCombobox from "../../../Setings/CustumCombobox";
 import { getAllRooms, deleteRoom, addRoom } from "../../../service/api";
 import IconButton from "@material-ui/core/IconButton";
 import Add from "@material-ui/icons/Add";
-import Combobox from "react-widgets/Combobox";
-import NumberPicker from "react-widgets/NumberPicker";
+import Moment from "react-moment";
+import "moment-timezone";
 import {
   NotificationContainer,
   NotificationManager,
 } from "react-notifications";
 import FormAddRoom from "./FormAddRoom";
 import md5 from "md5";
+import { v4 as uuid } from "uuid";
 
 export default function ListRooms() {
   const [rooms, setRooms] = useState([]);
   const [adding, setAdding] = useState(false);
   const [titlePage, setTitlePage] = useState("Rooms");
   const [token, setToken] = useState("");
-
+  let date = Date().slice(8, 25).replace(" ", "").replace(" ", "");
+  let unique_id = 0;
   const getRooms = async (setRooms) => {
     const {
       data: { data, success },
@@ -41,14 +43,16 @@ export default function ListRooms() {
 
   useEffect(() => {
     getRooms(setRooms);
-  }, []);
+  }, room);
 
   const add_Room = () => {
+    unique_id = (date + +Math.random().toFixed(5) * 1000000)
+      .replace(" ", "")
+      .replace(":", "")
+      .replace(":", "");
     setAdding(true);
     setTitlePage("Add Room");
     setToken(md5(Math.random().toFixed(4) * 1000).slice(0, 15));
-
-    console.log("Add");
   };
 
   return (
@@ -65,7 +69,11 @@ export default function ListRooms() {
             <Fragment key={index}>
               <div className="tr">
                 <h2 className="nameRoom">{room.nameRoom}</h2>
-                <Room room={room} deleted_Room={deleted_Room} />
+                <Room
+                  room={room}
+                  deleted_Room={deleted_Room}
+                  NotificationManager={NotificationManager}
+                />
               </div>
             </Fragment>
           ))}
@@ -90,6 +98,7 @@ export default function ListRooms() {
           Data={games}
           NotificationManager={NotificationManager}
           token={token}
+          unique_id={unique_id}
         />
       </div>
     </>

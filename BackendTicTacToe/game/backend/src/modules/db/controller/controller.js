@@ -26,7 +26,10 @@ const getAllQUestions = async (req, res) => {
     res.status(400).json({ success: false, message: error.message });
   }
 };
-
+/*
+SELECT *from questions WHERE id = (SELECT idQuestion FROM questionsroom
+ WHERE idQuestion>0 AND idroom =(SELECT id FROM rooms WHERE id =1) LIMIT 1)
+*/
 const getQuestionById = async (req, res) => {
   try {
     const { id } = req.params;

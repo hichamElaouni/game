@@ -7,44 +7,39 @@ import Add from "@material-ui/icons/Add";
 import NumberPicker from "react-widgets/NumberPicker";
 
 export default function FormAddRoom(props) {
-  const { setAdding, setTitlePage, Data, NotificationManager, token } = props;
+  const { setAdding, setTitlePage, Data, NotificationManager, token,unique_id } = props;
   const [questions, setQuestions] = useState([]);
   const [questionsSelected, setQuestionsSelected] = useState([]);
-  const [room, setRoom] = useState([
-    { nameRoom: "", time: "", point: "", token: "", idGame: 1 },
-  ]);
+
   const [point, setPoint] = useState(2);
   const [timeRoom, setTimeRoom] = useState(15);
   const [nameRoom, setNameRoom] = useState();
 
-  const ConfirmAdd = (event) => {
-    if (nameRoom !== "") {
+  const ConfirmAdd = async (event) => {
+    if (nameRoom === undefined) {
+      NotificationManager.warning(" enter Name Room ", "warning", 3000);
+    } else {
       setAdding(false);
       setTitlePage("Rooms");
 
-      setRoom({
+      let Room = {
+        id: unique_id,
         nameRoom: nameRoom,
         time: timeRoom,
         point: point,
         token: token,
         idGame: 1,
-      });
+      };
 
-      addingRoom();
-    } else {
-      NotificationManager.warning(" enter Name Room ", "warning", 3000);
+      NotificationManager.info(
+        " succufully  Adding ",
+        "info",
+        3000,
+        await addRoom(Room)
+      );
     }
   };
 
-  const addingRoom = async () => {
-    NotificationManager.info(
-      " succufully  Adding ",
-      "info",
-      3000,
-      await addRoom(room)
-    );
-    // add multi id questionsSelected
-  };
   const getQuestionsSelected = (event) => {
     let data = questionsSelected;
     const value = event.target.value;
