@@ -2,40 +2,39 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return await queryInterface.createTable("rooms", {
+    return await queryInterface.createTable("QuestionsRoom", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER(11),
       },
-      nameRoom: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      token: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      idGame: {
+
+      idRoom: {
         allowNull: false,
         type: Sequelize.INTEGER(11),
         defaultValue: 1,
         references: {
           model: {
-            tableName: "games",
+            tableName: "Rooms",
           },
           key: "id",
         },
         onDelete: "cascade",
         onUpdate: "cascade",
       },
-      point: {
+      idQuestion: {
+        allowNull: false,
         type: Sequelize.INTEGER(11),
-        defaultValue: 5,
+        references: {
+          model: {
+            tableName: "Questions",
+          },
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
       },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -47,7 +46,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  down: async (queryInterface, Sequelize) => {
     /**
      * Add reverting commands here.
      *
