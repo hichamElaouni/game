@@ -31,7 +31,7 @@ function App() {
     if (!success) console.log("error data");
     else {
       if (!turn && limit) {
-        console.log("Game Over");
+        console.log("GameOver");
         setOver(true);
       } else {
         setQuestions(data);
