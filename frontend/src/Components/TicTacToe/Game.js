@@ -13,6 +13,7 @@ const Game = (props) => {
     pointGame,
     turn,
     setTurn,
+    over,
   } = props;
   const WIN_CONDITIONS = [
     [0, 1, 2],
@@ -44,7 +45,6 @@ const Game = (props) => {
 
   socket.on("switch", ({ turn, updatedBoard }) => {
     setBoard(updatedBoard);
-
     setTurn(turn);
   });
 
@@ -52,10 +52,6 @@ const Game = (props) => {
     setGameOver(true);
     setWinningShow(true);
     setMessageWin(winMessage);
-    console.log(
-      "🚀 ~ file: Game.js ~ line 55 ~ socket.on ~ messageWin",
-      messageWin
-    );
   });
 
   const handleBoxClick = (boxIdx) => {
@@ -98,6 +94,7 @@ const Game = (props) => {
 
     socket.emit("switch_turn", { turn, updatedBoard });
 
+    over ? socket.emit("setGameOver") : console.log("");
     // Step 3: Change active player
     // setXPlaying(!xPlaying);
   };

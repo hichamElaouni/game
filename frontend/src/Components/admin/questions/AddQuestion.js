@@ -34,7 +34,7 @@ export default function AddQuestion(props) {
       answer: event.target[2].value,
       point: event.target[3].value,
     };
-
+    console.log("test test");
     await addQuestion(newQuestion);
     const newQuestions = [...questions, newQuestion];
     setQuestions(newQuestions);

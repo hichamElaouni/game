@@ -43,7 +43,7 @@ export default function ListRooms() {
 
   useEffect(() => {
     getRooms(setRooms);
-  }, room);
+  }, [unique_id]);
 
   const add_Room = () => {
     unique_id = (date + +Math.random().toFixed(5) * 1000000)

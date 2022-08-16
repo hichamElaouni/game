@@ -20,13 +20,13 @@ const io = new Server(server, {
     origin: "*",
   },
 });
+
 let connectClient = 0;
 let roomNumber = 0;
-
 let player = "";
+let Turn = true;
 let id = 0;
 let IDROOM = "";
-let Turn = true;
 
 // if (NumberPlayers <= 2) {
 //   RoomNumbers++;
@@ -57,6 +57,59 @@ let Turn = true;
 // NumberPlayers = Object.keys(players).length;
 // TODO const checkRoomAvailablity = ()
 //USE ID_ROOM TO CHECK IF ROOM AVIABE OR NOT
+
+// socket.on("setplayer", (namePlayer) => {
+
+// socket.on("join_Room", (idroom) => {
+
+//   socket.emit("getplayer", namePlayer);
+// });
+
+// var numClients = {};
+
+// socket.on("joinroom", function (room) {
+//   socket.join(room);
+//   socket.room = room;
+//   console.log(numClients[room]);
+//   if (numClients[room] == undefined) {
+//     numClients[room] = 1;
+//   } else {
+//     numClients[room]++;
+//   }
+// });
+
+// socket.on("disconnect", function () {
+//   numClients[socket.room]--;
+// });
+
+// console.log("Clients => ", numClients);
+
+// socket.on("send_message", (data) => {
+//   socket.to(data.roomId).emit("receive_message", data);
+//   console.log("room id == ", data.roomId);
+// });
+
+//   if (connectClient < 2) {
+//     IDROOM = idroom;
+//     connectClient++;
+//     if (connectClient == 1) {
+//       console.log("First Client $$== ", connectClient);
+//       player = "Hicham";
+//       id = 1;
+//       Turn = true;
+//     } else {
+//       console.log("second Client $$== ", connectClient);
+//       player = "Ayman";
+//       id = 2;
+//       Turn = false;
+//     }
+//     socket.join(IDROOM);
+//     socket.emit("connected", { player, id, Turn });
+//   } else {
+//     console.log("room it not Avaliable for now");
+//   }
+// });
+
 io.on("connection", (socket) => {
   socket.on("joinRoom", ({ token }) => {
     socket.join(token);
@@ -84,27 +137,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  // socket.on("join_Room", (idroom) => {
-  //   if (connectClient < 2) {
-  //     IDROOM = idroom;
-  //     connectClient++;
-  //     if (connectClient == 1) {
-  //       console.log("First Client $$== ", connectClient);
-  //       player = "Hicham";
-  //       id = 1;
-  //       Turn = true;
-  //     } else {
-  //       console.log("second Client $$== ", connectClient);
-  //       player = "Ayman";
-  //       id = 2;
-  //       Turn = false;
-  //     }
-  //     socket.join(IDROOM);
-  //     socket.emit("connected", { player, id, Turn });
-  //   } else {
-  //     console.log("room it not Avaliable for now");
-  //   }
-  // });
   socket.on("setPlayer", (namePlayer) => {
     socket.to(IDROOM).emit("getPlayer", namePlayer);
   });
@@ -132,34 +164,6 @@ io.on("connection", (socket) => {
   socket.on("setStateRoom", () => {
     socket.to(IDROOM).emit("getStateRoom");
   });
-
-  // socket.on("setplayer", (namePlayer) => {
-  //   socket.emit("getplayer", namePlayer);
-  // });
-
-  // var numClients = {};
-
-  // socket.on("joinroom", function (room) {
-  //   socket.join(room);
-  //   socket.room = room;
-  //   console.log(numClients[room]);
-  //   if (numClients[room] == undefined) {
-  //     numClients[room] = 1;
-  //   } else {
-  //     numClients[room]++;
-  //   }
-  // });
-
-  // socket.on("disconnect", function () {
-  //   numClients[socket.room]--;
-  // });
-
-  // console.log("Clients => ", numClients);
-
-  // socket.on("send_message", (data) => {
-  //   socket.to(data.roomId).emit("receive_message", data);
-  //   console.log("room id == ", data.roomId);
-  // });
 });
 
 dotenv.config();

@@ -7,13 +7,6 @@ import { ScoreBoard } from "./Score/ScoreBoard";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { socket } from "./service/socket";
 
-const getQuestion = async (id, setQuestions) => {
-  const {
-    data: { data, success },
-  } = await getQuestionById(id);
-  if (!success) console.log("error data");
-  else setQuestions(data);
-};
 function App() {
   const [visible, setVisible] = useState(true);
   const [questions, setQuestions] = useState({});
@@ -22,12 +15,29 @@ function App() {
   const [xPlaying, setXPlaying] = useState(true);
   const [scores, setScores] = useState({ xScore: 0, oScore: 0 });
   const [turn, setTurn] = useState(true);
+  // for stop insert players
   const [flag, setFlag] = useState(true);
   const [namePlayer, setNamePlayer] = useState("");
   const [idPlayer, setIdPlayer] = useState(0);
   const [stateRoom, setStateRoom] = useState(false);
   const [currentCount, setCount] = useState(10000);
-
+  const [textWait, setTextWait] = useState("Wait to anothor Player to Join");
+  const [over, setOver] = useState(false);
+  const getQuestion = async (id, setQuestions) => {
+    const {
+      data: { data, success, limit },
+    } = await getQuestionById(id);
+    console.log("🚀 ~ file: Home.js ~ line 30 ~ getQuestion ~ limit", limit);
+    if (!success) console.log("error data");
+    else {
+      if (!turn && limit) {
+        console.log("Game Over");
+        setOver(true);
+      } else {
+        setQuestions(data);
+      }
+    }
+  };
   let navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
@@ -39,24 +49,29 @@ function App() {
     setIdPlayer(PlayerId);
     setNamePlayer(PlayerName);
 
-    if (PlayerId == 1 && flag) {
+    if (flag && PlayerId == 1) {
       setTurn(true);
       setXPlaying(true);
       setFlag(false);
       setStateRoom(true);
       setVisible(false);
     }
-    if (PlayerId == 2 && flag) {
+    if (flag && PlayerId == 2) {
       setTurn(false);
       setXPlaying(false);
       setFlag(false);
       setStateRoom(false);
       socket.emit("setStateRoom");
+      setCount(3000);
     }
     socket.on("getStateRoom", () => {
       setStateRoom(false);
       setCount(3000);
       setVisible(true);
+    });
+
+    socket.on("getGameOver", () => {
+      socket.emit("setOver", textWait);
     });
   }, [occurence]);
 
@@ -103,6 +118,7 @@ function App() {
               pointGame={pointGame}
               turn={turn}
               setTurn={setTurn}
+              over={over}
             />
           </section>
         </div>
@@ -126,10 +142,7 @@ function App() {
         </section> */}
       </div>
       <div className={`div-wait ${stateRoom ? "start-Playing" : ""} `}>
-        <Waiting
-          namePlayer={namePlayer}
-          text="Wait to anothor Player to Join "
-        />
+        <Waiting namePlayer={namePlayer} text={textWait} />
       </div>
     </>
   );

@@ -2,30 +2,27 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return await queryInterface.createTable("Questions", {
+    return await queryInterface.createTable("Rooms", {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER(11),
       },
-      title: {
+      nameRoom: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-
-      choices: {
+      Token: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-
-      answer: {
+      Point: {
         type: Sequelize.INTEGER(11),
-        defaultValue: 1,
+        defaultValue: 2,
       },
-      point: {
+      TimeTurn: {
         type: Sequelize.INTEGER(11),
-        defaultValue: 1,
+        defaultValue: 15,
       },
       idGame: {
         allowNull: false,
@@ -51,7 +48,7 @@ module.exports = {
     });
   },
 
-  down: async (queryInterface, Sequelize) => {
+  async down(queryInterface, Sequelize) {
     /**
      * Add reverting commands here.
      *

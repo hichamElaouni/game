@@ -1,5 +1,5 @@
 import * as db from "../../../../models";
-const { Op, LOCK } = require("sequelize");
+const { Op, LOCK, json } = require("sequelize");
 /**
  *
  * @param {number} limit
@@ -37,7 +37,12 @@ const getQuestionById = async (req, res) => {
         },
       })
     );
-    res.status(200).json({ success: true, data: question });
+
+    if (!Object.keys(question).length) {
+      res.status(200).json({ success: true, data: question, limit: true });
+    } else {
+      res.status(200).json({ success: true, data: question, limit: false });
+    }
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, message: error.message });
@@ -75,6 +80,7 @@ const addQuestion = async (req, res) => {
   try {
     const questions = req.body;
     const result = await db.Questions.create(questions);
+
     res.status(201).json({ success: true, result });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });

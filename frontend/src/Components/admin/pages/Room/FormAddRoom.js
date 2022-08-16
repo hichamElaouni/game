@@ -7,7 +7,14 @@ import Add from "@material-ui/icons/Add";
 import NumberPicker from "react-widgets/NumberPicker";
 
 export default function FormAddRoom(props) {
-  const { setAdding, setTitlePage, Data, NotificationManager, token,unique_id } = props;
+  const {
+    setAdding,
+    setTitlePage,
+    Data,
+    NotificationManager,
+    token,
+    unique_id,
+  } = props;
   const [questions, setQuestions] = useState([]);
   const [questionsSelected, setQuestionsSelected] = useState([]);
 
@@ -19,17 +26,18 @@ export default function FormAddRoom(props) {
     if (nameRoom === undefined) {
       NotificationManager.warning(" enter Name Room ", "warning", 3000);
     } else {
-      setAdding(false);
-      setTitlePage("Rooms");
-
       let Room = {
         id: unique_id,
         nameRoom: nameRoom,
-        time: timeRoom,
-        point: point,
         token: token,
+        point: point,
+        TimeTurn: timeRoom,
         idGame: 1,
       };
+      console.log(
+        "🚀 ~ file: FormAddRoom.js ~ line 33 ~ ConfirmAdd ~ Room",
+        Room
+      );
 
       NotificationManager.info(
         " succufully  Adding ",
@@ -37,6 +45,8 @@ export default function FormAddRoom(props) {
         3000,
         await addRoom(Room)
       );
+      setAdding(false);
+      setTitlePage("Rooms");
     }
   };
 

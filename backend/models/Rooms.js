@@ -5,8 +5,9 @@ module.exports = (sequelize, DataTypes) => {
     "Rooms",
     {
       nameRoom: DataTypes.STRING,
-      point: DataTypes.INTEGER(11),
       token: DataTypes.STRING,
+      point: DataTypes.INTEGER(11),
+      TimeTurn: DataTypes.INTEGER(11),
       idGame: DataTypes.INTEGER(11),
     },
     {
