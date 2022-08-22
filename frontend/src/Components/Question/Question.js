@@ -45,6 +45,8 @@ export default function Question(props) {
     setCount,
     scores,
     setScores,
+    title,
+    choices,
   } = props;
 
   const [checkAnswer, setChaeckAnswer] = useState(false);
@@ -58,9 +60,9 @@ export default function Question(props) {
   const idQuestion = questions.id;
   let Choices = ";";
 
-  if (questions.choices === undefined) {
+  if (choices === undefined) {
   } else {
-    Choices = questions.choices.toString();
+    Choices = choices.toString();
   }
 
   const point = questions.point;
@@ -82,7 +84,7 @@ export default function Question(props) {
           currentCount={currentCount}
           setCount={setCount}
         />
-        <h2 className="TitleQuestion">{questions.title}</h2>
+        <h2 className="TitleQuestion">{title}</h2>
 
         <div className="container">
           <ListChoices choice={Choices.split(";")} onclick={onclick} />
