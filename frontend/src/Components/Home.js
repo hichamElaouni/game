@@ -88,14 +88,19 @@ function App() {
       setTextWait(MsgOver);
       setWaitState(true);
     });
-
-    setIdQuestions(questions[0]["Question.id"]);
-    setAnswer(questions[0]["Question.answer"]);
-    setChoices(questions[0]["Question.choices"]);
-    setTitle(questions[0]["Question.title"]);
-    setPointQu(questions[0]["Question.point"]);
-    setPointGa(questions[0]["Rooms.point"]);
-    setTimeTurn(questions[0]["Rooms.TimeTurn"]);
+    if (questions.length !== undefined) {
+      console.log(
+        "🚀 ~ file: Home.js ~ line 92 ~ useEffect ~ questions",
+        questions.length
+      );
+      setIdQuestions(questions[0]["Question.id"]);
+      setAnswer(questions[0]["Question.answer"]);
+      setChoices(questions[0]["Question.choices"]);
+      setTitle(questions[0]["Question.title"]);
+      setPointQu(questions[0]["Question.point"]);
+      setPointGa(questions[0]["Rooms.point"]);
+      setTimeTurn(questions[0]["Rooms.TimeTurn"]);
+    }
   }, [occurence]);
 
   console.log(
@@ -118,6 +123,8 @@ function App() {
               idPlayer={idPlayer}
               namePlayer={namePlayer}
               questions={questions}
+              title={title}
+              choices={choices}
               setVisible={setVisible}
               setOccurence={setOccurence}
               setPauseGame={setPauseGame}
