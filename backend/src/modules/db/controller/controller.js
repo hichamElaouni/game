@@ -30,19 +30,16 @@ const getAllQUestions = async (req, res) => {
 const getQuestionById = async (req, res) => {
   try {
     const { id } = req.params;
-    const question = Object(
-      await db.Questions.findOne({
-        where: {
-          id: { [Op.gt]: id },
-        },
-      })
-    );
+    const question = await db.Questions.findOne({
+      where: {
+        id: { [Op.gt]: id },
+      },
+      raw: true,
+    });
 
-    if (!Object.keys(question).length) {
-      res.status(200).json({ success: true, data: question, limit: true });
-    } else {
-      res.status(200).json({ success: true, data: question, limit: false });
-    }
+    res
+      .status(200)
+      .json({ success: true, data: question, limit: question ? false : true });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, message: error.message });
@@ -230,9 +227,17 @@ const getRoomByToken = async (req, res) => {
 
 const addRoom = async (req, res) => {
   try {
-    const rooms = req.body;
-    const result = await db.Rooms.create(rooms);
-    res.status(201).json({ success: true, result });
+    const { rooms, questionsSelected } = req.body;
+    const room = await db.Rooms.create(rooms);
+    const data = questionsSelected.map((item) => {
+      return {
+        idRoom: room.id,
+        idQuestion: item,
+      };
+    });
+    const questions = await db.QuestionsRoom.bulkCreate(data);
+    console.log("sdfsdfsdf => ", questions);
+    res.status(201).json({ success: true, rooms });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -328,6 +333,53 @@ const updateQuestionsRoom = async (req, res) => {
   }
 };
 
+const getQuestionByRoom = async (req, res) => {
+  try {
+    const { token, idRoom, last_id = 0 } = req.body;
+    console.log(
+      "🚀 ~ file: controller.js ~ line 339 ~ getQuestionByRoom ~ req.body",
+      req.body
+    );
+    if (token < 0 && !token && !idRoom)
+      return res
+        .status(400)
+        .json({ success: false, message: "Token or room id is required !!!" });
+    const { Questions, QuestionsRoom, Rooms } = db;
+
+    let additionalData = token
+      ? {
+          where: {
+            idQuestion: { [Op.gt]: last_id },
+          },
+          limit: 1,
+        }
+      : {};
+
+    QuestionsRoom.belongsTo(Questions, {
+      foreignKey: "idQuestion",
+      sourceKey: "id",
+    });
+    QuestionsRoom.hasMany(Rooms, { foreignKey: "id", sourceKey: "idRoom" });
+
+    const data = await QuestionsRoom.findAll({
+      include: [
+        {
+          model: Rooms,
+          where: token ? { token: token } : { id: idRoom },
+        },
+        { model: Questions },
+      ],
+      ...additionalData,
+      raw: true,
+    });
+
+    res.status(200).json({ success: true, data, limit: data ? false : true });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   getAllQUestions,
   getQuestionById,
@@ -356,4 +408,6 @@ module.exports = {
 
   getRoomGame,
   addQuestionsRoom,
+
+  getQuestionByRoom,
 };

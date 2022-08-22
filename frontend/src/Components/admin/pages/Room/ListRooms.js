@@ -1,26 +1,34 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Room from "./Room";
 import CustumCombobox from "../../../Setings/CustumCombobox";
-import { getAllRooms, deleteRoom, addRoom } from "../../../service/api";
+import { getAllRooms, deleteRoom } from "../../../service/api";
 import IconButton from "@material-ui/core/IconButton";
 import Add from "@material-ui/icons/Add";
-import Moment from "react-moment";
-import "moment-timezone";
+import Modal from "react-modal";
 import {
   NotificationContainer,
   NotificationManager,
 } from "react-notifications";
 import FormAddRoom from "./FormAddRoom";
 import md5 from "md5";
-import { v4 as uuid } from "uuid";
+
+const customStyles = {
+  content: {
+    backgroundColor: "red",
+  },
+};
 
 export default function ListRooms() {
   const [rooms, setRooms] = useState([]);
   const [adding, setAdding] = useState(false);
   const [titlePage, setTitlePage] = useState("Rooms");
   const [token, setToken] = useState("");
-  let date = Date().slice(8, 25).replace(" ", "").replace(" ", "");
-  let unique_id = 0;
+
+  const [modalIsOpen, setIsOpen] = useState(false);
+
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
+
   const getRooms = async (setRooms) => {
     const {
       data: { data, success },
@@ -43,13 +51,9 @@ export default function ListRooms() {
 
   useEffect(() => {
     getRooms(setRooms);
-  }, [unique_id]);
+  }, [room]);
 
   const add_Room = () => {
-    unique_id = (date + +Math.random().toFixed(5) * 1000000)
-      .replace(" ", "")
-      .replace(":", "")
-      .replace(":", "");
     setAdding(true);
     setTitlePage("Add Room");
     setToken(md5(Math.random().toFixed(4) * 1000).slice(0, 15));
@@ -64,10 +68,10 @@ export default function ListRooms() {
           <CustumCombobox title="Points" data={Points} />
           <CustumCombobox title="Search" data={room} />
         </div>
-        <div className="Rooms">
+        <div className="ListRooms">
           {rooms.map((room, index) => (
             <Fragment key={index}>
-              <div className="tr">
+              <div className="Room">
                 <h2 className="nameRoom">{room.nameRoom}</h2>
                 <Room
                   room={room}
@@ -91,20 +95,34 @@ export default function ListRooms() {
         </div>
       </div>
       <NotificationContainer />
-      <div className={`div-Add-Room ${adding ? "adding" : ""}`}>
-        <FormAddRoom
-          setAdding={setAdding}
-          setTitlePage={setTitlePage}
-          Data={games}
-          NotificationManager={NotificationManager}
-          token={token}
-          unique_id={unique_id}
-        />
-      </div>
+      {/* <Modal
+        isOpen={adding}
+        onRequestClose={closeModal}
+        shouldCloseOnOverlayClick={true}
+        shouldCloseOnEsc={true}
+        className="mod"
+        style={customStyles}
+      > */}
+      {adding ? (
+        <div className="div-Add-Room">
+          <FormAddRoom
+            setAdding={setAdding}
+            setTitlePage={setTitlePage}
+            Data={games}
+            NotificationManager={NotificationManager}
+            token={token}
+            setToken={setToken}
+          />
+        </div>
+      ) : (
+        console.log("")
+      )}
+
+      {/* </Modal> */}
     </>
   );
 }
 
-const Points = [{ id: 1, name: 2, id: 2, name: 3 }];
-const room = [{ id: 1, name: "All" }];
+const Points = [{ id: 1, name: 2 }];
+const room = [{ id: 5, name: "All" }];
 let games = [{ id: 1, name: "Tic tac toe" }];

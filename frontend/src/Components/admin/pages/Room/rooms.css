@@ -18,7 +18,7 @@
   justify-content: space-around;
   flex-wrap: wrap;
 }
-.Rooms {
+.ListRooms {
   width: 100%;
   height: inherit;
   display: flex;
@@ -27,7 +27,30 @@
   justify-content: space-around;
   gap: 5px;
 }
-.room {
+.Room {
+  display: flex;
+  flex-direction: column;
+  width: 15em;
+  height: 15em;
+  padding: 0;
+  margin: 0;
+  gap: 0;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 1px 1px 1px black;
+  cursor: pointer;
+}
+.nameRoom {
+  text-align: center;
+  background-color: rgb(205, 218, 223);
+  color: #0b1e25;
+  font-size: 1.2em;
+  border-radius: 3px;
+  width: 100%;
+  padding: 1px 5px;
+}
+.backGroundRoom {
   display: flex;
   justify-content: end;
   width: 100%;
@@ -62,29 +85,16 @@
   z-index: 0;
 }
 
-/* .room:hover .infoRoom {
-  display: flex;
-} */
-
-.tr:hover {
+.Room:hover {
   width: 16em;
   height: 16em;
   box-shadow: 1px 1px 1px rgba(26, 218, 26, 0.807);
 }
 
-.room:hover .infoRoom {
+.Room:hover .infoRoom {
   display: flex;
 }
 
-.nameRoom {
-  text-align: center;
-  background-color: rgb(205, 218, 223);
-  color: #0b1e25;
-  font-size: 1.2em;
-  border-radius: 3px;
-  width: 100%;
-  padding: 1px 5px;
-}
 .btnAdd {
   position: absolute;
   justify-content: flex-end;
@@ -93,39 +103,23 @@
   padding-right: 26px;
   right: 5%;
 }
-.tr {
-  display: flex;
-  flex-direction: column;
-  width: 15em;
-  height: 15em;
-  padding: 0;
-  margin: 0;
-  gap: 0;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 1px 1px 1px black;
-}
+
 .div-Add-Room {
-  display: none;
-  width: 100vw;
-  height: 94vh;
   position: absolute;
   bottom: 0;
-
   background: linear-gradient(
     to right bottom,
     rgba(255, 255, 255, 0.7),
     rgba(255, 255, 255, 0.3)
   );
   z-index: 2;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(16px);
   justify-content: space-around;
-}
-.adding {
   display: flex;
   flex-direction: column;
+  inset: 2.7em 0% 0% 1.9em;
 }
+
 .rw-widget-picker {
   width: 100px;
 }
@@ -167,8 +161,6 @@
   justify-content: space-around;
 }
 .div-grid {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding-left: 20%;
+  margin-right: 13%;
+  margin-left: 10%;
 }

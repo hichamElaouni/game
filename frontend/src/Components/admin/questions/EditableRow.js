@@ -5,12 +5,17 @@ const EditableRow = ({
   editFormData,
   handleEditFormChange,
   handleCancelClick,
+  selected,
 }) => {
   return (
     <tr>
-      <td className="container">
-        <Choices type="checkbox" data={editFormData.id} />
-      </td>
+      {selected ? (
+        <td className="container">
+          <Choices type="checkbox" data={editFormData.id} />
+        </td>
+      ) : (
+        ""
+      )}
       <td>
         <input
           type="text"
@@ -51,12 +56,17 @@ const EditableRow = ({
           onChange={handleEditFormChange}
         ></input>
       </td>
-      <td className="btnEdit">
-        <button type="submit" style={{ color: "lime" }}>
+      <td className="tdEdit">
+        <button
+          type="submit"
+          className="btns btnSaveRow"
+          style={{ color: "lime" }}
+        >
           Save
         </button>
         <button
           type="button"
+          className="btns btnCancelRow"
           style={{ color: "#ffa2a2" }}
           onClick={handleCancelClick}
         >

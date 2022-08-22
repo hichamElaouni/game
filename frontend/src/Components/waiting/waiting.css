@@ -1,0 +1,45 @@
+.loading {
+  background-image: url("../Image/Loading2.gif");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.waiting {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-content: center;
+  height: 50%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.waitForm {
+  cursor: default;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.divWaitForm {
+  width: 40%;
+  height: 10%;
+}
+.btnReturn {
+  width: 100%;
+  height: 100%;
+  font-size: 3em;
+  border-style: none;
+  cursor: pointer;
+  border-radius: 9px;
+  background: bottom;
+  color: white;
+  box-shadow: 0px 0px 4px 0px #4ed95f;
+  border: 0.5px solid white;
+}
+
+.btnReturn:hover {
+  background: #ffffff9c;
+  color: #000000;
+  box-shadow: 0px 0px 4px 1px black;
+  border: 1px solid #59ff00;
+}

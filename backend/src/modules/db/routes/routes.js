@@ -28,4 +28,6 @@ route.delete("/room/:id", ctrl.deleteRoom);
 route.get("/roomgames", ctrl.getRoomGame);
 
 route.post("/addQuestionsRoom", ctrl.addQuestionsRoom);
+route.post("/questionByRoom", ctrl.getQuestionByRoom);
+
 export default route;

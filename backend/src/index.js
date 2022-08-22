@@ -26,7 +26,7 @@ let roomNumber = 0;
 let player = "";
 let Turn = true;
 let id = 0;
-let IDROOM = "";
+let Room = "";
 
 // if (NumberPlayers <= 2) {
 //   RoomNumbers++;
@@ -60,7 +60,7 @@ let IDROOM = "";
 
 // socket.on("setplayer", (namePlayer) => {
 
-// socket.on("join_Room", (idroom) => {
+// socket.on("join_Room", (Room) => {
 
 //   socket.emit("getplayer", namePlayer);
 // });
@@ -90,7 +90,7 @@ let IDROOM = "";
 // });
 
 //   if (connectClient < 2) {
-//     IDROOM = idroom;
+//     Room = Room;
 //     connectClient++;
 //     if (connectClient == 1) {
 //       console.log("First Client $$== ", connectClient);
@@ -103,7 +103,7 @@ let IDROOM = "";
 //       id = 2;
 //       Turn = false;
 //     }
-//     socket.join(IDROOM);
+//     socket.join(Room);
 //     socket.emit("connected", { player, id, Turn });
 //   } else {
 //     console.log("room it not Avaliable for now");
@@ -133,36 +133,44 @@ io.on("connection", (socket) => {
 
       socket.emit("playing", id);
 
-      IDROOM = token;
+      Room = token;
     }
   });
 
   socket.on("setPlayer", (namePlayer) => {
-    socket.to(IDROOM).emit("getPlayer", namePlayer);
+    socket.to(Room).emit("getPlayer", namePlayer);
   });
 
   socket.on("setScore", (scores) => {
-    socket.to(IDROOM).emit("getScore", scores);
+    socket.to(Room).emit("getScore", scores);
   });
 
   socket.on("setxScore", (xScore) => {
-    socket.to(IDROOM).emit("getxScore", xScore);
+    socket.to(Room).emit("getxScore", xScore);
   });
 
   socket.on("setoScore", (oScore) => {
-    socket.to(IDROOM).emit("getoScore", oScore);
+    socket.to(Room).emit("getoScore", oScore);
   });
 
   socket.on("switch_turn", ({ turn, updatedBoard }) => {
-    socket.to(IDROOM).emit("switch", { turn, updatedBoard });
+    socket.to(Room).emit("switch", { turn, updatedBoard });
   });
 
   socket.on("setwin", (winMessage) => {
-    socket.to(IDROOM).emit("getwin", winMessage);
+    socket.to(Room).emit("getwin", winMessage);
   });
 
   socket.on("setStateRoom", () => {
-    socket.to(IDROOM).emit("getStateRoom");
+    socket.to(Room).emit("getStateRoom");
+  });
+
+  socket.on("setGameOver", () => {
+    socket.to(Room).emit("getGameOver");
+  });
+
+  socket.on("setOver", (MsgOver) => {
+    io.to(Room).emit("getOver", MsgOver);
   });
 });
 
