@@ -87,3 +87,4 @@ dump.rdb
 # Prettierrc
 .Prettierrc
 db/*
+frontend/.env
