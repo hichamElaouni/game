@@ -14,6 +14,9 @@ const Game = (props) => {
     turn,
     setTurn,
     over,
+    idPlayer,
+    timeTurn,
+    setCount,
   } = props;
   const WIN_CONDITIONS = [
     [0, 1, 2],
@@ -31,8 +34,6 @@ const Game = (props) => {
   const [winningShow, setWinningShow] = useState(false);
   const [messageWin, setMessageWin] = useState();
   socket.on("getScore", (scores) => {
-    console.log("score in on ===> ", props.scores);
-
     setScores(scores);
   });
 
@@ -46,6 +47,7 @@ const Game = (props) => {
   socket.on("switch", ({ turn, updatedBoard }) => {
     setBoard(updatedBoard);
     setTurn(turn);
+    setCount(timeTurn);
   });
 
   socket.on("getwin", (winMessage) => {
@@ -93,8 +95,30 @@ const Game = (props) => {
     setTurn(!turn);
 
     socket.emit("switch_turn", { turn, updatedBoard });
+    let { oScore } = scores;
+    let { xScore } = scores;
+    let MsgOver;
+    if (oScore < xScore) {
+      MsgOver =
+        "Game over, X win the Game with Total Points =  " +
+        xScore +
+        " Vs O Points" +
+        oScore;
+    } else if (oScore > xScore) {
+      MsgOver =
+        "Game over, O win the Game with Total Points =  " +
+        oScore +
+        " Vs X Points =  " +
+        xScore;
+    } else {
+      MsgOver = "Game Is Over No One Wins, Score Players = " + oScore;
+    }
 
-    over ? socket.emit("setGameOver") : console.log("");
+    over
+      ? idPlayer * 1 === 1
+        ? socket.emit("setGameOver")
+        : socket.emit("setOver", MsgOver)
+      : console.log("Game Still Play");
     // Step 3: Change active player
     // setXPlaying(!xPlaying);
   };

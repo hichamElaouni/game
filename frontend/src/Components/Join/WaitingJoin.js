@@ -41,11 +41,16 @@ export default function WaitingJoin() {
 
   useEffect(() => {
     getRoom(token, setRoom);
-
     socket.on("playing", (id) => {
-      navigate("/game?NamePlayer=" + namePlayer + "&PlayerId=" + id);
+      navigate(
+        "/game?&token=" +
+          token +
+          "&NamePlayer=" +
+          namePlayer +
+          "&PlayerId=" +
+          id
+      );
     });
-
     socket.on("RoomNotAvailable", () => {
       navigate("/RoomNotAvailable");
     });
@@ -55,13 +60,17 @@ export default function WaitingJoin() {
     navigate("/RoomNotAvailable");
   }
 
-  socket.on("connected_Room", () => {
-    navigate("/game");
-  });
-
   const Join_room = () => {
-    if (namePlayer !== "") {
-      socket.emit("joinRoom", { namePlayer, token });
+    if (namePlayer !== undefined) {
+      if (namePlayer.length >= 3) {
+        socket.emit("joinRoom", { namePlayer, token });
+      } else {
+        NotificationManager.warning(
+          "Warning message",
+          "Name contian grand than Three letter",
+          2000
+        );
+      }
     } else {
       NotificationManager.warning(
         "Warning message",
@@ -80,6 +89,9 @@ export default function WaitingJoin() {
             <input
               className="inputs-join"
               type="text"
+              pattern="[A-Za-z]{3}"
+              required
+              title="Name contian grand than Three letter "
               placeholder="entrer your Name ..."
               onChange={(e) => {
                 setNamePlayer(e.target.value);

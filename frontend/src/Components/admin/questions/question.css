@@ -1,16 +1,261 @@
-.grid {
+.AllCompQues {
+  display: flex;
   width: 100%;
   height: 100%;
+  flex-direction: column;
+}
+.gridRooms {
+  display: flex;
+  flex-direction: row;
+  height: 88vh;
+}
 
+.grid {
+  width: 68%;
+  height: 100%;
   display: flex;
   gap: 5px;
   padding: 10px;
   flex-wrap: nowrap;
   align-items: center;
-
   flex-direction: column;
+  gap: 5px;
 }
 
-.datagrid {
-  width: 80%;
+thead,
+tbody {
+  background-color: #143846;
+  text-align: center;
+}
+
+.thead {
+  top: 1;
+  position: relative;
+}
+table {
+  width: 100%;
+  color: white;
+}
+tr {
+  height: 2em;
+}
+.btns {
+  width: 45%;
+  height: 30px;
+  background: bottom;
+  box-shadow: 0px 0px 2px 0px #fff;
+  color: whitesmoke;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  column-gap: 10px;
+  border: 0.1px solid;
+}
+
+.btns:hover {
+  background-color: #134254;
+  border: 0.1px solid #f1f18b;
+}
+.btnAddQuestion {
+  width: 10%;
+  height: 60%;
+  background: linear-gradient(to right top, #134254, #1d5e12);
+}
+
+.btnAddQuestion:hover {
+  background: linear-gradient(to right top, #2d92b9d4, #30911f);
+}
+
+.trActions,
+.tdEdit {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-flow: wrap;
+  flex-wrap: wrap;
+  align-content: center;
+  height: 100%;
+  padding: 5px;
+}
+.css-zw3mfo-MuiModal-root-MuiDialog-root {
+  opacity: 0.3;
+}
+.viewgrid {
+  width: 100%;
+  height: 75vh;
+  display: flex;
+  align-items: stretch;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: stretch;
+}
+
+.viewgrid form {
+  overflow: auto;
+
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: stretch;
+}
+
+.addquestion {
+  height: 12vh;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-flow: column wrap;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  text-align: center;
+}
+
+tr input {
+  width: 90%;
+  font-size: 1.3em;
+  text-align: center;
+  border: none;
+  border-radius: 3px;
+  color: #0e2934;
+}
+.addquestion form {
+  background-color: #134254;
+  height: 100%;
+  width: 100%;
+  justify-content: space-around;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  border-radius: 4px;
+}
+.addquestion input {
+  height: 60%;
+  width: 19%;
+  font-size: 1.2em;
+  text-align: center;
+  border: none;
+  border-radius: 4px;
+}
+
+.FromStudent .option_item {
+  margin: 5px;
+}
+
+.FromStudent .option_inner {
+  border-radius: 3px;
+  padding: 2px 10px;
+  border: 4px solid transparent;
+}
+
+/* .FromStuden .option_item .option_inner .tickmark:before {
+  top: -10px;
+  left: -12px;
+} */
+tr:hover {
+  background-color: #0e2934;
+}
+tr:hover .trActions {
+  background-color: #143c4c;
+}
+
+.FromStudent .name {
+  color: transparent;
+}
+
+/******* Rooms **********/
+
+.ViewRooms {
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: start;
+  row-gap: 2%;
+}
+.RoomsView {
+  width: 32%;
+  padding: 10px;
+  text-align: center;
+  gap: 5px;
+}
+
+.view {
+  display: flex;
+  width: 30%;
+  height: 14vh;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: stretch;
+  border-radius: 4px;
+  box-shadow: 0 3px 4px #404a467a;
+  backdrop-filter: blur(10.8px);
+  -webkit-backdrop-filter: blur(10.8px);
+  border: 1px solid rgba(255, 250, 250, 0.44);
+  background: #ebf2ef69;
+  color: #000;
+  cursor: pointer;
+}
+.view:hover {
+  width: 31;
+  height: 15vh;
+  box-shadow: 0px 0px 4px 0px green;
+}
+.titleRoom {
+  border-radius: 4px 4px 0 0;
+  align-content: stretch;
+  text-align: center;
+  width: 100%;
+  font-size: 14px;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+  background: rgb(235, 242, 239);
+  background: linear-gradient(
+    0deg,
+    rgba(197, 205, 201, 0.68) 0%,
+    rgba(213, 238, 226, 0.77) 60%,
+    rgb(210, 239, 227) 100%
+  );
+  -webkit-transition: background-color 1.5s ease-out;
+  -moz-transition: background-color 1.5s ease-out;
+  -o-transition: background-color 1.5s ease-out;
+  transition: background-color 1.5s ease-out;
+}
+
+.imgGame {
+  width: 100%;
+  height: 100%;
+  background-image: url("../../Image/game.png");
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  cursor: pointer;
+  border-radius: 0 0 4px 4px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  align-content: stretch;
+}
+
+.DescRoom {
+  background: #c4d9d980;
+  box-shadow: 2px 3px 3px 1px #ced7df;
+  color: #000;
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+.AnswerNumber {
+  box-shadow: 0px 0px 0px 1.5px #e9ff00;
+  background: #fdf8e9;
 }

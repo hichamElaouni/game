@@ -1,7 +1,4 @@
 import React, { useState, Fragment, useEffect } from "react";
-
-import "./grid.css";
-
 import ReadOnlyRow from "./ReadOnlyRow";
 import EditableRow from "./EditableRow";
 import {
@@ -9,11 +6,8 @@ import {
   deleteQuestion,
   updateQuestion,
 } from "../../service/api";
-import ViewGames from "./ViewGames";
-
 import { NotificationManager } from "react-notifications";
 import "react-notifications/lib/notifications.css";
-
 const getQuestions = async (setQuestions) => {
   const {
     data: { data, success },
@@ -24,7 +18,7 @@ const getQuestions = async (setQuestions) => {
 
 const Grid = (props) => {
   const [open, setOpen] = useState(false);
-  const { questions, setQuestions, getselectedQuestions } = props;
+  const { questions, setQuestions, getselectedQuestions, selected } = props;
   useEffect(() => {
     getQuestions(setQuestions);
   }, []);
@@ -117,12 +111,16 @@ const Grid = (props) => {
           <table>
             <thead>
               <tr>
-                <th style={{ width: "5%" }}>id</th>
+                {selected ? (
+                  <th style={{ width: "7%" }}>Selection Questions</th>
+                ) : (
+                  ""
+                )}
                 <th>Question</th>
                 <th>Choice</th>
                 <th>Answer</th>
                 <th>Point</th>
-                <th style={{ width: "14%" }}>Actions</th>
+                <th style={{ width: "18%" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -133,6 +131,7 @@ const Grid = (props) => {
                       editFormData={editFormData}
                       handleEditFormChange={handleEditFormChange}
                       handleCancelClick={handleCancelClick}
+                      selected={selected}
                     />
                   ) : (
                     <ReadOnlyRow
@@ -140,6 +139,7 @@ const Grid = (props) => {
                       handleEditClick={handleEditClick}
                       handleDeleteClick={handleDeleteClick}
                       getselectedQuestions={getselectedQuestions}
+                      selected={selected}
                     />
                   )}
                   {/* <DailogConfirm
@@ -152,11 +152,6 @@ const Grid = (props) => {
             </tbody>
           </table>
         </form>
-
-        <div className="viewGames">
-          <ViewGames lengthQuestionsGame={questions.length} />
-          {/* <ListRooms/> */}
-        </div>
       </div>
     </>
   );

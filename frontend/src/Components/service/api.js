@@ -56,21 +56,21 @@ const addRoom = async (data) => {
   await axios.post(`http://${fullUrl}/db/room`, data);
 };
 
-const deleteRoom = async (id) => {
+const deleteRoom = async (id) =>
   await axios.delete(`http://${fullUrl}/db/room/${id}`);
-};
 
-const updateRoom = async (id, questionData) => {
+const updateRoom = async (id, questionData) =>
   await axios.put(`http://${fullUrl}/db/room`, { id, questionData });
-};
 
 // const getAllRoomsGames = async (idroom) => {
 //   await axios.get(`http://${fullUrl}/db/roomgames?idroom=${idroom}`);
 // };
 
-const addQuestionsRoom = async (data) => {
+const addQuestionsRoom = async (data) =>
   await axios.post(`http://${fullUrl}/db/addQuestionsRoom`, data);
-};
+
+const getQuestionByRoom = async (data) =>
+  await axios.post(`http://${fullUrl}/db/questionByRoom`, data);
 
 /**Rooms */
 export {
@@ -100,4 +100,5 @@ export {
   getRoomByToken,
   addQuestionsRoom,
   /**Rooms */
+  getQuestionByRoom,
 };

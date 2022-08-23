@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { getQuestionById } from "./service/api";
+import { getQuestionByRoom } from "./service/api";
 import Question from "./Question/Question";
 import Game from "./TicTacToe/Game";
 import Waiting from "./waiting/Waiting";
 import { ScoreBoard } from "./Score/ScoreBoard";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { socket } from "./service/socket";
 
 function App() {
@@ -23,29 +23,38 @@ function App() {
   const [currentCount, setCount] = useState(10000);
   const [textWait, setTextWait] = useState("Wait to anothor Player to Join");
   const [over, setOver] = useState(false);
-  const getQuestion = async (id, setQuestions) => {
+  const [waitState, setWaitState] = useState(false);
+
+  const [answer, setAnswer] = useState(1);
+  const [choices, setChoices] = useState(["2;4;6;8"]);
+  const [idQuestion, setIdQuestions] = useState(0);
+  const [title, setTitle] = useState("Answer Question and click next to Play");
+  const [timeTurn, setTimeTurn] = useState(10);
+  const [pointQu, setPointQu] = useState(0);
+  const [pointGa, setPointGa] = useState(2);
+
+  const [searchParams] = useSearchParams();
+  const PlayerName = searchParams.get("NamePlayer");
+  const PlayerId = searchParams.get("PlayerId");
+  const token = searchParams.get("token");
+
+  const getQuestion = async (token, id, setQuestions) => {
     const {
       data: { data, success, limit },
-    } = await getQuestionById(id);
-    console.log("🚀 ~ file: Home.js ~ line 30 ~ getQuestion ~ limit", limit);
+    } = await getQuestionByRoom({ token, id });
     if (!success) console.log("error data");
     else {
-      if (!turn && limit) {
-        console.log("Game Over");
+      if (turn && limit) {
+        console.log("GameOver");
         setOver(true);
       } else {
         setQuestions(data);
       }
     }
   };
-  let navigate = useNavigate();
-
-  const [searchParams] = useSearchParams();
-  const PlayerName = searchParams.get("NamePlayer");
-  const PlayerId = searchParams.get("PlayerId");
 
   useEffect(() => {
-    getQuestion(occurence, setQuestions);
+    getQuestion(token, occurence, setQuestions);
     setIdPlayer(PlayerId);
     setNamePlayer(PlayerName);
 
@@ -62,20 +71,45 @@ function App() {
       setFlag(false);
       setStateRoom(false);
       socket.emit("setStateRoom");
-      setCount(3000);
+      setCount(timeTurn);
     }
     socket.on("getStateRoom", () => {
       setStateRoom(false);
-      setCount(3000);
+      setCount(timeTurn);
       setVisible(true);
     });
 
     socket.on("getGameOver", () => {
-      socket.emit("setOver", textWait);
+      setOver(true);
+      setWaitState(true);
     });
+    socket.on("getOver", (MsgOver) => {
+      setStateRoom(true);
+      setTextWait(MsgOver);
+      setWaitState(true);
+    });
+
+    console.log(
+      "🚀 ~ file: Home.js ~ line 93 ~ useEffect ~ (questions.length != undefined",
+      questions.length != undefined
+    );
+    if (questions.length != undefined) {
+      console.log(
+        "🚀 ~ file: Home.js ~ line 97 ~ useEffect ~ (questions.length != undefined",
+        questions.length != undefined
+      );
+      setIdQuestions(questions[0]["Question.id"]);
+      setAnswer(questions[0]["Question.answer"]);
+      setChoices(questions[0]["Question.choices"]);
+      setTitle(questions[0]["Question.title"]);
+      setPointQu(questions[0]["Question.point"]);
+      setPointGa(questions[0]["Rooms.point"]);
+      setTimeTurn(questions[0]["Rooms.TimeTurn"]);
+    }
   }, [occurence]);
 
-  const pointGame = 2;
+  const pointGame = pointGa;
+  console.log("🚀 ~ file: Home.js ~ line 114 ~ App ~ pointGame", pointGame);
 
   return (
     <>
@@ -86,6 +120,8 @@ function App() {
               idPlayer={idPlayer}
               namePlayer={namePlayer}
               questions={questions}
+              title={title}
+              choices={choices}
               setVisible={setVisible}
               setOccurence={setOccurence}
               setPauseGame={setPauseGame}
@@ -93,6 +129,8 @@ function App() {
               setScores={setScores}
               currentCount={currentCount}
               setCount={setCount}
+              answer={answer}
+              pointQu={pointQu}
             />
           ) : (
             <Waiting namePlayer={namePlayer} text="Waiting " />
@@ -119,6 +157,8 @@ function App() {
               turn={turn}
               setTurn={setTurn}
               over={over}
+              setCount={setCount}
+              timeTurn={timeTurn}
             />
           </section>
         </div>
@@ -142,7 +182,11 @@ function App() {
         </section> */}
       </div>
       <div className={`div-wait ${stateRoom ? "start-Playing" : ""} `}>
-        <Waiting namePlayer={namePlayer} text={textWait} />
+        <Waiting
+          namePlayer={namePlayer}
+          text={textWait}
+          waitState={waitState}
+        />
       </div>
     </>
   );

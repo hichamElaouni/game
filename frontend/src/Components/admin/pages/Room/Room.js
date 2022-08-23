@@ -2,13 +2,15 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./rooms.css";
 import CustomBtns from "../../../Setings/CustomBtns";
+const { REACT_APP_BACKEND_URL, REACT_APP_FORNTEND_PORT } = process.env || {};
+const fullUrl = `${REACT_APP_BACKEND_URL}:${REACT_APP_FORNTEND_PORT}`;
 
 export default function Rooms(props) {
   const { room, deleted_Room, NotificationManager } = props;
   let navigate = useNavigate();
-  const url = "http://localhost:3000/";
+
   return (
-    <div className="room rom">
+    <div className="backGroundRoom">
       <div className="backgroundInfo"></div>
 
       <div className="infoRoom">
@@ -17,7 +19,7 @@ export default function Rooms(props) {
       <CustomBtns
         deleteRoom={deleted_Room}
         idRoom={room.id}
-        linkRoom={url + "JoinRoom?token=" + room.token}
+        linkRoom={fullUrl + "/JoinRoom?token=" + room.token}
         NotificationManager={NotificationManager}
       />
     </div>

@@ -13,7 +13,7 @@ export default function FormAddRoom(props) {
     Data,
     NotificationManager,
     token,
-    unique_id,
+    setToken,
   } = props;
   const [questions, setQuestions] = useState([]);
   const [questionsSelected, setQuestionsSelected] = useState([]);
@@ -26,27 +26,34 @@ export default function FormAddRoom(props) {
     if (nameRoom === undefined) {
       NotificationManager.warning(" enter Name Room ", "warning", 3000);
     } else {
-      let Room = {
-        id: unique_id,
-        nameRoom: nameRoom,
-        token: token,
-        point: point,
-        TimeTurn: timeRoom,
-        idGame: 1,
-      };
-      console.log(
-        "🚀 ~ file: FormAddRoom.js ~ line 33 ~ ConfirmAdd ~ Room",
-        Room
-      );
+      if (questionsSelected.length <= 0) {
+        NotificationManager.warning(
+          " Please select the questions, you still need to selected = " +
+            (10 - questionsSelected.length),
+          "warning",
+          3000
+        );
+      } else {
+        let Room = {
+          nameRoom: nameRoom,
+          token: token,
+          point: point,
+          TimeTurn: timeRoom,
+          idGame: 1,
+        };
 
-      NotificationManager.info(
-        " succufully  Adding ",
-        "info",
-        3000,
-        await addRoom(Room)
-      );
-      setAdding(false);
-      setTitlePage("Rooms");
+        NotificationManager.info(
+          " succufully  Adding ",
+          "info",
+          3000,
+          await addRoom({ rooms: Room, questionsSelected })
+        );
+
+        setToken(135241654);
+        setAdding(false);
+        setTitlePage("Rooms");
+        setQuestionsSelected([]);
+      }
     }
   };
 
@@ -69,6 +76,7 @@ export default function FormAddRoom(props) {
           <label>Name Room</label>
           <input
             type="text"
+            id="txtName"
             className="Name-Room"
             placeholder="Name Room ..."
             required
@@ -107,6 +115,7 @@ export default function FormAddRoom(props) {
           questions={questions}
           setQuestions={setQuestions}
           getselectedQuestions={(event) => getQuestionsSelected(event)}
+          selected={true}
         />
       </div>
 
