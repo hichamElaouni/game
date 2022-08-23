@@ -25,13 +25,13 @@ function App() {
   const [over, setOver] = useState(false);
   const [waitState, setWaitState] = useState(false);
 
-  const [answer, setAnswer] = useState(0);
-  const [choices, setChoices] = useState(0);
+  const [answer, setAnswer] = useState(1);
+  const [choices, setChoices] = useState(["2;4;6;8"]);
   const [idQuestion, setIdQuestions] = useState(0);
-  const [title, setTitle] = useState(0);
-  const [timeTurn, setTimeTurn] = useState(0);
+  const [title, setTitle] = useState("Answer Question and click next to Play");
+  const [timeTurn, setTimeTurn] = useState(10);
   const [pointQu, setPointQu] = useState(0);
-  const [pointGa, setPointGa] = useState(0);
+  const [pointGa, setPointGa] = useState(2);
 
   const [searchParams] = useSearchParams();
   const PlayerName = searchParams.get("NamePlayer");
@@ -71,11 +71,11 @@ function App() {
       setFlag(false);
       setStateRoom(false);
       socket.emit("setStateRoom");
-      setCount(3000);
+      setCount(timeTurn);
     }
     socket.on("getStateRoom", () => {
       setStateRoom(false);
-      setCount(3000);
+      setCount(timeTurn);
       setVisible(true);
     });
 
@@ -88,10 +88,15 @@ function App() {
       setTextWait(MsgOver);
       setWaitState(true);
     });
-    if (questions.length !== undefined) {
+
+    console.log(
+      "🚀 ~ file: Home.js ~ line 93 ~ useEffect ~ (questions.length != undefined",
+      questions.length != undefined
+    );
+    if (questions.length != undefined) {
       console.log(
-        "🚀 ~ file: Home.js ~ line 92 ~ useEffect ~ questions",
-        questions.length
+        "🚀 ~ file: Home.js ~ line 97 ~ useEffect ~ (questions.length != undefined",
+        questions.length != undefined
       );
       setIdQuestions(questions[0]["Question.id"]);
       setAnswer(questions[0]["Question.answer"]);
@@ -103,16 +108,8 @@ function App() {
     }
   }, [occurence]);
 
-  console.log(
-    "🚀 ~ file: Home.js ~ line 94 ~ App ~ questions",
-    questions.length
-  );
-
   const pointGame = pointGa;
-  console.log(
-    "🚀 ~ file: Home.js ~ line 44 ~ getQuestion ~ setQuestions",
-    pointGame
-  );
+  console.log("🚀 ~ file: Home.js ~ line 114 ~ App ~ pointGame", pointGame);
 
   return (
     <>
@@ -132,6 +129,8 @@ function App() {
               setScores={setScores}
               currentCount={currentCount}
               setCount={setCount}
+              answer={answer}
+              pointQu={pointQu}
             />
           ) : (
             <Waiting namePlayer={namePlayer} text="Waiting " />
@@ -158,6 +157,8 @@ function App() {
               turn={turn}
               setTurn={setTurn}
               over={over}
+              setCount={setCount}
+              timeTurn={timeTurn}
             />
           </section>
         </div>

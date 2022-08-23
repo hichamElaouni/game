@@ -47,11 +47,13 @@ export default function Question(props) {
     setScores,
     title,
     choices,
+    answer,
+    pointQu,
   } = props;
 
   const [checkAnswer, setChaeckAnswer] = useState(false);
   const onclick = (event) => {
-    if (questions.answer === event.target.value * 1) {
+    if (answer === event.target.value * 1) {
       setChaeckAnswer(true);
     } else {
       setChaeckAnswer(false);
@@ -65,7 +67,7 @@ export default function Question(props) {
     Choices = choices.toString();
   }
 
-  const point = questions.point;
+  const point = pointQu;
 
   return (
     <div className="players ">

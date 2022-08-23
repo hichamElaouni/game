@@ -15,6 +15,8 @@ const Game = (props) => {
     setTurn,
     over,
     idPlayer,
+    timeTurn,
+    setCount,
   } = props;
   const WIN_CONDITIONS = [
     [0, 1, 2],
@@ -32,8 +34,6 @@ const Game = (props) => {
   const [winningShow, setWinningShow] = useState(false);
   const [messageWin, setMessageWin] = useState();
   socket.on("getScore", (scores) => {
-    console.log("score in on ===> ", props.scores);
-
     setScores(scores);
   });
 
@@ -47,6 +47,7 @@ const Game = (props) => {
   socket.on("switch", ({ turn, updatedBoard }) => {
     setBoard(updatedBoard);
     setTurn(turn);
+    setCount(timeTurn);
   });
 
   socket.on("getwin", (winMessage) => {
