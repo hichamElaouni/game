@@ -98,15 +98,9 @@ function App() {
       setPointGa(questions[0]["Rooms.point"]);
       setTimeTurn(questions[0]["Rooms.TimeTurn"]);
     }
-    console.log(
-      "🚀 ~ file: Home.js ~ line 93 ~ useEffect ~ questions",
-      questions
-    );
-  }, [occurence]);
+  }, [questions]);
 
   const pointGame = pointGa;
-  console.log("🚀 ~ file: Home.js ~ line 114 ~ App ~ idQuestion", idQuestion);
-  console.log("🚀 ~ file: Home.js ~ line 114 ~ App ~ occurence", occurence);
 
   return (
     <>
