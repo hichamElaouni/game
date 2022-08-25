@@ -338,7 +338,7 @@ const getQuestionByRoom = async (req, res) => {
     const { token, idRoom, last_id = 0 } = req.body;
     console.log(
       "🚀 ~ file: controller.js ~ line 339 ~ getQuestionByRoom ~ req.body",
-      req.body
+      last_id
     );
     if (token < 0 && !token && !idRoom)
       return res

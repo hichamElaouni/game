@@ -26,7 +26,7 @@ export default function FormAddRoom(props) {
     if (nameRoom === undefined) {
       NotificationManager.warning(" enter Name Room ", "warning", 3000);
     } else {
-      if (questionsSelected.length <= 0) {
+      if (questionsSelected.length <= 10) {
         NotificationManager.warning(
           " Please select the questions, you still need to selected = " +
             (10 - questionsSelected.length),

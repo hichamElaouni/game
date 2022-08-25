@@ -89,15 +89,7 @@ function App() {
       setWaitState(true);
     });
 
-    console.log(
-      "🚀 ~ file: Home.js ~ line 93 ~ useEffect ~ (questions.length != undefined",
-      questions.length != undefined
-    );
     if (questions.length != undefined) {
-      console.log(
-        "🚀 ~ file: Home.js ~ line 97 ~ useEffect ~ (questions.length != undefined",
-        questions.length != undefined
-      );
       setIdQuestions(questions[0]["Question.id"]);
       setAnswer(questions[0]["Question.answer"]);
       setChoices(questions[0]["Question.choices"]);
@@ -106,10 +98,9 @@ function App() {
       setPointGa(questions[0]["Rooms.point"]);
       setTimeTurn(questions[0]["Rooms.TimeTurn"]);
     }
-  }, [occurence]);
+  }, [questions]);
 
   const pointGame = pointGa;
-  console.log("🚀 ~ file: Home.js ~ line 114 ~ App ~ pointGame", pointGame);
 
   return (
     <>
@@ -131,6 +122,7 @@ function App() {
               setCount={setCount}
               answer={answer}
               pointQu={pointQu}
+              idQuestion={idQuestion}
             />
           ) : (
             <Waiting namePlayer={namePlayer} text="Waiting " />

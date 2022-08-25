@@ -49,6 +49,7 @@ export default function Question(props) {
     choices,
     answer,
     pointQu,
+    idQuestion,
   } = props;
 
   const [checkAnswer, setChaeckAnswer] = useState(false);
@@ -59,7 +60,6 @@ export default function Question(props) {
       setChaeckAnswer(false);
     }
   };
-  const idQuestion = questions.id;
   let Choices = ";";
 
   if (choices === undefined) {
