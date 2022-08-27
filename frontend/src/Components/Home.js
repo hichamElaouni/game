@@ -89,6 +89,11 @@ function App() {
       setWaitState(true);
     });
 
+    console.log(
+      "🚀 ~ file: Home.js ~ line 93 ~ useEffect ~ questions",
+      !!questions
+    );
+
     if (questions.length != undefined) {
       setIdQuestions(questions[0]["Question.id"]);
       setAnswer(questions[0]["Question.answer"]);
