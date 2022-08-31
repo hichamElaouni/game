@@ -16,7 +16,7 @@ const Game = (props) => {
     over,
     idPlayer,
     timeTurn,
-    setCount,
+    setCountDown,
   } = props;
   const WIN_CONDITIONS = [
     [0, 1, 2],
@@ -33,6 +33,8 @@ const Game = (props) => {
   const [gameOver, setGameOver] = useState(false);
   const [winningShow, setWinningShow] = useState(false);
   const [messageWin, setMessageWin] = useState();
+  const [index, setIndex] = useState(0);
+
   socket.on("getScore", (scores) => {
     setScores(scores);
   });
@@ -40,14 +42,19 @@ const Game = (props) => {
   socket.on("getxScore", async (xScore) => {
     await setScores({ ...scores, xScore });
   });
+
   socket.on("getoScore", (oScore) => {
     setScores({ ...scores, oScore });
+  });
+  socket.on("getResetGame", () => {
+    resetBoard();
   });
 
   socket.on("switch", ({ turn, updatedBoard }) => {
     setBoard(updatedBoard);
     setTurn(turn);
-    setCount(timeTurn);
+
+    setCountDown(timeTurn);
   });
 
   socket.on("getwin", (winMessage) => {
@@ -63,7 +70,7 @@ const Game = (props) => {
 
       return value;
     });
-
+    setIndex(index + 1);
     setBoard(updatedBoard);
     setPauseGame(true);
     setVisible((prevCheck) => !prevCheck);
@@ -77,7 +84,7 @@ const Game = (props) => {
         oScore += pointGame;
         winMessage = "Circle win";
         setScores({ ...scores, oScore });
-        socket.emit("setoScore");
+        socket.emit("setoScore", oScore);
       } else {
         let { xScore } = scores;
         xScore += pointGame;
@@ -87,12 +94,13 @@ const Game = (props) => {
         socket.emit("setxScore", xScore);
       }
       setMessageWin(winMessage);
-
       socket.emit("setwin", winMessage);
       setWinningShow(true);
     }
 
     setTurn(!turn);
+
+    console.log("**** ", index);
 
     socket.emit("switch_turn", { turn, updatedBoard });
     let { oScore } = scores;
@@ -112,6 +120,11 @@ const Game = (props) => {
         xScore;
     } else {
       MsgOver = "Game Is Over No One Wins, Score Players = " + oScore;
+    }
+
+    if (index === 4) {
+      socket.emit("setResetGame");
+      resetBoard();
     }
 
     over
@@ -140,6 +153,7 @@ const Game = (props) => {
     setGameOver(false);
     setBoard(Array(9).fill(null));
     setWinningShow(false);
+    setIndex(0);
   };
   return (
     <>

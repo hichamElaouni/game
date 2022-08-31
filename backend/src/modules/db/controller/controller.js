@@ -236,7 +236,6 @@ const addRoom = async (req, res) => {
       };
     });
     const questions = await db.QuestionsRoom.bulkCreate(data);
-    console.log("sdfsdfsdf => ", questions);
     res.status(201).json({ success: true, rooms });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -335,11 +334,8 @@ const updateQuestionsRoom = async (req, res) => {
 
 const getQuestionByRoom = async (req, res) => {
   try {
-    const { token, idRoom, last_id = 0 } = req.body;
-    console.log(
-      "🚀 ~ file: controller.js ~ line 339 ~ getQuestionByRoom ~ req.body",
-      last_id
-    );
+    const { token, idRoom, id = 0 } = req.body;
+
     if (token < 0 && !token && !idRoom)
       return res
         .status(400)
@@ -349,7 +345,7 @@ const getQuestionByRoom = async (req, res) => {
     let additionalData = token
       ? {
           where: {
-            idQuestion: { [Op.gt]: last_id },
+            idQuestion: { [Op.gt]: id },
           },
           limit: 1,
         }
@@ -366,14 +362,27 @@ const getQuestionByRoom = async (req, res) => {
         {
           model: Rooms,
           where: token ? { token: token } : { id: idRoom },
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
         },
-        { model: Questions },
+        {
+          model: Questions,
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+        },
       ],
       ...additionalData,
-      raw: true,
+
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
     });
 
-    res.status(200).json({ success: true, data, limit: data ? false : true });
+    res
+      .status(200)
+      .json({ success: true, data, limit: data.length ? false : true });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, message: error.message });

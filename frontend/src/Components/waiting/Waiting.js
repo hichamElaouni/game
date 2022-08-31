@@ -2,9 +2,10 @@ import React from "react";
 import "./waiting.css";
 import CircularIndeterminate from "./CircularIndeterminate";
 import { useNavigate } from "react-router-dom";
+
 export default function Waiting(props) {
   let navigate = useNavigate();
-  const { namePlayer, text, waitState } = props;
+  const { namePlayer, text, waitState, token } = props;
 
   return (
     <div className="players ">
@@ -17,7 +18,10 @@ export default function Waiting(props) {
         <h1> {text} </h1>
         {waitState ? (
           <div className="divWaitForm">
-            <button className="btnReturn" onClick={() => navigate(-1)}>
+            <button
+              className="btnReturn"
+              onClick={() => navigate(`/JoinRoom/?token=${token}`)}
+            >
               Go To Join Room
             </button>
           </div>

@@ -9,52 +9,49 @@ import { socket } from "./service/socket";
 
 function App() {
   const [visible, setVisible] = useState(true);
-  const [questions, setQuestions] = useState({});
-  const [occurence, setOccurence] = useState(0);
-  const [pauseGame, setPauseGame] = useState(true);
   const [xPlaying, setXPlaying] = useState(true);
-  const [scores, setScores] = useState({ xScore: 0, oScore: 0 });
   const [turn, setTurn] = useState(true);
-  // for stop insert players
+  const [pauseGame, setPauseGame] = useState(true);
   const [flag, setFlag] = useState(true);
+  const [scores, setScores] = useState({ xScore: 0, oScore: 0 });
   const [namePlayer, setNamePlayer] = useState("");
   const [idPlayer, setIdPlayer] = useState(0);
   const [stateRoom, setStateRoom] = useState(false);
-  const [currentCount, setCount] = useState(10000);
-  const [textWait, setTextWait] = useState("Wait to anothor Player to Join");
   const [over, setOver] = useState(false);
   const [waitState, setWaitState] = useState(false);
+  const [textWait, setTextWait] = useState("Wait to anothor Player to Join");
 
-  const [answer, setAnswer] = useState(1);
-  const [choices, setChoices] = useState(["2;4;6;8"]);
-  const [idQuestion, setIdQuestions] = useState(0);
-  const [title, setTitle] = useState("Answer Question and click next to Play");
+  const [countDown, setCountDown] = useState(1000);
+
+  const [lastId, setlastId] = useState(0);
+
+  const [roomQuestions, setRoomQuestions] = useState([]);
+
   const [timeTurn, setTimeTurn] = useState(10);
-  const [pointQu, setPointQu] = useState(0);
-  const [pointGa, setPointGa] = useState(2);
 
   const [searchParams] = useSearchParams();
   const PlayerName = searchParams.get("NamePlayer");
   const PlayerId = searchParams.get("PlayerId");
   const token = searchParams.get("token");
 
-  const getQuestion = async (token, id, setQuestions) => {
+  const getQuestion = async (token, id, setRoomQuestions) => {
     const {
       data: { data, success, limit },
     } = await getQuestionByRoom({ token, id });
     if (!success) console.log("error data");
     else {
       if (turn && limit) {
-        console.log("GameOver");
+        console.log("Game Over");
         setOver(true);
       } else {
-        setQuestions(data);
+        setRoomQuestions(data);
+        setTimeTurn(data[0]?.Rooms[0]?.TimeTurn);
       }
     }
   };
 
   useEffect(() => {
-    getQuestion(token, occurence, setQuestions);
+    getQuestion(token, lastId, setRoomQuestions);
     setIdPlayer(PlayerId);
     setNamePlayer(PlayerName);
 
@@ -71,11 +68,11 @@ function App() {
       setFlag(false);
       setStateRoom(false);
       socket.emit("setStateRoom");
-      setCount(timeTurn);
+      setCountDown(timeTurn);
     }
     socket.on("getStateRoom", () => {
       setStateRoom(false);
-      setCount(timeTurn);
+      setCountDown(timeTurn);
       setVisible(true);
     });
 
@@ -88,19 +85,11 @@ function App() {
       setTextWait(MsgOver);
       setWaitState(true);
     });
+  }, [lastId]);
 
-    if (questions.length != undefined) {
-      setIdQuestions(questions[0]["Question.id"]);
-      setAnswer(questions[0]["Question.answer"]);
-      setChoices(questions[0]["Question.choices"]);
-      setTitle(questions[0]["Question.title"]);
-      setPointQu(questions[0]["Question.point"]);
-      setPointGa(questions[0]["Rooms.point"]);
-      setTimeTurn(questions[0]["Rooms.TimeTurn"]);
-    }
-  }, [questions]);
+  const { Question: questions, Rooms } = roomQuestions[0] || {};
 
-  const pointGame = pointGa;
+  const pointGame = Rooms?.point;
 
   return (
     <>
@@ -108,21 +97,17 @@ function App() {
         <section className="SectionP1">
           {visible && turn ? (
             <Question
-              idPlayer={idPlayer}
               namePlayer={namePlayer}
-              questions={questions}
-              title={title}
-              choices={choices}
               setVisible={setVisible}
-              setOccurence={setOccurence}
               setPauseGame={setPauseGame}
               scores={scores}
               setScores={setScores}
-              currentCount={currentCount}
-              setCount={setCount}
-              answer={answer}
-              pointQu={pointQu}
-              idQuestion={idQuestion}
+              setCountDown={setCountDown}
+              countDown={countDown}
+              setlastId={setlastId}
+              lastId={lastId}
+              idPlayer={idPlayer}
+              questions={questions}
             />
           ) : (
             <Waiting namePlayer={namePlayer} text="Waiting " />
@@ -149,7 +134,7 @@ function App() {
               turn={turn}
               setTurn={setTurn}
               over={over}
-              setCount={setCount}
+              setCountDown={setCountDown}
               timeTurn={timeTurn}
             />
           </section>
@@ -161,7 +146,7 @@ function App() {
               namePlayer={player[1]}
               questions={questions}
               setVisible={setVisible}
-              setOccurence={setOccurence}
+              setlastId={setlastId}
               PauseGame={PauseGame}
               turn={turn}
               setTurn={setTurn}
@@ -178,6 +163,7 @@ function App() {
           namePlayer={namePlayer}
           text={textWait}
           waitState={waitState}
+          token={token}
         />
       </div>
     </>

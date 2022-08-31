@@ -16,7 +16,11 @@ function Questions() {
         <div className="gridRooms">
           <div className="grid">
             <h1>Questions</h1>
-            <Grid questions={questions} setQuestions={setQuestions} selected={false} />
+            <Grid
+              questions={questions}
+              setQuestions={setQuestions}
+              selected={false}
+            />
           </div>
           <div className="RoomsView">
             <h1>Rooms</h1>
