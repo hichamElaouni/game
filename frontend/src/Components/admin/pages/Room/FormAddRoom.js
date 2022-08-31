@@ -26,7 +26,7 @@ export default function FormAddRoom(props) {
     if (nameRoom === undefined) {
       NotificationManager.warning(" enter Name Room ", "warning", 3000);
     } else {
-      if (questionsSelected.length <= 10) {
+      if (questionsSelected.length <= 0) {
         NotificationManager.warning(
           " Please select the questions, you still need to selected = " +
             (10 - questionsSelected.length),
@@ -49,7 +49,7 @@ export default function FormAddRoom(props) {
           await addRoom({ rooms: Room, questionsSelected })
         );
 
-        setToken(135241654);
+        setToken(123456789);
         setAdding(false);
         setTitlePage("Rooms");
         setQuestionsSelected([]);

@@ -116,12 +116,9 @@ io.on("connection", (socket) => {
     let roomMemeberNumber = io.sockets.adapter.rooms.get(token) || 0;
 
     if (roomMemeberNumber && roomMemeberNumber.size > 2) {
-      console.log("🚀 roomMemeberNumber", roomMemeberNumber);
       socket.leave(token);
       socket.emit("RoomNotAvailable");
     } else {
-      console.log("🚀 roomMemeberNumber == ", roomMemeberNumber.size);
-
       if (roomMemeberNumber.size === 1) {
         id = 1;
         Turn = true;
@@ -171,6 +168,10 @@ io.on("connection", (socket) => {
 
   socket.on("setOver", (MsgOver) => {
     io.to(Room).emit("getOver", MsgOver);
+  });
+
+  socket.on("setResetGame", () => {
+    socket.to(Room).emit("getResetGame");
   });
 });
 

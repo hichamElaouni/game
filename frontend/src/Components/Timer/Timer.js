@@ -10,14 +10,14 @@ export default function Timer(props) {
     setScores,
     point,
     checkAnswer,
-    setOccurence,
+    setlastId,
     idQuestion,
-    currentCount,
-    setCount,
+    countDown,
+    setCountDown,
   } = props;
-  const timer = () => setCount(currentCount - 1);
-  if (!currentCount) {
-    setOccurence(idQuestion);
+  const timer = () => setCountDown(countDown - 1);
+  if (!countDown) {
+    setlastId(idQuestion);
     setPauseGame(false);
     setVisible(false);
 
@@ -36,16 +36,16 @@ export default function Timer(props) {
     }
   }
   useEffect(() => {
-    if (currentCount <= 0) {
+    if (countDown <= 0) {
       return;
     }
     const id = setInterval(timer, 1000);
 
     return () => clearInterval(id);
-  }, [currentCount]);
+  }, [countDown]);
   return (
     <span className="timer" id="timer">
-      {currentCount} s
+      {countDown} s
     </span>
   );
 }

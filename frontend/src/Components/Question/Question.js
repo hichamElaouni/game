@@ -5,7 +5,7 @@ import { socket } from "../service/socket";
 
 const NextQuestion = (
   setVisible,
-  setOccurence,
+  setlastId,
   setPauseGame,
   checkAnswer,
   idPlayer,
@@ -14,7 +14,7 @@ const NextQuestion = (
   point,
   idQuestion
 ) => {
-  setOccurence(idQuestion);
+  setlastId(idQuestion);
   setPauseGame(false);
   setVisible(false);
 
@@ -39,22 +39,22 @@ export default function Question(props) {
     namePlayer,
     questions = {},
     setVisible,
-    setOccurence,
+    setlastId,
     setPauseGame,
-    currentCount,
-    setCount,
+    countDown,
+    setCountDown,
     scores,
     setScores,
-    title,
-    choices,
-    answer,
-    pointQu,
-    idQuestion,
   } = props;
 
   const [checkAnswer, setChaeckAnswer] = useState(false);
+  let idQuestion = questions.id;
+  console.log(
+    "🚀 ~ file: Question.js ~ line 52 ~ Question ~ questions",
+    questions
+  );
   const onclick = (event) => {
-    if (answer === event.target.value * 1) {
+    if (questions?.answer === event?.target?.value * 1) {
       setChaeckAnswer(true);
     } else {
       setChaeckAnswer(false);
@@ -62,12 +62,10 @@ export default function Question(props) {
   };
   let Choices = ";";
 
-  if (choices === undefined) {
-  } else {
-    Choices = choices.toString();
-  }
+  if (!(questions?.choices === undefined))
+    Choices = questions?.choices.toString();
 
-  const point = pointQu;
+  const point = 2;
 
   return (
     <div className="players ">
@@ -82,11 +80,11 @@ export default function Question(props) {
           scores={scores}
           setScores={setScores}
           point={point}
-          setOccurence={setOccurence}
-          currentCount={currentCount}
-          setCount={setCount}
+          setlastId={setlastId}
+          countDown={countDown}
+          setCountDown={setCountDown}
         />
-        <h2 className="TitleQuestion">{title}</h2>
+        <h2 className="TitleQuestion">{questions?.title}</h2>
 
         <div className="container">
           <ListChoices choice={Choices.split(";")} onclick={onclick} />
@@ -99,10 +97,10 @@ export default function Question(props) {
           onClick={() =>
             NextQuestion(
               setVisible,
-              setOccurence,
+              setlastId,
               setPauseGame,
               checkAnswer,
-              // setTurn,
+
               idPlayer,
               scores,
               setScores,
