@@ -6,22 +6,13 @@ import {
   deleteQuestion,
   updateQuestion,
 } from "../../service/api";
+
 import { NotificationManager } from "react-notifications";
 import "react-notifications/lib/notifications.css";
-const getQuestions = async (setQuestions) => {
-  const {
-    data: { data, success },
-  } = await getAllQUestions();
-  if (!success) console.log("error data");
-  else setQuestions(data);
-};
 
 const Grid = (props) => {
   const [open, setOpen] = useState(false);
   const { questions, setQuestions, getselectedQuestions, selected } = props;
-  useEffect(() => {
-    getQuestions(setQuestions);
-  }, []);
 
   const [editFormData, setEditFormData] = useState({
     title: "",
@@ -67,7 +58,11 @@ const Grid = (props) => {
     setQuestions(newQuestions);
     seteditQuestionid(null);
 
-    NotificationManager.info("succufully Editing", "Info", 3000);
+    NotificationManager.success(
+      "succufully Editing",
+      "Question updated ",
+      3000
+    );
   };
 
   const handleEditClick = (event, question) => {
@@ -94,9 +89,9 @@ const Grid = (props) => {
     newQuestions.splice(index, 1);
     setOpen(false);
 
-    NotificationManager.info(
+    NotificationManager.success(
       " succufully  deleted ",
-      "info",
+      "Question deleted",
       3000,
       await deleteQuestion(questionId)
     );

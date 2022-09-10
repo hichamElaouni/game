@@ -59,8 +59,8 @@ const addRoom = async (data) => {
 const deleteRoom = async (id) =>
   await axios.delete(`http://${fullUrl}/db/room/${id}`);
 
-const updateRoom = async (id, questionData) =>
-  await axios.put(`http://${fullUrl}/db/room`, { id, questionData });
+const updateRoom = async (id, token) =>
+  await axios.put(`http://${fullUrl}/db/room`, { id, token });
 
 // const getAllRoomsGames = async (idroom) => {
 //   await axios.get(`http://${fullUrl}/db/roomgames?idroom=${idroom}`);
@@ -73,6 +73,24 @@ const getQuestionByRoom = async (data) =>
   await axios.post(`http://${fullUrl}/db/questionByRoom`, data);
 
 /**Rooms */
+
+/**Students */
+const getStudentById = async (id) =>
+  await axios.get(`http://${fullUrl}/db/student/${id}`);
+
+const getAllStudents = async () =>
+  await axios.get(`http://${fullUrl}/db/students`);
+
+const addStudent = async (data) => {
+  await axios.post(`http://${fullUrl}/db/student`, data);
+};
+
+const deleteStudent = async (id) =>
+  await axios.delete(`http://${fullUrl}/db/student/${id}`);
+
+const updateStudent = async (id, data) =>
+  await axios.put(`http://${fullUrl}/db/student`, { id, data });
+/***Students */
 export {
   /**Questions */
   getAllQUestions,
@@ -101,4 +119,13 @@ export {
   addQuestionsRoom,
   /**Rooms */
   getQuestionByRoom,
+
+  /**Students */
+  getAllStudents,
+  getStudentById,
+  addStudent,
+  deleteStudent,
+  updateStudent,
+
+  /**Students */
 };

@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
+
 import "./waiting.css";
 import CircularIndeterminate from "./CircularIndeterminate";
 import { useNavigate } from "react-router-dom";
 
 export default function Waiting(props) {
-  let navigate = useNavigate();
   const { namePlayer, text, waitState, token } = props;
+  let navigate = useNavigate();
 
   return (
     <div className="players ">

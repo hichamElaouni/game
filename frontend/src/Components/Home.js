@@ -27,8 +27,6 @@ function App() {
 
   const [roomQuestions, setRoomQuestions] = useState([]);
 
-  const [timeTurn, setTimeTurn] = useState(10);
-
   const [searchParams] = useSearchParams();
   const PlayerName = searchParams.get("NamePlayer");
   const PlayerId = searchParams.get("PlayerId");
@@ -45,7 +43,7 @@ function App() {
         setOver(true);
       } else {
         setRoomQuestions(data);
-        setTimeTurn(data[0]?.Rooms[0]?.TimeTurn);
+        setCountDown(data[0]?.Rooms[0]?.TimeTurn);
       }
     }
   };
@@ -68,11 +66,9 @@ function App() {
       setFlag(false);
       setStateRoom(false);
       socket.emit("setStateRoom");
-      setCountDown(timeTurn);
     }
     socket.on("getStateRoom", () => {
       setStateRoom(false);
-      setCountDown(timeTurn);
       setVisible(true);
     });
 
@@ -135,11 +131,12 @@ function App() {
               setTurn={setTurn}
               over={over}
               setCountDown={setCountDown}
-              timeTurn={timeTurn}
+              countDown={countDown}
             />
           </section>
         </div>
-        {/* <section className="SectionP2">
+        <>
+          {/* <section className="SectionP2">
           {!visible && !turn ? (
             <Question
               idPlayer={2}
@@ -157,6 +154,7 @@ function App() {
             <WaitQuestion namePlayer={player[1]} />
           )}
         </section> */}
+        </>
       </div>
       <div className={`div-wait ${stateRoom ? "start-Playing" : ""} `}>
         <Waiting

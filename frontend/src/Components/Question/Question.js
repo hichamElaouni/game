@@ -17,7 +17,6 @@ const NextQuestion = (
   setlastId(idQuestion);
   setPauseGame(false);
   setVisible(false);
-
   if (checkAnswer) {
     if (idPlayer * 1 === 1) {
       let { xScore } = scores;
@@ -49,10 +48,7 @@ export default function Question(props) {
 
   const [checkAnswer, setChaeckAnswer] = useState(false);
   let idQuestion = questions.id;
-  console.log(
-    "🚀 ~ file: Question.js ~ line 52 ~ Question ~ questions",
-    questions
-  );
+
   const onclick = (event) => {
     if (questions?.answer === event?.target?.value * 1) {
       setChaeckAnswer(true);
@@ -100,7 +96,6 @@ export default function Question(props) {
               setlastId,
               setPauseGame,
               checkAnswer,
-
               idPlayer,
               scores,
               setScores,

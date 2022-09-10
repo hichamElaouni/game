@@ -1,49 +1,96 @@
-import React from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Student from "./Student";
 import "./Students.css";
-import Data from "./DataStudents.json";
+import CustomBtns from "../../../Setings/CustomBtns";
+import { NotificationManager, NotificationContainer } from "react-notifications";
+import "react-notifications/lib/notifications.css";
+import StudentReadOnly from "./StudentReadOnly";
+import AddStudent from "./AddStudent";
 import FilterStudents from "./FilterStudents";
+import {
+  getAllStudents,
+  deleteStudent,
+  updateStudent,
+  addStudent,
+} from "../../../service/api";
+
+const getStudents = async (setStudents) => {
+  const {
+    data: { data, success },
+  } = await getAllStudents();
+  if (!success) console.log("error data");
+  else {
+    setStudents(data);
+  }
+};
 
 export default function ListStudents() {
+  const [students, setStudents] = useState([]);
+  const [readAdd, setReadAdd] = useState(true);
+  const [newDataStudent, setNewDataStudent] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    telephone: "",
+    adress: "",
+    dateBorn: "",
+    classStudent: "",
+    losses: 0,
+    victories: 0,
+    point: 0
+
+  })
+  useEffect(() => {
+    getStudents(setStudents);
+  }, []);
+
+  const getInfoStudent = async (event) => {
+    const fieldName = event.target.getAttribute("name");
+    const fieldValue = event.target.value;
+    const newFormData = { ...newDataStudent };
+    newFormData[fieldName] = fieldValue;
+
+    setNewDataStudent(newFormData);
+
+    console.log("🚀 ~ file: ListStudents.js ~ line 53 ~ addStudent ~ newDataStudent", newDataStudent)
+  }
+
+  const addNewStudent = async () => {
+    NotificationManager.success(
+      "succufully Editing",
+      "Question updated ",
+      3000, await addStudent(newDataStudent)
+    );
+
+    setReadAdd(true)
+
+
+  }
+
   return (
     <>
       <div className="boxs">
         <div className="Boxstudent">
           <div className="imgsingel"></div>
-          <div className="textBox">
-            <div className="titlebox">
-              <h2>Full Name Student</h2>
-              <h3>{Data[0].FullNameStudent}</h3>
-            </div>
-            <div className="titlebox">
-              <h2>point</h2>
-              <h3>{Data[0].point}</h3>
-            </div>
+          {readAdd ? <StudentReadOnly /> : <AddStudent getInfoStudent={getInfoStudent} />}
 
-            <div className="titlebox">
-              <h2>class Student</h2>
-              <h3>{Data[0].classStudent}</h3>
-            </div>
+          <div className="btnAdd" style={{ right: "2%" }}>
+            <CustomBtns stateBts={true} singleStudent={true} readAdd={readAdd} setReadAdd={setReadAdd} saveClick={addNewStudent} />
 
-            <div className="titlebox">
-              <h2>email</h2>
-              <h3>{Data[0].email}</h3>
-            </div>
           </div>
         </div>
         <div className="Boxfilter">
           <FilterStudents />
         </div>
         <div className="ListStudents">
-          {Data.map((dataStudent) => (
-            <Student
-              title={dataStudent.FullNameStudent}
-              point={dataStudent.point}
-              classStudent={dataStudent.classStudent}
-            />
+          {students.map((dataStudent, key) => (
+            <Fragment key={key}>
+              <Student dataStudent={dataStudent} readAdd={readAdd} />
+            </Fragment>
           ))}
         </div>
       </div>
+      <NotificationContainer />
     </>
   );
 }

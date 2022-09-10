@@ -12,12 +12,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-
       email: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-
       password: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -34,6 +32,18 @@ module.exports = {
       point: {
         allowNull: false,
         type: Sequelize.INTEGER(11),
+      },
+      victories: {
+        allowNull: false,
+        type: Sequelize.INTEGER(11),
+      },
+      losses: {
+        allowNull: false,
+        type: Sequelize.INTEGER(11),
+      },
+      adress: {
+        allowNull: false,
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,

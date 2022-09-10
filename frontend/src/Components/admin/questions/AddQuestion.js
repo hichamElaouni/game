@@ -51,7 +51,7 @@ export default function AddQuestion(props) {
       event.target[2].value = "";
       event.target[3].value = "";
 
-      NotificationManager.success("succufully added", newQuestion.title, 4000);
+      NotificationManager.success("succufully added", newQuestion.title, 3000);
       setAnswerNumber(false);
     } else {
       NotificationManager.error(

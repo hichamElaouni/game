@@ -74,6 +74,7 @@
   justify-content: space-around;
   text-align: center;
   padding: 3px;
+  gap: 20px;
 }
 .infoRoom {
   display: none;
@@ -93,15 +94,6 @@
 
 .Room:hover .infoRoom {
   display: flex;
-}
-
-.btnAdd {
-  position: absolute;
-  justify-content: flex-end;
-  display: flex;
-  bottom: 7%;
-  padding-right: 26px;
-  right: 5%;
 }
 
 .div-Add-Room {

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "../../questions/Grid";
 import CustumCombobox from "../../../Setings/CustumCombobox";
-import { addRoom, getAllRooms, addQuestionsRoom } from "../../../service/api";
+import { addRoom, getAllQUestions } from "../../../service/api";
 import IconButton from "@material-ui/core/IconButton";
 import Add from "@material-ui/icons/Add";
 import NumberPicker from "react-widgets/NumberPicker";
@@ -21,6 +21,20 @@ export default function FormAddRoom(props) {
   const [point, setPoint] = useState(2);
   const [timeRoom, setTimeRoom] = useState(15);
   const [nameRoom, setNameRoom] = useState();
+
+  const getQuestions = async (setQuestions) => {
+    const {
+      data: { data, success },
+    } = await getAllQUestions();
+    if (!success) console.log("error data");
+    else {
+      setQuestions(data);
+    }
+  };
+
+  useEffect(() => {
+    getQuestions(setQuestions);
+  }, []);
 
   const ConfirmAdd = async (event) => {
     if (nameRoom === undefined) {
@@ -42,7 +56,7 @@ export default function FormAddRoom(props) {
           idGame: 1,
         };
 
-        NotificationManager.info(
+        NotificationManager.success(
           " succufully  Adding ",
           "info",
           3000,
@@ -50,6 +64,7 @@ export default function FormAddRoom(props) {
         );
 
         setToken(123456789);
+
         setAdding(false);
         setTitlePage("Rooms");
         setQuestionsSelected([]);

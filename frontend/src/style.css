@@ -42,7 +42,15 @@ li {
 a {
   text-decoration: none;
 }
-
+.btnAdd {
+  position: absolute;
+  justify-content: flex-end;
+  display: flex;
+  bottom: 7%;
+  padding-right: 26px;
+  right: 5%;
+  z-index: 3;
+}
 /*====================end nav========================*/
 
 /*===================players=========================*/

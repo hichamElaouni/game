@@ -190,8 +190,8 @@ tr:hover .trActions {
 
 .view {
   display: flex;
-  width: 30%;
-  height: 14vh;
+  width: 170px;
+  height: 170px;
   align-items: center;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -206,16 +206,19 @@ tr:hover .trActions {
   cursor: pointer;
 }
 .view:hover {
-  width: 31;
-  height: 15vh;
+  width: 175px;
+  height: 175px;
   box-shadow: 0px 0px 4px 0px green;
+}
+.view:active {
+  box-shadow: 0px 0px 4px 0px rgb(77, 221, 77);
 }
 .titleRoom {
   border-radius: 4px 4px 0 0;
   align-content: stretch;
   text-align: center;
   width: 100%;
-  font-size: 14px;
+  font-size: 20px;
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
   background: rgb(235, 242, 239);
@@ -253,6 +256,8 @@ tr:hover .trActions {
   width: 100%;
   position: relative;
   display: flex;
+  text-align: initial;
+  padding-left: 5px;
 }
 
 .AnswerNumber {

@@ -1,10 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Room from "./Room";
 import CustumCombobox from "../../../Setings/CustumCombobox";
-import { getAllRooms, deleteRoom } from "../../../service/api";
+import { getAllRooms, deleteRoom, updateRoom } from "../../../service/api";
 import IconButton from "@material-ui/core/IconButton";
 import Add from "@material-ui/icons/Add";
-import Modal from "react-modal";
 import {
   NotificationContainer,
   NotificationManager,
@@ -12,46 +11,48 @@ import {
 import FormAddRoom from "./FormAddRoom";
 import md5 from "md5";
 
-const customStyles = {
-  content: {
-    backgroundColor: "red",
-  },
-};
-
 export default function ListRooms() {
   const [rooms, setRooms] = useState([]);
   const [adding, setAdding] = useState(false);
   const [titlePage, setTitlePage] = useState("Rooms");
   const [token, setToken] = useState("");
 
-  const [modalIsOpen, setIsOpen] = useState(false);
-
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
-
   const getRooms = async (setRooms) => {
     const {
       data: { data, success },
     } = await getAllRooms();
     if (!success) console.log("error data");
-    else setRooms(data);
+    else {
+      setRooms(data);
+    }
   };
 
   const deleted_Room = async (event) => {
     const RoomId = event.currentTarget.id;
-    console.log("RoomId==> ", RoomId);
-    NotificationManager.info(
+    NotificationManager.success(
       " succufully  deleted ",
       "info",
       3000,
       await deleteRoom(RoomId)
     );
-    //await deleteRoom(RoomId);
+    setToken(123456789);
+  };
+
+  const updateToken = async (event) => {
+    const RoomId = event.currentTarget.id;
+
+    let token = md5(Math.random().toFixed(4) * 1000).slice(0, 15);
+    NotificationManager.success(
+      " succufully Updated ",
+      "info",
+      3000,
+      await updateRoom(RoomId, token)
+    );
   };
 
   useEffect(() => {
     getRooms(setRooms);
-  }, [room]);
+  }, [token]);
 
   const add_Room = () => {
     setAdding(true);
@@ -76,6 +77,7 @@ export default function ListRooms() {
                 <Room
                   room={room}
                   deleted_Room={deleted_Room}
+                  updateToken={updateToken}
                   NotificationManager={NotificationManager}
                 />
               </div>
@@ -95,14 +97,7 @@ export default function ListRooms() {
         </div>
       </div>
       <NotificationContainer />
-      {/* <Modal
-        isOpen={adding}
-        onRequestClose={closeModal}
-        shouldCloseOnOverlayClick={true}
-        shouldCloseOnEsc={true}
-        className="mod"
-        style={customStyles}
-      > */}
+
       {adding ? (
         <div className="div-Add-Room">
           <FormAddRoom
@@ -117,8 +112,6 @@ export default function ListRooms() {
       ) : (
         console.log("")
       )}
-
-      {/* </Modal> */}
     </>
   );
 }

@@ -15,7 +15,7 @@ export default function Timer(props) {
     countDown,
     setCountDown,
   } = props;
-  const timer = () => setCountDown(countDown - 1);
+
   if (!countDown) {
     setlastId(idQuestion);
     setPauseGame(false);
@@ -35,14 +35,15 @@ export default function Timer(props) {
       }
     }
   }
+
   useEffect(() => {
     if (countDown <= 0) {
       return;
     }
-    const id = setInterval(timer, 1000);
-
+    const id = setInterval(() => setCountDown(countDown - 1), 1000);
     return () => clearInterval(id);
   }, [countDown]);
+
   return (
     <span className="timer" id="timer">
       {countDown} s

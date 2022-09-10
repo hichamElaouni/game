@@ -118,7 +118,7 @@ const getAllStudents = async (req, res) => {
       limit: parseInt(limit) || null,
       offset: parseInt(offset) || null,
     });
-    res.status(200).json({ success: true, data: questions });
+    res.status(200).json({ success: true, data: students });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, message: error.message });
@@ -181,9 +181,20 @@ const getAllRooms = async (req, res) => {
     const { limit, page } = req.query;
     const offset = getOffset(limit, page);
 
+    db.Rooms.belongsTo(db.Games, {
+      foreignKey: "idGame",
+      sourceKey: "id",
+    });
+
     const rooms = await db.Rooms.findAll({
       limit: parseInt(limit) || null,
       offset: parseInt(offset) || null,
+
+      include: [
+        {
+          model: db.Games,
+        },
+      ],
     });
     res.status(200).json({ success: true, data: rooms });
   } catch (error) {
@@ -244,11 +255,14 @@ const addRoom = async (req, res) => {
 
 const updateRoom = async (req, res) => {
   try {
-    const { id, roomData } = req.body;
+    const { id, token } = req.body;
 
-    const result = await db.Rooms.update(roomData, {
-      where: { id: id },
-    });
+    const result = await db.Rooms.update(
+      { token: token },
+      {
+        where: { id: id },
+      }
+    );
     res.status(200).json({ success: true, result });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -335,6 +349,10 @@ const updateQuestionsRoom = async (req, res) => {
 const getQuestionByRoom = async (req, res) => {
   try {
     const { token, idRoom, id = 0 } = req.body;
+    console.log(
+      "🚀 ~ file: controller.js ~ line 352 ~ getQuestionByRoom ~ req.body",
+      req.body
+    );
 
     if (token < 0 && !token && !idRoom)
       return res

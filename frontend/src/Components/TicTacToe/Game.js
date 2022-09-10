@@ -15,7 +15,7 @@ const Game = (props) => {
     setTurn,
     over,
     idPlayer,
-    timeTurn,
+    countDown,
     setCountDown,
   } = props;
   const WIN_CONDITIONS = [
@@ -54,7 +54,7 @@ const Game = (props) => {
     setBoard(updatedBoard);
     setTurn(turn);
 
-    setCountDown(timeTurn);
+    setCountDown(countDown);
   });
 
   socket.on("getwin", (winMessage) => {
@@ -100,7 +100,7 @@ const Game = (props) => {
 
     setTurn(!turn);
 
-    console.log("**** ", index);
+    console.log("** index ** ", index);
 
     socket.emit("switch_turn", { turn, updatedBoard });
     let { oScore } = scores;
