@@ -111,7 +111,7 @@ let Room = "";
 // });
 
 io.on("connection", (socket) => {
-  socket.on("joinRoom", ({ token }) => {
+  socket.on("joinRoom", ({ token, name }) => {
     socket.join(token);
     let roomMemeberNumber = io.sockets.adapter.rooms.get(token) || 0;
 
@@ -128,14 +128,14 @@ io.on("connection", (socket) => {
         Turn = false;
       }
 
-      socket.emit("playing", id);
+      socket.emit("Startplaying", id, name);
 
       Room = token;
     }
   });
 
-  socket.on("setPlayer", (namePlayer) => {
-    socket.to(Room).emit("getPlayer", namePlayer);
+  socket.on("setPlayer", (player) => {
+    socket.to(Room).emit("getPlayer", player);
   });
 
   socket.on("setScore", (scores) => {
@@ -158,8 +158,12 @@ io.on("connection", (socket) => {
     socket.to(Room).emit("getwin", winMessage);
   });
 
-  socket.on("setStateRoom", () => {
-    socket.to(Room).emit("getStateRoom");
+  socket.on("setStateRoom", (Student) => {
+    socket.to(Room).emit("getStateRoom", Student);
+  });
+
+  socket.on("setStudentsPlay", (StudentsPlay) => {
+    socket.to(Room).emit("getStudentsPlay", StudentsPlay);
   });
 
   socket.on("setGameOver", () => {

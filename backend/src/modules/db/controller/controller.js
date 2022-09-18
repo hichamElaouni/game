@@ -1,4 +1,5 @@
 import * as db from "../../../../models";
+import bcrypt from "bcrypt";
 const { Op, LOCK, json } = require("sequelize");
 /**
  *
@@ -143,8 +144,10 @@ const getStudentById = async (req, res) => {
 };
 const addStudent = async (req, res) => {
   try {
-    const students = req.body;
-    const result = await db.Students.create(students);
+    const { id, ...rest } = req.body;
+    // const password = bcrypt.hashSync(ps, bcrypt.genSaltSync(8), null);
+    // const student = { password, rest };
+    const result = await db.Students.create(rest);
     res.status(201).json({ success: true, result });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -154,7 +157,6 @@ const addStudent = async (req, res) => {
 const updateStudent = async (req, res) => {
   try {
     const { id, studentData } = req.body;
-
     const result = await db.Students.update(studentData, {
       where: { id: id },
     });
@@ -349,10 +351,6 @@ const updateQuestionsRoom = async (req, res) => {
 const getQuestionByRoom = async (req, res) => {
   try {
     const { token, idRoom, id = 0 } = req.body;
-    console.log(
-      "🚀 ~ file: controller.js ~ line 352 ~ getQuestionByRoom ~ req.body",
-      req.body
-    );
 
     if (token < 0 && !token && !idRoom)
       return res
@@ -402,7 +400,29 @@ const getQuestionByRoom = async (req, res) => {
       .status(200)
       .json({ success: true, data, limit: data.length ? false : true });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+const getStudentByEmail = async (req, res) => {
+  try {
+    const { emailPlayer, passwordPlayer } = req.body;
+
+    const data = await db.Students.findOne({
+      where: { email: emailPlayer },
+    });
+    if (data) {
+      // const password_valid = await compare(passwordPlayer, data.password);
+      if (passwordPlayer === data.password) {
+        // token = jwt.sign({ "id" : user.id,"email" : user.email,"first_name":user.first_name },process.env.SECRET);
+        res.status(200).json({ data: data });
+      } else {
+        res.status(400).json({ error: "Password Incorrect" });
+      }
+    } else {
+      res.status(404).json({ error: "Email does not exist" });
+    }
+  } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
 };
@@ -421,6 +441,8 @@ module.exports = {
   addStudent,
   updateStudent,
   deleteStudent,
+
+  getStudentByEmail,
 
   getAllRooms,
   getRoomById,

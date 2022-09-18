@@ -45,7 +45,7 @@
 }
 
 .textBox {
-  width: 55%;
+  width: 70%;
   height: 100%;
   position: absolute;
   float: right;
@@ -66,7 +66,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   background: #194a5d;
-  width: 60%;
+  width: 45%;
   color: white;
   padding: 3px;
   border-radius: 4px;
@@ -144,6 +144,7 @@
   color: #000;
   cursor: pointer;
 }
+
 .nameStudents {
   border-radius: 4px 4px 0 0;
   align-content: stretch;
@@ -207,4 +208,7 @@
   bottom: 1%;
   flex-direction: column;
   row-gap: 4px;
+}
+.student:active {
+  box-shadow: 0px 0px 2.5px 0.8px #04b804;
 }

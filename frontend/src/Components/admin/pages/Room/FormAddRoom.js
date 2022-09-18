@@ -134,7 +134,7 @@ export default function FormAddRoom(props) {
         />
       </div>
 
-      <div className="btnAdd" style={{ right: "8%", bottom: "7%" }}>
+      <div className="btnAdd" style={{ right: "5%", bottom: "6%" }}>
         <IconButton
           aria-label="Add"
           style={{

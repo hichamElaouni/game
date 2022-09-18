@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       password: DataTypes.STRING,
       telephone: DataTypes.STRING,
       adress: DataTypes.STRING,
-      dateBorn: DataTypes.DATE,
+      dateBorn: DataTypes.STRING,
       classStudent: DataTypes.STRING,
       losses: DataTypes.INTEGER(11),
       victories: DataTypes.INTEGER(11),

@@ -27,7 +27,10 @@ const getStudents = async (setStudents) => {
 export default function ListStudents() {
   const [students, setStudents] = useState([]);
   const [readAdd, setReadAdd] = useState(true);
-  const [newDataStudent, setNewDataStudent] = useState({
+  const [edit, setEdit] = useState(true);
+
+
+  const initialStateStudent = {
     fullName: "",
     email: "",
     password: "",
@@ -38,21 +41,32 @@ export default function ListStudents() {
     losses: 0,
     victories: 0,
     point: 0
+  }
+  const [newDataStudent, setNewDataStudent] = useState(initialStateStudent)
+  const [refPage, setRefPage] = useState(0)
+  const [studentSelected, setStudentSelected] = useState(initialStateStudent)
 
-  })
+
+
   useEffect(() => {
     getStudents(setStudents);
-  }, []);
+  }, [refPage]);
 
-  const getInfoStudent = async (event) => {
+  const getInfoStudent = (event) => {
+
     const fieldName = event.target.getAttribute("name");
     const fieldValue = event.target.value;
+
     const newFormData = { ...newDataStudent };
     newFormData[fieldName] = fieldValue;
 
     setNewDataStudent(newFormData);
 
-    console.log("🚀 ~ file: ListStudents.js ~ line 53 ~ addStudent ~ newDataStudent", newDataStudent)
+  }
+
+  const cancelData = () => {
+    setReadAdd(true);
+    setEdit(true);
   }
 
   const addNewStudent = async () => {
@@ -63,19 +77,64 @@ export default function ListStudents() {
     );
 
     setReadAdd(true)
+    setRefPage(Math.random());
+  }
 
+  const setCompAddStudent = () => {
+    setReadAdd(false);
+    setStudentSelected(initialStateStudent);
+  }
+
+  const setEditStudent = async () => {
+    setEdit(false);
+    setNewDataStudent(studentSelected);
 
   }
+
+  const saveUpdateStudent = async (event) => {
+
+
+    NotificationManager.success(" succufully  Updated ",
+      "info",
+      3000,
+      await updateStudent(studentSelected.id, newDataStudent)
+    );
+    setEdit(true);
+    setRefPage(Math.random());
+    setStudentSelected(newDataStudent)
+  };
+
+  const removeStudent = async (event) => {
+    const studentId = event.currentTarget.id;
+    NotificationManager.success(
+      " succufully  deleted ",
+      "info",
+      3000,
+      await deleteStudent(studentId)
+    );
+    setRefPage(Math.random());
+  };
 
   return (
     <>
       <div className="boxs">
-        <div className="Boxstudent">
+        <div className="Boxstudent" >
           <div className="imgsingel"></div>
-          {readAdd ? <StudentReadOnly /> : <AddStudent getInfoStudent={getInfoStudent} />}
+          {readAdd & edit ? <StudentReadOnly studentSelected={studentSelected} />
+            :
+            <AddStudent getInfoStudent={getInfoStudent} studentSelected={studentSelected} />}
 
           <div className="btnAdd" style={{ right: "2%" }}>
-            <CustomBtns stateBts={true} singleStudent={true} readAdd={readAdd} setReadAdd={setReadAdd} saveClick={addNewStudent} />
+            <CustomBtns stateBts={true}
+              singleStudent={true}
+              readAdd={readAdd}
+              setReadAdd={setReadAdd}
+              setCompAddStudent={setCompAddStudent}
+              saveData={edit ? addNewStudent : saveUpdateStudent}
+              edit={edit}
+              cancelData={cancelData}
+
+            />
 
           </div>
         </div>
@@ -84,8 +143,14 @@ export default function ListStudents() {
         </div>
         <div className="ListStudents">
           {students.map((dataStudent, key) => (
-            <Fragment key={key}>
-              <Student dataStudent={dataStudent} readAdd={readAdd} />
+            <Fragment key={dataStudent[key]}>
+
+              <Student dataStudent={dataStudent} readAdd={readAdd}
+                setStudentSelected={setStudentSelected}
+                setEditStudent={setEditStudent}
+                removeStudent={removeStudent}
+                saveUpdateStudent={saveUpdateStudent}
+              />
             </Fragment>
           ))}
         </div>

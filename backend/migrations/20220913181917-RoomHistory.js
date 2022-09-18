@@ -1,49 +1,58 @@
 "use strict";
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return await queryInterface.createTable("Students", {
+    return await queryInterface.createTable("RoomHistory", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER(11),
       },
-      fullName: {
-        type: Sequelize.STRING,
+      idRoom: {
         allowNull: false,
+        type: Sequelize.INTEGER(11),
+        references: {
+          model: {
+            tableName: "Rooms",
+          },
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
       },
-      email: {
-        type: Sequelize.STRING,
+      idStudent_1: {
         allowNull: false,
+        type: Sequelize.INTEGER(11),
+        references: {
+          model: {
+            tableName: "Students",
+          },
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
       },
-      password: {
-        type: Sequelize.STRING,
+      idStudent_2: {
         allowNull: false,
+        type: Sequelize.INTEGER(11),
+        references: {
+          model: {
+            tableName: "Students",
+          },
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
       },
-      classStudent: {
-        type: Sequelize.STRING,
-      },
-      telephone: {
-        type: Sequelize.STRING,
-      },
-      dateBorn: {
-        type: Sequelize.STRING,
-      },
-      point: {
-        allowNull: false,
+      StudentWins: {
         type: Sequelize.INTEGER(11),
       },
       victories: {
-        allowNull: false,
         type: Sequelize.INTEGER(11),
       },
       losses: {
-        allowNull: false,
         type: Sequelize.INTEGER(11),
-      },
-      adress: {
-        allowNull: false,
-        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,

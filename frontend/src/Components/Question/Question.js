@@ -12,11 +12,24 @@ const NextQuestion = (
   scores,
   setScores,
   point,
-  idQuestion
+  idQuestion,
+  questionHistory,
+  setQuestionHistory,
+  answerSelected
 ) => {
   setlastId(idQuestion);
   setPauseGame(false);
   setVisible(false);
+
+  setQuestionHistory([
+    ...questionHistory,
+    {
+      idQuestion: idQuestion,
+      idStudent: idPlayer,
+      answerSelected: !answerSelected ? 0 : answerSelected,
+    },
+  ]);
+
   if (checkAnswer) {
     if (idPlayer * 1 === 1) {
       let { xScore } = scores;
@@ -44,24 +57,25 @@ export default function Question(props) {
     setCountDown,
     scores,
     setScores,
+    questionHistory,
+    setQuestionHistory,
   } = props;
 
   const [checkAnswer, setChaeckAnswer] = useState(false);
+  const [answerSelected, setAnswerSelected] = useState();
+
   let idQuestion = questions.id;
 
   const onclick = (event) => {
-    if (questions?.answer === event?.target?.value * 1) {
-      setChaeckAnswer(true);
-    } else {
-      setChaeckAnswer(false);
-    }
+    setAnswerSelected(event?.target?.value);
+    setChaeckAnswer(questions?.answer === event?.target?.value * 1);
   };
   let Choices = ";";
 
   if (!(questions?.choices === undefined))
     Choices = questions?.choices.toString();
 
-  const point = 2;
+  const point = questions?.point;
 
   return (
     <div className="players ">
@@ -100,7 +114,10 @@ export default function Question(props) {
               scores,
               setScores,
               point,
-              idQuestion
+              idQuestion,
+              questionHistory,
+              setQuestionHistory,
+              answerSelected
             )
           }
         ></input>

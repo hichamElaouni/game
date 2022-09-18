@@ -74,6 +74,9 @@ const getQuestionByRoom = async (data) =>
 
 /**Rooms */
 
+const getStudentByEmail = async (data) =>
+  await axios.post(`http://${fullUrl}/db/studentByEmail`, data);
+
 /**Students */
 const getStudentById = async (id) =>
   await axios.get(`http://${fullUrl}/db/student/${id}`);
@@ -88,8 +91,8 @@ const addStudent = async (data) => {
 const deleteStudent = async (id) =>
   await axios.delete(`http://${fullUrl}/db/student/${id}`);
 
-const updateStudent = async (id, data) =>
-  await axios.put(`http://${fullUrl}/db/student`, { id, data });
+const updateStudent = async (id, studentData) =>
+  await axios.put(`http://${fullUrl}/db/student`, { id, studentData });
 /***Students */
 export {
   /**Questions */
@@ -126,6 +129,6 @@ export {
   addStudent,
   deleteStudent,
   updateStudent,
-
+  getStudentByEmail,
   /**Students */
 };

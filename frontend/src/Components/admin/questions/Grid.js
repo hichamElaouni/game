@@ -1,11 +1,7 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment } from "react";
 import ReadOnlyRow from "./ReadOnlyRow";
 import EditableRow from "./EditableRow";
-import {
-  getAllQUestions,
-  deleteQuestion,
-  updateQuestion,
-} from "../../service/api";
+import { deleteQuestion, updateQuestion } from "../../service/api";
 
 import { NotificationManager } from "react-notifications";
 import "react-notifications/lib/notifications.css";

@@ -14,7 +14,7 @@ const Game = (props) => {
     turn,
     setTurn,
     over,
-    idPlayer,
+    Player,
     countDown,
     setCountDown,
   } = props;
@@ -82,6 +82,7 @@ const Game = (props) => {
       if (winner === "circle") {
         let { oScore } = scores;
         oScore += pointGame;
+
         winMessage = "Circle win";
         setScores({ ...scores, oScore });
         socket.emit("setoScore", oScore);
@@ -108,9 +109,9 @@ const Game = (props) => {
     let MsgOver;
     if (oScore < xScore) {
       MsgOver =
-        "Game over, X win the Game with Total Points =  " +
+        "Game over, X  win the Game with Total Points =  " +
         xScore +
-        " Vs O Points" +
+        " Vs O Points = " +
         oScore;
     } else if (oScore > xScore) {
       MsgOver =
@@ -128,7 +129,7 @@ const Game = (props) => {
     }
 
     over
-      ? idPlayer * 1 === 1
+      ? Player.id * 1 === 1
         ? socket.emit("setGameOver")
         : socket.emit("setOver", MsgOver)
       : console.log("Game Still Play");

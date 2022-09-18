@@ -12,14 +12,13 @@ export default function Rooms(props) {
   return (
     <div className="backGroundRoom">
       <div className="backgroundInfo"></div>
-
       <div className="infoRoom">
         <a href={"JoinRoom?token=" + room.token}>Go To Room</a>
       </div>
       <CustomBtns
-        deleteRoom={deleted_Room}
-        updateToken={updateToken}
-        idRoom={room.id}
+        deleteData={deleted_Room}
+        updateData={updateToken}
+        id={room.id}
         linkRoom={fullUrl + "/JoinRoom?token=" + room.token}
         NotificationManager={NotificationManager}
         stateBts={false}

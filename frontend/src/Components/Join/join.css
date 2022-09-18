@@ -27,7 +27,7 @@
 .glass > h1 {
   color: #426696;
   font-weight: 600;
-  font-size: 3rem;
+  font-size: 2.5rem;
   opacity: 0.8;
 
   display: flex;
@@ -61,19 +61,25 @@
 .div-inputs-join {
   width: 100%;
   display: flex;
-  justify-content: center;
-  align-items: start;
-  /* flex-direction: column; */
-  /* background: beige; */
+  flex-direction: column;
   height: 70%;
   position: absolute;
-  float: inline-end;
   bottom: 0;
   padding-top: 4%;
-  gap: 3%;
+  align-items: center;
+  gap: 10%;
 }
+.FildEmail,
+.FildPassword {
+  width: 95%;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  gap: 8px;
 
-.div-inputs-join > input,
+  flex-wrap: wrap;
+}
+.inputs-join,
 .btn-join {
   background: linear-gradient(
     to right bottom,
@@ -81,17 +87,32 @@
     rgba(255, 255, 255, 0.3)
   );
   border: none;
-  width: 50%;
+  width: 100%;
   padding: 0.5rem;
   border-radius: 2rem;
 }
 
-.div-inputs-join .btn-join {
-  cursor: pointer;
-  width: 20%;
+.typepassword {
+  width: 100%;
+  position: relative;
+}
+.typepassword > input {
+  width: 100%;
 }
 
-.div-inputs-join > input,
+.typepassword > svg {
+  position: absolute;
+  right: 1%;
+  margin-top: 4px;
+}
+.div-inputs-join .btn-join {
+  cursor: pointer;
+  width: 70%;
+  height: 10%;
+  font-size: 1.2em;
+}
+
+.inputs-join,
 .btn-join:hover:focus {
   background: linear-gradient(
     to right bottom,
@@ -109,4 +130,10 @@
     rgba(255, 255, 255, 0.7),
     rgba(124, 235, 165, 0.3)
   );
+}
+
+@media (max-width: 970px) {
+  .glass {
+    background-color: aqua;
+  }
 }

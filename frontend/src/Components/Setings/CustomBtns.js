@@ -12,22 +12,25 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 
 export default function CustomBtns(props) {
   const {
-    idRoom,
-    deleteRoom,
-    updateToken,
+    id,
     linkRoom,
     NotificationManager,
-    stateBts,
     readAdd,
+    edit,
+    stateBts,
     singleStudent,
-    setReadAdd,
-    saveClick,
+    setCompAddStudent,
+    saveData,
+    deleteData,
+    updateData,
+    cancelData
+
   } = props;
 
   return (
     <div className="btnRoom">
       {singleStudent ? (
-        readAdd ? (
+        readAdd & edit ? (
           <IconButton
             aria-label="Add"
             style={{
@@ -37,9 +40,8 @@ export default function CustomBtns(props) {
             }}
           >
             <Add
-              setReadAdd={setReadAdd}
               onClick={() => {
-                setReadAdd(false);
+                setCompAddStudent();
               }}
             />
           </IconButton>
@@ -54,8 +56,8 @@ export default function CustomBtns(props) {
               }}
             >
               <Save
-                onClick={() => {
-                  saveClick();
+                onClick={(event) => {
+                  saveData(event);
                 }}
               />
             </IconButton>
@@ -69,7 +71,7 @@ export default function CustomBtns(props) {
             >
               <Cancel
                 onClick={() => {
-                  setReadAdd(true);
+                  cancelData()
                 }}
               />
             </IconButton>
@@ -85,7 +87,12 @@ export default function CustomBtns(props) {
               height: "100%",
             }}
           >
-            <Delete id={idRoom} onClick={deleteRoom} />
+            <Delete
+              id={id}
+              onClick={(event) => {
+                deleteData(event);
+              }}
+            />
           </IconButton>
           <IconButton
             aria-label="updete"
@@ -95,7 +102,11 @@ export default function CustomBtns(props) {
               height: "100%",
             }}
           >
-            <Update id={idRoom} onClick={updateToken} />
+
+            <Update
+              id={id}
+              onClick={(event) => { updateData(event) }}
+            />
           </IconButton>
         </Fragment>
       )}

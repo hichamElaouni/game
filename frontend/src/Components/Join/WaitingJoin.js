@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { getRoomByToken } from "../service/api";
-
+import { getRoomByToken, getStudentByEmail } from "../service/api";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
   NotificationContainer,
   NotificationManager,
@@ -13,7 +14,10 @@ import "./join.css";
 
 export default function WaitingJoin() {
   let navigate = useNavigate();
-  const [namePlayer, setNamePlayer] = useState();
+  const [emailPlayer, setEmailPlayer] = useState();
+  const [passwordPlayer, setPasswordPlayer] = useState();
+  const [students, setStudents] = useState({});
+  const [typePassword, setTypePassword] = useState(true);
 
   const [room, setRoom] = useState({
     id: "",
@@ -41,35 +45,34 @@ export default function WaitingJoin() {
 
   useEffect(() => {
     getRoom(token, setRoom);
-    socket.on("playing", (id) => {
+    socket.on("Startplaying", (id, name) => {
       navigate(
         "/game?&token=" +
-          token +
-          "&NamePlayer=" +
-          namePlayer +
-          "&PlayerId=" +
-          id
+        token +
+        "&NamePlayer=" +
+        name +
+        "&PlayerId=" +
+        id
       );
     });
     socket.on("RoomNotAvailable", () => {
       navigate("/RoomNotAvailable");
     });
-  }, [token, socket, namePlayer]);
+  }, [socket]);
 
   if (!room.token) {
     navigate("/RoomNotAvailable");
   }
 
-  const Join_room = () => {
-    if (namePlayer !== undefined) {
-      if (namePlayer.length >= 3) {
-        socket.emit("joinRoom", { namePlayer, token });
-      } else {
-        NotificationManager.warning(
-          "Warning message",
-          "Name contian grand than Three letter",
-          2000
-        );
+  const Join_room = async () => {
+    if (emailPlayer !== undefined) {
+
+      const { data: { data, success } } = await getStudentByEmail({ emailPlayer, passwordPlayer })
+      if (!data)
+        console.log("🚀 ~ file: WaitingJoin.js ~ line 71 ~ WaitingJoin ~ success", !success)
+      else {
+        setStudents(data)
+        socket.emit("joinRoom", { token, name: data.fullName });
       }
     } else {
       NotificationManager.warning(
@@ -84,23 +87,60 @@ export default function WaitingJoin() {
     <>
       <div className="join">
         <section className="glass">
-          <h1>entrer Your Name</h1>
+          <h1>Singin To Join Room</h1>
           <div className="div-inputs-join">
-            <input
-              className="inputs-join"
-              type="text"
-              pattern="[A-Za-z]{3}"
-              required
-              title="Name contian grand than Three letter "
-              placeholder="entrer your Name ..."
-              onChange={(e) => {
-                setNamePlayer(e.target.value);
-              }}
-            />
+            <div className="FildEmail">
+              <label htmlFor="email">Entre Your Email </label>
+              <input
+                className="inputs-join"
+                type="email"
+                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                required
+                title="Format Email it not currect "
+                placeholder="Entre your Email ..."
+                onChange={(e) => {
+                  setEmailPlayer(e.target.value);
+                }}
+              />
+            </div>
+
+
+            <div className="FildPassword">
+              <label htmlFor="Password">Entre Your Password</label>
+              <div className="typepassword">
+
+                <input
+                  className="inputs-join"
+                  type={typePassword ? "text" : "password"}
+                  // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                  required
+                  // title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters "
+                  placeholder="Entre your Password ..."
+                  onChange={(e) => {
+                    setPasswordPlayer(e.target.value);
+                  }}
+                />
+                {typePassword ? <VisibilityOff onClick={() => { setTypePassword(false) }} /> : <Visibility onClick={() => { setTypePassword(true) }} />}
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
             <button className="btn-join" onClick={Join_room}>
               Join Room
             </button>
           </div>
+          {/* <SignIn /> */}
         </section>
       </div>
       <div className="circle1"></div>

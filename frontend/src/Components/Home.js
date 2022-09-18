@@ -14,18 +14,25 @@ function App() {
   const [pauseGame, setPauseGame] = useState(true);
   const [flag, setFlag] = useState(true);
   const [scores, setScores] = useState({ xScore: 0, oScore: 0 });
-  const [namePlayer, setNamePlayer] = useState("");
-  const [idPlayer, setIdPlayer] = useState(0);
+  const [player, setPlayer] = useState({ id: 0, name: "" });
   const [stateRoom, setStateRoom] = useState(false);
   const [over, setOver] = useState(false);
   const [waitState, setWaitState] = useState(false);
   const [textWait, setTextWait] = useState("Wait to anothor Player to Join");
+  const [studentsPlay, setStudentsPlay] = useState([player]);
 
   const [countDown, setCountDown] = useState(1000);
 
   const [lastId, setlastId] = useState(0);
 
   const [roomQuestions, setRoomQuestions] = useState([]);
+  const [questionHistory, setQuestionHistory] = useState([
+    {
+      idQuestion: 0,
+      idStudent: 0,
+      answerSelected: 0,
+    },
+  ]);
 
   const [searchParams] = useSearchParams();
   const PlayerName = searchParams.get("NamePlayer");
@@ -50,24 +57,36 @@ function App() {
 
   useEffect(() => {
     getQuestion(token, lastId, setRoomQuestions);
-    setIdPlayer(PlayerId);
-    setNamePlayer(PlayerName);
+    setPlayer({ id: PlayerId, name: PlayerName });
 
-    if (flag && PlayerId == 1) {
+    if (flag && PlayerId * 1 === 1) {
       setTurn(true);
       setXPlaying(true);
       setFlag(false);
       setStateRoom(true);
       setVisible(false);
+      setStudentsPlay([...studentsPlay, { id: PlayerId, name: PlayerName }]);
     }
-    if (flag && PlayerId == 2) {
+    if (flag && PlayerId * 1 === 2) {
       setTurn(false);
       setXPlaying(false);
       setFlag(false);
       setStateRoom(false);
-      socket.emit("setStateRoom");
+
+      const Student = { id: PlayerId, name: PlayerName };
+      setStudentsPlay([Student]);
+      socket.emit("setStateRoom", Student);
     }
-    socket.on("getStateRoom", () => {
+
+    socket.on("getStateRoom", (Student) => {
+      console.log(
+        "🚀 ~ file: Home.js ~ line 82 ~ socket.on ~ Student",
+        Student.name
+      );
+      setStudentsPlay([
+        ...studentsPlay,
+        { id: Student.id, name: Student.name },
+      ]);
       setStateRoom(false);
       setVisible(true);
     });
@@ -81,11 +100,12 @@ function App() {
       setTextWait(MsgOver);
       setWaitState(true);
     });
+    console.log("🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀", studentsPlay);
   }, [lastId]);
 
   const { Question: questions, Rooms } = roomQuestions[0] || {};
 
-  const pointGame = Rooms?.point;
+  const pointGame = Rooms == undefined ? 1 : Rooms[0].point;
 
   return (
     <>
@@ -93,7 +113,7 @@ function App() {
         <section className="SectionP1">
           {visible && turn ? (
             <Question
-              namePlayer={namePlayer}
+              namePlayer={player.name}
               setVisible={setVisible}
               setPauseGame={setPauseGame}
               scores={scores}
@@ -102,19 +122,22 @@ function App() {
               countDown={countDown}
               setlastId={setlastId}
               lastId={lastId}
-              idPlayer={idPlayer}
+              idPlayer={player.id}
               questions={questions}
+              questionHistory={questionHistory}
+              setQuestionHistory={setQuestionHistory}
             />
           ) : (
-            <Waiting namePlayer={namePlayer} text="Waiting " />
+            <Waiting namePlayer={player.name} text="Waiting " />
           )}
         </section>
         <div className="flex-score-game">
           <ScoreBoard
             scores={scores}
             xPlaying={xPlaying}
-            namePlayer={namePlayer}
-            idPlayer={idPlayer}
+            player={player}
+            studentsPlay={studentsPlay}
+            setStudentsPlay={setStudentsPlay}
           />
           <section className={`SectionG  ${pauseGame ? "pauseGame" : ""}`}>
             <Game
@@ -122,8 +145,7 @@ function App() {
               setXPlaying={setXPlaying}
               scores={scores}
               setScores={setScores}
-              idPlayer={idPlayer}
-              setIdPlayer={setIdPlayer}
+              Player={player}
               setPauseGame={setPauseGame}
               setVisible={setVisible}
               pointGame={pointGame}
@@ -158,7 +180,7 @@ function App() {
       </div>
       <div className={`div-wait ${stateRoom ? "start-Playing" : ""} `}>
         <Waiting
-          namePlayer={namePlayer}
+          namePlayer={player.namePlayer}
           text={textWait}
           waitState={waitState}
           token={token}

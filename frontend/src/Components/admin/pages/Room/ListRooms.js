@@ -48,6 +48,7 @@ export default function ListRooms() {
       3000,
       await updateRoom(RoomId, token)
     );
+    setToken(token);
   };
 
   useEffect(() => {

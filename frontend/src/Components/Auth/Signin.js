@@ -11,10 +11,6 @@ const SignIn = () => {
   return (
     <div
       style={{
-        backgroundImage: `url(${background})`,
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
         width: "100vw",
         height: "100vh",
       }}
@@ -27,7 +23,7 @@ const SignIn = () => {
         ) : (
           ""
         )}
-        <Logo logo={logo} />
+        {/* <Logo logo={logo} /> */}
         <LoginForm setAlert={setAlert} />
       </div>
     </div>
