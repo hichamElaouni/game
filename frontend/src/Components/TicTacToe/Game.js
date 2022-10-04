@@ -1,22 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Board } from "./Board";
 import { socket } from "../service/socket";
 
 const Game = (props) => {
   const {
-    xPlaying = true,
+    xPlaying,
     scores,
-    setScores,
     setPauseGame,
     setVisible,
     pointGame,
     turn,
     setTurn,
-    over,
-    Player,
-    countDown,
-    setCountDown,
+    roundOver,
+    flagGame,
   } = props;
   const WIN_CONDITIONS = [
     [0, 1, 2],
@@ -35,33 +32,41 @@ const Game = (props) => {
   const [messageWin, setMessageWin] = useState();
   const [index, setIndex] = useState(0);
 
-  socket.on("getScore", (scores) => {
-    setScores(scores);
-  });
+  useEffect(() => {
+    socket.on("getxScore", (xScore, xGameScore) => {
+      scores.current.xScore = xScore;
+      xGameScore !== null && (scores.current.xGameScore = xGameScore);
+    });
 
-  socket.on("getxScore", async (xScore) => {
-    await setScores({ ...scores, xScore });
-  });
+    socket.on("getoScore", (oScore, oGameScore) => {
+      scores.current.oScore = oScore;
+      oGameScore !== undefined && (scores.current.oGameScore = oGameScore);
+    });
 
-  socket.on("getoScore", (oScore) => {
-    setScores({ ...scores, oScore });
-  });
-  socket.on("getResetGame", () => {
-    resetBoard();
-  });
+    // socketOpen("switch", ({ turn, updatedBoard }) => {
+    //   setBoard(updatedBoard);
+    //   setTurn(turn);
+    //   setCountDown(countDown);
+    // });
 
-  socket.on("switch", ({ turn, updatedBoard }) => {
-    setBoard(updatedBoard);
-    setTurn(turn);
+    // const socketOpen = (socketName, socketFunction) => {
+    //   socket.on(socketName, socketFunction);
+    // };
+    socket.on("getResetGame", () => {
+      resetBoard();
+    });
 
-    setCountDown(countDown);
-  });
+    socket.on("switch", ({ turn, updatedBoard }) => {
+      setBoard(updatedBoard);
+      setTurn(turn);
+    });
 
-  socket.on("getwin", (winMessage) => {
-    setGameOver(true);
-    setWinningShow(true);
-    setMessageWin(winMessage);
-  });
+    socket.on("getwin", (winMessage) => {
+      setGameOver(true);
+      setWinningShow(true);
+      setMessageWin(winMessage);
+    });
+  }, []);
 
   const handleBoxClick = (boxIdx) => {
     // Step 1: Update the board
@@ -79,60 +84,52 @@ const Game = (props) => {
     const winner = checkWinner(updatedBoard);
     let winMessage = "";
     if (winner) {
+      flagGame.current = false;
+
       if (winner === "circle") {
-        let { oScore } = scores;
-        oScore += pointGame;
-
         winMessage = "Circle win";
-        setScores({ ...scores, oScore });
-        socket.emit("setoScore", oScore);
-      } else {
-        let { xScore } = scores;
-        xScore += pointGame;
-        winMessage = "X win";
 
-        setScores({ ...scores, xScore });
-        socket.emit("setxScore", xScore);
+        scores.current.oScore += pointGame;
+        scores.current.oGameScore += pointGame;
+
+        socket.emit(
+          "setoScore",
+          scores.current.oScore,
+          scores.current.oGameScore
+        );
+      } else {
+        scores.current.xScore += pointGame;
+        scores.current.xGameScore += pointGame;
+
+        socket.emit(
+          "setxScore",
+          scores.current.xScore,
+          scores.current.xGameScore
+        );
       }
       setMessageWin(winMessage);
       socket.emit("setwin", winMessage);
       setWinningShow(true);
     }
-
     setTurn(!turn);
 
-    console.log("** index ** ", index);
-
     socket.emit("switch_turn", { turn, updatedBoard });
-    let { oScore } = scores;
-    let { xScore } = scores;
-    let MsgOver;
-    if (oScore < xScore) {
-      MsgOver =
-        "Game over, X  win the Game with Total Points =  " +
-        xScore +
-        " Vs O Points = " +
-        oScore;
-    } else if (oScore > xScore) {
-      MsgOver =
-        "Game over, O win the Game with Total Points =  " +
-        oScore +
-        " Vs X Points =  " +
-        xScore;
-    } else {
-      MsgOver = "Game Is Over No One Wins, Score Players = " + oScore;
-    }
+
+    roundOver();
 
     if (index === 4) {
+      let { oGameScore, xGameScore } = scores;
+
+      scores.current.oScore += pointGame / 2;
+      scores.current.xScore += pointGame / 2;
+
+      socket.emit("setoScore", scores.current.oGameScore);
+      socket.emit("setxScore", scores.current.xGameScore);
+
       socket.emit("setResetGame");
       resetBoard();
     }
 
-    over
-      ? Player.id * 1 === 1
-        ? socket.emit("setGameOver")
-        : socket.emit("setOver", MsgOver)
-      : console.log("Game Still Play");
     // Step 3: Change active player
     // setXPlaying(!xPlaying);
   };
@@ -155,6 +152,8 @@ const Game = (props) => {
     setBoard(Array(9).fill(null));
     setWinningShow(false);
     setIndex(0);
+    flagGame.current = true;
+    roundOver();
   };
   return (
     <>

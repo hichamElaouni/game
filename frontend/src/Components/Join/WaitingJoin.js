@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { getRoomByToken, getStudentByEmail } from "../service/api";
 import Visibility from "@mui/icons-material/Visibility";
@@ -11,13 +11,15 @@ import "react-notifications/lib/notifications.css";
 
 import { socket } from "../service/socket";
 import "./join.css";
+import { BsInfoCircle } from "react-icons/bs";
 
 export default function WaitingJoin() {
   let navigate = useNavigate();
-  const [emailPlayer, setEmailPlayer] = useState();
-  const [passwordPlayer, setPasswordPlayer] = useState();
-  const [students, setStudents] = useState({});
-  const [typePassword, setTypePassword] = useState(true);
+  const [typeInputPassword, setTypeInputPassword] = useState(false);
+  const [alert, setAlert] = useState({ state: false, message: "" });
+
+  const email = useRef("")
+  const password = useRef("")
 
   const [room, setRoom] = useState({
     id: "",
@@ -30,9 +32,13 @@ export default function WaitingJoin() {
   });
 
   const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
+  const tokenParams = searchParams.get("token");
 
-  const getRoom = async (token) => {
+  useEffect(() => {
+    getRoom(tokenParams, setRoom);
+  }, []);
+
+  const getRoom = async (token, setRoom) => {
     const {
       data: { data, success },
     } = await getRoomByToken(token);
@@ -43,36 +49,33 @@ export default function WaitingJoin() {
     }
   };
 
-  useEffect(() => {
-    getRoom(token, setRoom);
-    socket.on("Startplaying", (id, name) => {
-      navigate(
-        "/game?&token=" +
-        token +
-        "&NamePlayer=" +
-        name +
-        "&PlayerId=" +
-        id
-      );
-    });
-    socket.on("RoomNotAvailable", () => {
-      navigate("/RoomNotAvailable");
-    });
-  }, [socket]);
 
   if (!room.token) {
     navigate("/RoomNotAvailable");
   }
+  socket.on("RoomNotAvailable", () => {
+    navigate("/RoomNotAvailable");
+  });
 
+  socket.on("Startplaying", (indexPlayer, student) => {
+    localStorage.setItem("dataStudent", JSON.stringify({ indexPlayer, student, room }))
+    navigate(
+      "/game?&token=" +
+      tokenParams
+    );
+  });
+
+  console.log("dd");
   const Join_room = async () => {
-    if (emailPlayer !== undefined) {
+    if (email.current !== undefined) {
 
-      const { data: { data, success } } = await getStudentByEmail({ emailPlayer, passwordPlayer })
-      if (!data)
-        console.log("🚀 ~ file: WaitingJoin.js ~ line 71 ~ WaitingJoin ~ success", !success)
+      const { data: { data, success, message } } = await getStudentByEmail(email.current.value, password.current.value)
+      if (!success) {
+        setAlert({ state: true, message: message });
+      }
       else {
-        setStudents(data)
-        socket.emit("joinRoom", { token, name: data.fullName });
+        const student = data;
+        socket.emit("joinRoom", { tokenParams, student });
       }
     } else {
       NotificationManager.warning(
@@ -87,6 +90,14 @@ export default function WaitingJoin() {
     <>
       <div className="join">
         <section className="glass">
+          {alert.state ?
+            <div className="alert">
+
+              <BsInfoCircle />
+              <h2>{alert.message}</h2>
+            </div> :
+            <br />
+          }
           <h1>Singin To Join Room</h1>
           <div className="div-inputs-join">
             <div className="FildEmail">
@@ -94,51 +105,38 @@ export default function WaitingJoin() {
               <input
                 className="inputs-join"
                 type="email"
+                ref={email}
                 pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                 required
                 title="Format Email it not currect "
                 placeholder="Entre your Email ..."
-                onChange={(e) => {
-                  setEmailPlayer(e.target.value);
-                }}
+
               />
             </div>
 
 
             <div className="FildPassword">
               <label htmlFor="Password">Entre Your Password</label>
-              <div className="typepassword">
+              <div className="typeInputpassword">
 
                 <input
                   className="inputs-join"
-                  type={typePassword ? "text" : "password"}
+                  type={typeInputPassword ? "text" : "password"}
                   // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                   required
                   // title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters "
                   placeholder="Entre your Password ..."
-                  onChange={(e) => {
-                    setPasswordPlayer(e.target.value);
-                  }}
+                  ref={password}
                 />
-                {typePassword ? <VisibilityOff onClick={() => { setTypePassword(false) }} /> : <Visibility onClick={() => { setTypePassword(true) }} />}
+                {typeInputPassword ? <VisibilityOff onClick={() => { setTypeInputPassword(false) }} />
+                  : <Visibility onClick={() => { setTypeInputPassword(true) }} />}
               </div>
             </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-            <button className="btn-join" onClick={Join_room}>
+            <button className="btn-join" onClick={() => { Join_room() }}>
               Join Room
             </button>
+
           </div>
           {/* <SignIn /> */}
         </section>

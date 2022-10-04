@@ -1,47 +1,58 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { socket } from "../service/socket";
 
 export default function Timer(props) {
   const {
     setPauseGame,
+    idQuestion,
     setVisible,
-    idPlayer,
-    scores,
-    setScores,
+    indexPlayer,
     point,
     checkAnswer,
     setlastId,
-    idQuestion,
-    countDown,
-    setCountDown,
+    count,
+    idStudent,
+    answerSelected,
+    addQuestionHistory,
+    idHistoryRoom,
+    scores,
   } = props;
 
+  const [countDown, setCountDown] = useState(count);
+
   if (!countDown) {
-    setlastId(idQuestion);
     setPauseGame(false);
     setVisible(false);
 
+    let questionshistory = {
+      idQuestion: idQuestion,
+      idStudent: idStudent,
+      selectedAnswer: !answerSelected ? 0 : answerSelected,
+      idRoomHistory: idHistoryRoom,
+    };
+
+    addQuestionHistory(questionshistory);
+
     if (checkAnswer) {
-      if (idPlayer === 1) {
-        let { xScore } = scores;
-        xScore += point;
-        setScores({ ...scores, xScore });
-        socket.emit("setxScore", xScore);
-      } else if (idPlayer === 2) {
-        let { oScore } = scores;
-        oScore += point;
-        setScores({ ...scores, oScore });
-        socket.emit("setoScore", oScore);
+      if (indexPlayer * 1 === 1) {
+        scores.current.xScore += point;
+        socket.emit("setxScore", scores.current.xScore);
+      } else if (indexPlayer * 1 === 2) {
+        scores.current.oScore += point;
+        socket.emit("setoScore", scores.current.oScore);
       }
     }
+    setlastId(idQuestion);
   }
 
   useEffect(() => {
     if (countDown <= 0) {
       return;
     }
-    const id = setInterval(() => setCountDown(countDown - 1), 1000);
-    return () => clearInterval(id);
+    const interval = setInterval(() => {
+      setCountDown((countDown) => countDown - 1);
+    }, 1000);
+    return () => clearInterval(interval);
   }, [countDown]);
 
   return (

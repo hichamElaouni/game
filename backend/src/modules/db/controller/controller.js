@@ -328,7 +328,7 @@ const getRoomGame = async (req, res) => {
 const addQuestionsRoom = async (req, res) => {
   try {
     const questionsRoom = req.body;
-    const result = await db.rooms.create(questionsRoom);
+    const result = await db.Rooms.create(questionsRoom);
     res.status(201).json({ success: true, result });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -406,22 +406,63 @@ const getQuestionByRoom = async (req, res) => {
 
 const getStudentByEmail = async (req, res) => {
   try {
-    const { emailPlayer, passwordPlayer } = req.body;
+    const { email, password } = req.body;
 
     const data = await db.Students.findOne({
-      where: { email: emailPlayer },
+      where: { email: email },
     });
     if (data) {
-      // const password_valid = await compare(passwordPlayer, data.password);
-      if (passwordPlayer === data.password) {
+      // const password_valid = await compare(password, data.password);
+      if (password === data.password) {
         // token = jwt.sign({ "id" : user.id,"email" : user.email,"first_name":user.first_name },process.env.SECRET);
-        res.status(200).json({ data: data });
+        res.status(200).json({ success: true, data: data });
       } else {
-        res.status(400).json({ error: "Password Incorrect" });
+        res
+          .status(401)
+          .json({ success: false, data: [], message: "Password Incorrect" });
       }
     } else {
-      res.status(404).json({ error: "Email does not exist" });
+      res
+        .status(200)
+        .json({ success: false, data: [], message: "Email does not exist" });
     }
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+const addRoomHistory = async (req, res) => {
+  try {
+    const historyRoom = await db.RoomHistory.create(req.body);
+    res.status(201).json({
+      success: true,
+      idHistoryRoom: historyRoom.id,
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+const addQuestionHistory = async (req, res) => {
+  try {
+    const historyQuestion = await db.QuestionsHistory.create(req.body);
+    res.status(201).json({
+      success: true,
+      historyQuestion: historyQuestion,
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+const updateRoomHistory = async (req, res) => {
+  try {
+    const { idHistoryRoom, roomHistory } = req.body;
+
+    const result = await db.RoomHistory.update(roomHistory, {
+      where: { id: idHistoryRoom },
+    });
+    res.status(200).json({ success: true, result });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -459,4 +500,7 @@ module.exports = {
   addQuestionsRoom,
 
   getQuestionByRoom,
+  addRoomHistory,
+  addQuestionHistory,
+  updateRoomHistory,
 };

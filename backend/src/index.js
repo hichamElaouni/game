@@ -21,115 +21,45 @@ const io = new Server(server, {
   },
 });
 
-let connectClient = 0;
-let roomNumber = 0;
-let player = "";
-let Turn = true;
-let id = 0;
 let Room = "";
-
-// if (NumberPlayers <= 2) {
-//   RoomNumbers++;
-//   connectClient++;
-
-//   if (connectClient == 1) {
-//     console.log("First Client $$== ", connectClient);
-
-//     id = 1;
-//     Turn = true;
-//   } else {
-//     console.log("second Client $$== ", connectClient);
-
-//     id = 2;
-//     Turn = false;
-//   }
-
-//   socket.emit("connected", { namePlayer, id, Turn });
-// } else {
-//   socket.emit("RoomNotAvailable");
-//   socket.leave(token);
-// }
-// });
-
-// players[socket.id] = namePlayer;
-// socket.join(token);
-// RoomName = Array.from(socket.rooms)[1];
-// NumberPlayers = Object.keys(players).length;
-// TODO const checkRoomAvailablity = ()
-//USE ID_ROOM TO CHECK IF ROOM AVIABE OR NOT
-
-// socket.on("setplayer", (namePlayer) => {
-
-// socket.on("join_Room", (Room) => {
-
-//   socket.emit("getplayer", namePlayer);
-// });
-
-// var numClients = {};
-
-// socket.on("joinroom", function (room) {
-//   socket.join(room);
-//   socket.room = room;
-//   console.log(numClients[room]);
-//   if (numClients[room] == undefined) {
-//     numClients[room] = 1;
-//   } else {
-//     numClients[room]++;
-//   }
-// });
-
-// socket.on("disconnect", function () {
-//   numClients[socket.room]--;
-// });
-
-// console.log("Clients => ", numClients);
-
-// socket.on("send_message", (data) => {
-//   socket.to(data.roomId).emit("receive_message", data);
-//   console.log("room id == ", data.roomId);
-// });
-
-//   if (connectClient < 2) {
-//     Room = Room;
-//     connectClient++;
-//     if (connectClient == 1) {
-//       console.log("First Client $$== ", connectClient);
-//       player = "Hicham";
-//       id = 1;
-//       Turn = true;
-//     } else {
-//       console.log("second Client $$== ", connectClient);
-//       player = "Ayman";
-//       id = 2;
-//       Turn = false;
-//     }
-//     socket.join(Room);
-//     socket.emit("connected", { player, id, Turn });
-//   } else {
-//     console.log("room it not Avaliable for now");
-//   }
-// });
+let indexPlayer = 0;
+let rooms = [];
+let Emails = {};
 
 io.on("connection", (socket) => {
-  socket.on("joinRoom", ({ token, name }) => {
-    socket.join(token);
-    let roomMemeberNumber = io.sockets.adapter.rooms.get(token) || 0;
+  let students = "";
 
+  socket.on("joinRoom", ({ token, student }) => {
+    socket.join(token);
+
+    students = { roomtId: token, players: [student.email] };
+    let roomMemeberNumber = io.sockets.adapter.rooms.get(token) || 0;
+    Emails[socket.id] = student;
     if (roomMemeberNumber && roomMemeberNumber.size > 2) {
-      socket.leave(token);
+      socket.leave(token, socket.id);
       socket.emit("RoomNotAvailable");
     } else {
-      if (roomMemeberNumber.size === 1) {
-        id = 1;
-        Turn = true;
-      }
-      if (roomMemeberNumber.size === 2) {
-        id = 2;
-        Turn = false;
+      const roomIndex = rooms.findIndex((room) => room.roomtId === token);
+      if (roomIndex !== -1) {
+        const room = rooms[roomIndex].players;
+
+        if (!room.includes(student.email)) {
+          room.push(student.email);
+        } else {
+          room.splice(room.indexOf(student.email), 1);
+          delete Emails[socket.id];
+          socket.leave(token, socket.id);
+          socket.emit("RoomNotAvailable", { page: "doubleSingIn" });
+          console.log("Not Allowed");
+
+          return;
+        }
+      } else {
+        rooms.push(students);
       }
 
-      socket.emit("Startplaying", id, name);
-
+      indexPlayer = roomMemeberNumber.size;
+      socket.emit("Startplaying", indexPlayer, student);
       Room = token;
     }
   });
@@ -138,16 +68,12 @@ io.on("connection", (socket) => {
     socket.to(Room).emit("getPlayer", player);
   });
 
-  socket.on("setScore", (scores) => {
-    socket.to(Room).emit("getScore", scores);
+  socket.on("setxScore", (xScore, xGameScore) => {
+    socket.to(Room).emit("getxScore", xScore, xGameScore);
   });
 
-  socket.on("setxScore", (xScore) => {
-    socket.to(Room).emit("getxScore", xScore);
-  });
-
-  socket.on("setoScore", (oScore) => {
-    socket.to(Room).emit("getoScore", oScore);
+  socket.on("setoScore", (oScore, oGameScore) => {
+    socket.to(Room).emit("getoScore", oScore, oGameScore);
   });
 
   socket.on("switch_turn", ({ turn, updatedBoard }) => {
@@ -158,13 +84,21 @@ io.on("connection", (socket) => {
     socket.to(Room).emit("getwin", winMessage);
   });
 
-  socket.on("setStateRoom", (Student) => {
-    socket.to(Room).emit("getStateRoom", Student);
+  socket.on("setStateRoom", ({ indexPlayer, idStudent, fullName }) => {
+    socket.to(Room).emit("getStateRoom", { indexPlayer, idStudent, fullName });
   });
 
-  socket.on("setStudentsPlay", (StudentsPlay) => {
-    socket.to(Room).emit("getStudentsPlay", StudentsPlay);
-  });
+  socket.on(
+    "setStudents",
+    ({ indexPlayer, idStudent, fullName, idHistoryRoom }) => {
+      socket.to(Room).emit("getStudents", {
+        indexPlayer,
+        idStudent,
+        fullName,
+        idHistoryRoom,
+      });
+    }
+  );
 
   socket.on("setGameOver", () => {
     socket.to(Room).emit("getGameOver");
@@ -176,6 +110,21 @@ io.on("connection", (socket) => {
 
   socket.on("setResetGame", () => {
     socket.to(Room).emit("getResetGame");
+  });
+
+  socket.on("disconnect", () => {
+    try {
+      const roomIndex = rooms.findIndex((room) => room.roomtId === Room);
+
+      const room = rooms[roomIndex]?.players;
+
+      room.splice(room.indexOf(Emails[socket.id].email), 1);
+      socket.to(Room).emit("disconnected", Emails[socket.id]);
+      delete Emails[socket.id];
+      socket.leave(Room);
+    } catch (error) {
+      console.log("🚀 ~ file: index.js ~ line 120 ~ socket.on ~ error", error);
+    }
   });
 });
 

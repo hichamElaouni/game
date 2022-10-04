@@ -3,62 +3,57 @@ import ListChoices from "../Choice/ListChoices";
 import Timer from "../Timer/Timer";
 import { socket } from "../service/socket";
 
-const NextQuestion = (
+const NextQuestion = async (
   setVisible,
   setlastId,
   setPauseGame,
   checkAnswer,
-  idPlayer,
-  scores,
-  setScores,
+  indexPlayer,
   point,
   idQuestion,
-  questionHistory,
-  setQuestionHistory,
-  answerSelected
+  answerSelected,
+  idStudent,
+  idHistoryRoom,
+  addQuestionHistory,
+  scores
 ) => {
-  setlastId(idQuestion);
   setPauseGame(false);
   setVisible(false);
 
-  setQuestionHistory([
-    ...questionHistory,
-    {
-      idQuestion: idQuestion,
-      idStudent: idPlayer,
-      answerSelected: !answerSelected ? 0 : answerSelected,
-    },
-  ]);
+  const questionshistory = {
+    idQuestion: idQuestion,
+    idStudent: idStudent,
+    selectedAnswer: !answerSelected ? 0 : answerSelected,
+    idRoomHistory: idHistoryRoom,
+  };
+  await addQuestionHistory(questionshistory);
 
   if (checkAnswer) {
-    if (idPlayer * 1 === 1) {
-      let { xScore } = scores;
-      xScore += point;
-      setScores({ ...scores, xScore });
-      socket.emit("setxScore", xScore);
-    } else if (idPlayer * 1 === 2) {
-      let { oScore } = scores;
-      oScore += point;
-      setScores({ ...scores, oScore });
-      socket.emit("setoScore", oScore);
+    if (indexPlayer * 1 === 1) {
+      scores.current.xScore += point;
+      socket.emit("setxScore", scores.current.xScore);
+    } else if (indexPlayer * 1 === 2) {
+      scores.current.oScore += point;
+      socket.emit("setoScore", scores.current.oScore);
     }
   }
+
+  setlastId(idQuestion);
 };
 
 export default function Question(props) {
   const {
-    idPlayer,
-    namePlayer,
+    indexPlayer,
     questions = {},
     setVisible,
     setlastId,
     setPauseGame,
-    countDown,
-    setCountDown,
-    scores,
+    count,
     setScores,
-    questionHistory,
-    setQuestionHistory,
+    student,
+    idHistoryRoom,
+    addQuestionHistory,
+    scores,
   } = props;
 
   const [checkAnswer, setChaeckAnswer] = useState(false);
@@ -79,20 +74,22 @@ export default function Question(props) {
 
   return (
     <div className="players ">
-      <h1>{namePlayer}</h1>
+      <h1>{student.current.fullName}</h1>
       <div className="boardquetion">
         <Timer
           setPauseGame={setPauseGame}
           idQuestion={idQuestion}
           setVisible={setVisible}
           checkAnswer={checkAnswer}
-          idPlayer={idPlayer}
-          scores={scores}
-          setScores={setScores}
+          indexPlayer={indexPlayer}
           point={point}
           setlastId={setlastId}
-          countDown={countDown}
-          setCountDown={setCountDown}
+          count={count}
+          idStudent={student.current.id}
+          answerSelected={answerSelected}
+          addQuestionHistory={addQuestionHistory}
+          idHistoryRoom={idHistoryRoom}
+          scores={scores}
         />
         <h2 className="TitleQuestion">{questions?.title}</h2>
 
@@ -110,14 +107,14 @@ export default function Question(props) {
               setlastId,
               setPauseGame,
               checkAnswer,
-              idPlayer,
-              scores,
-              setScores,
+              indexPlayer,
               point,
               idQuestion,
-              questionHistory,
-              setQuestionHistory,
-              answerSelected
+              answerSelected,
+              student.current.id,
+              idHistoryRoom,
+              addQuestionHistory,
+              scores
             )
           }
         ></input>

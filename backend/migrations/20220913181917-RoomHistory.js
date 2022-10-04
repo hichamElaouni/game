@@ -45,13 +45,13 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
-      StudentWins: {
-        type: Sequelize.INTEGER(11),
-      },
       victories: {
         type: Sequelize.INTEGER(11),
       },
       losses: {
+        type: Sequelize.INTEGER(11),
+      },
+      roundPlay: {
         type: Sequelize.INTEGER(11),
       },
       createdAt: {

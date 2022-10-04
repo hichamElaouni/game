@@ -1,111 +1,303 @@
-import React, { useState, useEffect } from "react";
-import { getQuestionByRoom } from "./service/api";
+//multi rander ;multi insert ;update room hisroty; type var
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import {
+  getQuestionByRoom,
+  addRoomHistory,
+  addQuestionHistory,
+  updateRoomHistory,
+  updateStudent,
+} from "./service/api";
 import Question from "./Question/Question";
 import Game from "./TicTacToe/Game";
 import Waiting from "./waiting/Waiting";
 import { ScoreBoard } from "./Score/ScoreBoard";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { socket } from "./service/socket";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
+import "react-notifications/lib/notifications.css";
 
 function App() {
   const [visible, setVisible] = useState(true);
-  const [xPlaying, setXPlaying] = useState(true);
   const [turn, setTurn] = useState(true);
   const [pauseGame, setPauseGame] = useState(true);
-  const [flag, setFlag] = useState(true);
-  const [scores, setScores] = useState({ xScore: 0, oScore: 0 });
-  const [player, setPlayer] = useState({ id: 0, name: "" });
-  const [stateRoom, setStateRoom] = useState(false);
-  const [over, setOver] = useState(false);
-  const [waitState, setWaitState] = useState(false);
-  const [textWait, setTextWait] = useState("Wait to anothor Player to Join");
-  const [studentsPlay, setStudentsPlay] = useState([player]);
 
-  const [countDown, setCountDown] = useState(1000);
+  const [over, setOver] = useState(false);
+
+  const [stateRoom, setStateRoom] = useState(false);
+
+  const [waitState, setWaitState] = useState({
+    state: false,
+    message: "Wait to anothor Player to Join",
+  });
+
+  const scores = useRef({ xScore: 0, oScore: 0, xGameScore: 0, oGameScore: 0 });
 
   const [lastId, setlastId] = useState(0);
-
   const [roomQuestions, setRoomQuestions] = useState([]);
-  const [questionHistory, setQuestionHistory] = useState([
-    {
-      idQuestion: 0,
-      idStudent: 0,
-      answerSelected: 0,
-    },
-  ]);
+
+  const [studentsPlay, setStudentsPlay] = useState([{}, {}]);
+  // const [student, setStudent] = useState({});
+
+  const [idHistoryRoom, setIdHistoryRoom] = useState(0);
 
   const [searchParams] = useSearchParams();
-  const PlayerName = searchParams.get("NamePlayer");
-  const PlayerId = searchParams.get("PlayerId");
   const token = searchParams.get("token");
 
-  const getQuestion = async (token, id, setRoomQuestions) => {
+  let navigate = useNavigate();
+  const flagGame = useRef(true);
+  let indexPlayer = 0;
+  let student = useRef({});
+  let Room = {};
+  const xPlaying = useRef();
+  const refRoom = useRef(true);
+
+  if (localStorage.getItem("dataStudent") === null) {
+    navigate("/JoinRoom?token=" + token);
+  } else {
     const {
-      data: { data, success, limit },
-    } = await getQuestionByRoom({ token, id });
-    if (!success) console.log("error data");
-    else {
-      if (turn && limit) {
-        console.log("Game Over");
-        setOver(true);
+      indexPlayer: index,
+      student: data,
+      room,
+    } = JSON.parse(localStorage.getItem("dataStudent"));
+    indexPlayer = index;
+    student.current = data;
+    Room = room;
+  }
+
+  const updatePoint = async (id, point, victories, losses) => {
+    let pointPlayer = student.current.point + point;
+    let victoriesPlayer = student.current.victories + victories / Room.point;
+    let lossesPlayer = student.current.losses + losses / Room.point;
+    const studentData = {
+      ...student,
+      point: pointPlayer,
+      victories: victoriesPlayer,
+      losses: lossesPlayer,
+    };
+
+    await updateStudent(id, studentData);
+  };
+
+  const roundOver = async () => {
+    if (over && flagGame.current) {
+      let MsgOver;
+      let roomHistory = {};
+
+      if (scores.oScore < scores.xScore) {
+        roomHistory = {
+          idStudent_1: studentsPlay[0].idStudent,
+          idStudent_2: studentsPlay[1].idStudent,
+          idRoom: Room.id,
+          victories: 3,
+          losses: 2,
+          roundPlay: 6,
+        };
+
+        MsgOver =
+          "Game over, " +
+          studentsPlay[0].fullName +
+          " 'X'  win the Game with Total Points =  " +
+          scores.xScore +
+          " Vs " +
+          studentsPlay[1].fullName +
+          " 'O' Points = " +
+          scores.oScore;
+        updatePoint(
+          studentsPlay[0].idStudent,
+          scores.xScore,
+          scores.xGameScore,
+          scores.oGameScore
+        );
+      } else if (scores.oScore > scores.xScore) {
+        roomHistory = {
+          idStudent_1: studentsPlay[1].idStudent,
+          idStudent_2: studentsPlay[0].idStudent,
+          IdRoom: Room.id,
+          victories: 3,
+          losses: 2,
+          roundPlay: 6,
+        };
+
+        MsgOver =
+          "Game over, " +
+          studentsPlay[1].fullName +
+          " 'O' win the Game with Total Points =  " +
+          scores.oScore +
+          " Vs " +
+          studentsPlay[0].fullName +
+          " 'X' Points =  " +
+          scores.xScore;
+        updatePoint(
+          studentsPlay[1].idStudent,
+          scores.oScore,
+          scores.oGameScore,
+          scores.xGameScore
+        );
       } else {
-        setRoomQuestions(data);
-        setCountDown(data[0]?.Rooms[0]?.TimeTurn);
+        MsgOver = "Game Is Over No One Wins, Score Players = " + scores.oScore;
+        updatePoint(studentsPlay[0].idStudent, scores.oScore / 2, 0, 0);
+        updatePoint(studentsPlay[1].idStudent, scores.oScore / 2, 0, 0);
       }
+
+      await updateRoomHistory(idHistoryRoom, roomHistory);
+
+      indexPlayer * 1 === 1
+        ? socket.emit("setGameOver")
+        : socket.emit("setOver", MsgOver);
     }
   };
 
   useEffect(() => {
-    getQuestion(token, lastId, setRoomQuestions);
-    setPlayer({ id: PlayerId, name: PlayerName });
-
-    if (flag && PlayerId * 1 === 1) {
+    if (indexPlayer * 1 === 1) {
       setTurn(true);
-      setXPlaying(true);
-      setFlag(false);
+      xPlaying.current = true;
       setStateRoom(true);
       setVisible(false);
-      setStudentsPlay([...studentsPlay, { id: PlayerId, name: PlayerName }]);
     }
-    if (flag && PlayerId * 1 === 2) {
+
+    if (indexPlayer * 1 === 2) {
       setTurn(false);
-      setXPlaying(false);
-      setFlag(false);
+      xPlaying.current = false;
       setStateRoom(false);
 
-      const Student = { id: PlayerId, name: PlayerName };
-      setStudentsPlay([Student]);
-      socket.emit("setStateRoom", Student);
+      socket.emit("setStateRoom", {
+        indexPlayer: indexPlayer,
+        idStudent: student.current.id,
+        point: student.current.point,
+        victories: student.current.victories,
+        fullName: student.current.fullName,
+      });
     }
+  }, []);
 
-    socket.on("getStateRoom", (Student) => {
-      console.log(
-        "🚀 ~ file: Home.js ~ line 82 ~ socket.on ~ Student",
-        Student.name
+  //Player 1
+  useEffect(() => {
+    socket.on(
+      "getStateRoom",
+      async ({ indexPlayer: index, idStudent, point, victories, fullName }) => {
+        if (Room.id !== undefined) {
+          if (refRoom.current) {
+            setStudentsPlay([
+              {
+                indexPlayer: index,
+                idStudent: student.current.id,
+                fullName: student.current.fullName,
+                point: student.current.point,
+                victories: student.current.victories,
+              },
+              {
+                indexPlayer,
+                idStudent,
+                fullName,
+                point,
+                victories,
+              },
+            ]);
+
+            setStateRoom(false);
+            setVisible(true);
+            const { data } = await addRoomHistory({
+              idStudent_1: student.current.id,
+              idStudent_2: idStudent,
+              idRoom: Room.id,
+              victories: 0,
+              losses: 0,
+              roundPlay: 0,
+            });
+
+            setIdHistoryRoom(data.idHistoryRoom);
+
+            socket.emit("setStudents", {
+              indexPlayer: indexPlayer,
+              idStudent: student.current.id,
+              fullName: student.current.fullName,
+              point: student.current.point,
+              victories: student.current.victories,
+              idHistoryRoom: data.idHistoryRoom,
+            });
+          }
+        }
+      }
+    );
+    if (refRoom.current) {
+      socket.on(
+        "getStudents",
+        ({
+          indexPlayer: index,
+          idStudent,
+          fullName,
+          point,
+          victories,
+          idHistoryRoom,
+        }) => {
+          setStudentsPlay([
+            { indexPlayer: index, idStudent, fullName, point, victories },
+            {
+              indexPlayer: indexPlayer,
+              idStudent: student.current.id,
+              fullName: student.current.fullName,
+              point: student.current.point,
+              victories: student.current.victories,
+            },
+          ]);
+          setIdHistoryRoom(idHistoryRoom);
+        }
       );
-      setStudentsPlay([
-        ...studentsPlay,
-        { id: Student.id, name: Student.name },
-      ]);
-      setStateRoom(false);
-      setVisible(true);
-    });
+    }
 
     socket.on("getGameOver", () => {
       setOver(true);
-      setWaitState(true);
+      setWaitState({ ...waitState, state: true });
     });
+
     socket.on("getOver", (MsgOver) => {
       setStateRoom(true);
-      setTextWait(MsgOver);
-      setWaitState(true);
+      setWaitState({ state: true, message: MsgOver });
     });
-    console.log("🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀", studentsPlay);
+
+    return () => {
+      refRoom.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const getQuestion = async (token, id, setRoomQuestions) => {
+      const {
+        data: { data, success, limit },
+      } = await getQuestionByRoom({ token, id });
+      if (!success) console.log("error data");
+      else {
+        if (turn && limit) {
+          console.log("Game Over");
+          setOver(true);
+        } else {
+          setRoomQuestions(data);
+        }
+      }
+    };
+    getQuestion(token, lastId, setRoomQuestions);
   }, [lastId]);
 
-  const { Question: questions, Rooms } = roomQuestions[0] || {};
+  const { Question: questions } = roomQuestions[0] || {};
 
-  const pointGame = Rooms == undefined ? 1 : Rooms[0].point;
+  useEffect(() => {
+    window.onbeforeunload = function () {
+      localStorage.clear();
+    };
+
+    socket.on("disconnected", (Student) => {
+      NotificationManager.info(
+        "Player " + Student.fullName + " disconnected you Win.",
+        "Information",
+        3000
+      );
+      setOver(true);
+      roundOver();
+    });
+  }, []);
 
   return (
     <>
@@ -113,79 +305,55 @@ function App() {
         <section className="SectionP1">
           {visible && turn ? (
             <Question
-              namePlayer={player.name}
+              student={student}
               setVisible={setVisible}
               setPauseGame={setPauseGame}
               scores={scores}
-              setScores={setScores}
-              setCountDown={setCountDown}
-              countDown={countDown}
+              count={Room.TimeTurn || 15}
               setlastId={setlastId}
               lastId={lastId}
-              idPlayer={player.id}
+              indexPlayer={indexPlayer}
               questions={questions}
-              questionHistory={questionHistory}
-              setQuestionHistory={setQuestionHistory}
+              idHistoryRoom={idHistoryRoom}
+              addQuestionHistory={addQuestionHistory}
             />
           ) : (
-            <Waiting namePlayer={player.name} text="Waiting " />
+            <Waiting namePlayer={student.current.fullName} text="Waiting " />
           )}
         </section>
         <div className="flex-score-game">
           <ScoreBoard
-            scores={scores}
-            xPlaying={xPlaying}
-            player={player}
+            xPlaying={xPlaying.current}
             studentsPlay={studentsPlay}
-            setStudentsPlay={setStudentsPlay}
+            scores={scores}
           />
           <section className={`SectionG  ${pauseGame ? "pauseGame" : ""}`}>
             <Game
-              xPlaying={xPlaying}
-              setXPlaying={setXPlaying}
-              scores={scores}
-              setScores={setScores}
-              Player={player}
+              xPlaying={xPlaying.current}
               setPauseGame={setPauseGame}
               setVisible={setVisible}
-              pointGame={pointGame}
+              pointGame={Room.point || 2}
               turn={turn}
               setTurn={setTurn}
               over={over}
-              setCountDown={setCountDown}
-              countDown={countDown}
+              // questionHistory={questionHistory}
+              scores={scores}
+              roundOver={roundOver}
+              flagGame={flagGame}
             />
           </section>
         </div>
-        <>
-          {/* <section className="SectionP2">
-          {!visible && !turn ? (
-            <Question
-              idPlayer={2}
-              namePlayer={player[1]}
-              questions={questions}
-              setVisible={setVisible}
-              setlastId={setlastId}
-              PauseGame={PauseGame}
-              turn={turn}
-              setTurn={setTurn}
-              scores={scores}
-              setScores={setScores}
-            />
-          ) : (
-            <WaitQuestion namePlayer={player[1]} />
-          )}
-        </section> */}
-        </>
+        <></>
       </div>
       <div className={`div-wait ${stateRoom ? "start-Playing" : ""} `}>
         <Waiting
-          namePlayer={player.namePlayer}
-          text={textWait}
-          waitState={waitState}
+          namePlayer={student.current.fullName}
+          Message={waitState.message}
+          State={waitState.state}
           token={token}
         />
       </div>
+      <NotificationContainer />
     </>
   );
 }
