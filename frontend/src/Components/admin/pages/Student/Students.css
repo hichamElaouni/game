@@ -3,6 +3,11 @@
   width: 100%;
   background: rgb(255, 254, 254);
 }
+.line-3 {
+  height: 3px;
+  width: 100%;
+  background: rgb(0, 0, 0);
+}
 .boxs {
   display: flex;
   width: 100%;
@@ -30,7 +35,7 @@
 }
 
 .imgsingel {
-  width: 25%;
+  width: 20%;
   height: 100%;
   position: relative;
   background-image: url("./ImageStudents/student.png");
@@ -45,7 +50,7 @@
 }
 
 .textBox {
-  width: 70%;
+  width: 78%;
   height: 100%;
   position: absolute;
   float: right;
@@ -66,7 +71,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   background: #194a5d;
-  width: 45%;
+  width: 32%;
   color: white;
   padding: 3px;
   border-radius: 4px;
@@ -79,6 +84,13 @@
 .titlebox > h2 {
   box-shadow: 0px 1px 3px;
   border-radius: 4px 0px 0px 4px;
+}
+
+.titlebox > svg {
+  position: absolute;
+  right: 2%;
+  color: black;
+  margin-top: 1px;
 }
 
 .titlebox > input {
@@ -94,12 +106,11 @@
   box-shadow: 0px 0px 4px 0px #2ae076;
   border: 1px solid rgb(126, 213, 232);
 }
+
 .Boxfilter {
   width: 100%;
-
   margin-top: 15px;
   background-color: rgb(25, 74, 93);
-
   padding: 15px;
   gap: 5px;
 }
@@ -143,6 +154,7 @@
   background: #ebf2ef69;
   color: #000;
   cursor: pointer;
+  transition: width 0.5s, height 0.5s;
 }
 
 .nameStudents {
@@ -182,15 +194,31 @@
 }
 
 .student:hover {
-  width: 16em;
-  height: 16em;
+  width: 14.3em;
+  height: 14.5em;
   box-shadow: 0px 0px 4px 0px seagreen;
 }
-
+.rounds:hover {
+  box-shadow: inset 0px 50px 10px 50px seagreen;
+}
 .student:hover .infoStubents {
   display: flex;
 }
-
+.scoreRound {
+  cursor: pointer;
+  background: linear-gradient(
+    to right bottom,
+    rgba(127, 153, 115, 0.41),
+    rgba(33, 95, 98, 0.68)
+  );
+}
+.scoreRound:hover {
+  background: linear-gradient(
+    to right bottom,
+    rgba(127, 153, 115, 0.41),
+    rgba(43, 138, 142, 0.68)
+  );
+}
 .infoStubents {
   position: absolute;
   display: none;
@@ -209,6 +237,82 @@
   flex-direction: column;
   row-gap: 4px;
 }
+
 .student:active {
   box-shadow: 0px 0px 2.5px 0.8px #04b804;
+}
+.scoreRound:active {
+  background: linear-gradient(
+    to right bottom,
+    rgba(146, 197, 122, 0.568),
+    rgba(68, 148, 151, 0.692)
+  );
+}
+/*******History********/
+/* for more style class div-history go to rooms.css */
+
+.div-Shart {
+  width: 100%;
+  height: 100%;
+  background-color: #3cb3f4;
+  display: flex;
+  justify-content: center;
+}
+.historyQuestions {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background-color: #48545978;
+  text-align: center;
+  overflow: auto;
+  align-items: baseline;
+  justify-content: center;
+}
+.ShartQuestion {
+  display: flex;
+  width: 100%;
+  height: 40vh;
+  gap: 4px;
+}
+.historyQuestions > table {
+  width: 85%;
+}
+
+.historyQuestions > table > thead {
+  font-size: 1.2em;
+}
+
+.historyQuestions > tbody {
+  scroll-behavior: auto;
+
+  overflow: auto;
+}
+
+.historyQuestions > tbody > td {
+  padding: 2px;
+}
+
+.historyRounds {
+  width: 100%;
+  height: 60%;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 0.9em;
+  display: flex;
+  scroll-behavior: auto;
+  overflow: scroll;
+}
+
+.trueAnswer {
+  background: #159d15db;
+}
+.falseAnswer {
+  background: #b04b4be0;
+}
+
+.trueAnswer:hover {
+  background: #226f26;
+}
+.falseAnswer:hover {
+  background: #ac3b3be0;
 }

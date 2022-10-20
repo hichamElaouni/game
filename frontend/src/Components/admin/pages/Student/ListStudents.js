@@ -1,8 +1,13 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import Student from "./Student";
+import History from "./History";
+
 import "./Students.css";
 import CustomBtns from "../../../Setings/CustomBtns";
-import { NotificationManager, NotificationContainer } from "react-notifications";
+import {
+  NotificationManager,
+  NotificationContainer,
+} from "react-notifications";
 import "react-notifications/lib/notifications.css";
 import StudentReadOnly from "./StudentReadOnly";
 import AddStudent from "./AddStudent";
@@ -14,13 +19,15 @@ import {
   addStudent,
 } from "../../../service/api";
 
-const getStudents = async (setStudents) => {
+const getStudents = async (setStudents, setStudentSelected) => {
   const {
     data: { data, success },
   } = await getAllStudents();
   if (!success) console.log("error data");
   else {
     setStudents(data);
+    if (data && Array.isArray(data) && data.length > 0)
+      setStudentSelected(data[0]);
   }
 };
 
@@ -28,8 +35,8 @@ export default function ListStudents() {
   const [students, setStudents] = useState([]);
   const [readAdd, setReadAdd] = useState(true);
   const [edit, setEdit] = useState(true);
-
-
+  const [history, setHistory] = useState(false);
+  const IdStudent = useRef(0);
   const initialStateStudent = {
     fullName: "",
     email: "",
@@ -40,20 +47,17 @@ export default function ListStudents() {
     classStudent: "",
     losses: 0,
     victories: 0,
-    point: 0
-  }
-  const [newDataStudent, setNewDataStudent] = useState(initialStateStudent)
-  const [refPage, setRefPage] = useState(0)
-  const [studentSelected, setStudentSelected] = useState(initialStateStudent)
-
-
+    point: 0,
+  };
+  const [newDataStudent, setNewDataStudent] = useState(initialStateStudent);
+  const [refPage, setRefPage] = useState(0);
+  const [studentSelected, setStudentSelected] = useState(initialStateStudent);
 
   useEffect(() => {
-    getStudents(setStudents);
+    getStudents(setStudents, setStudentSelected);
   }, [refPage]);
 
   const getInfoStudent = (event) => {
-
     const fieldName = event.target.getAttribute("name");
     const fieldValue = event.target.value;
 
@@ -61,47 +65,64 @@ export default function ListStudents() {
     newFormData[fieldName] = fieldValue;
 
     setNewDataStudent(newFormData);
-
-  }
+  };
 
   const cancelData = () => {
     setReadAdd(true);
     setEdit(true);
-  }
+  };
 
   const addNewStudent = async () => {
-    NotificationManager.success(
-      "succufully Editing",
-      "Question updated ",
-      3000, await addStudent(newDataStudent)
-    );
-
-    setReadAdd(true)
-    setRefPage(Math.random());
-  }
+    if (newDataStudent.email.match("[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$")) {
+      if (
+        newDataStudent.password.match(
+          "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$"
+        )
+      ) {
+        const { data } = await addStudent(newDataStudent);
+        if (data.success) {
+          NotificationManager.success(
+            "Add",
+            "successfully Added Student",
+            3000
+          );
+          setReadAdd(true);
+          setRefPage(Math.random());
+        } else {
+          NotificationManager.warning(data.message, "Warning", 3000);
+        }
+      } else {
+        NotificationManager.warning(
+          "password not correct.Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters ",
+          "Warning",
+          5000
+        );
+      }
+    } else {
+      NotificationManager.warning("Warning", "Email Not Correct", 3000);
+    }
+  };
 
   const setCompAddStudent = () => {
     setReadAdd(false);
     setStudentSelected(initialStateStudent);
-  }
+  };
 
   const setEditStudent = async () => {
     setEdit(false);
     setNewDataStudent(studentSelected);
-
-  }
+  };
 
   const saveUpdateStudent = async (event) => {
-
-
-    NotificationManager.success(" succufully  Updated ",
+    NotificationManager.success(
+      " succufully  Updated ",
       "info",
       3000,
       await updateStudent(studentSelected.id, newDataStudent)
     );
     setEdit(true);
     setRefPage(Math.random());
-    setStudentSelected(newDataStudent)
+    setStudentSelected(newDataStudent);
   };
 
   const removeStudent = async (event) => {
@@ -114,18 +135,40 @@ export default function ListStudents() {
     );
     setRefPage(Math.random());
   };
+  const showHistory = (event) => {
+    IdStudent.current = event.currentTarget.id;
+
+    if (!!IdStudent.current) {
+      setHistory(true);
+    }
+  };
+
+  const escPress = (event) => {
+    if (event.keyCode === 27) {
+      setHistory(false);
+    }
+  };
 
   return (
     <>
       <div className="boxs">
-        <div className="Boxstudent" >
+        <div className="Boxstudent">
           <div className="imgsingel"></div>
-          {readAdd & edit ? <StudentReadOnly studentSelected={studentSelected} />
-            :
-            <AddStudent getInfoStudent={getInfoStudent} studentSelected={studentSelected} />}
+          {readAdd & edit ? (
+            <StudentReadOnly
+              studentSelected={studentSelected}
+              showHistory={showHistory}
+            />
+          ) : (
+            <AddStudent
+              getInfoStudent={getInfoStudent}
+              studentSelected={studentSelected}
+            />
+          )}
 
           <div className="btnAdd" style={{ right: "2%" }}>
-            <CustomBtns stateBts={true}
+            <CustomBtns
+              stateBts={true}
               singleStudent={true}
               readAdd={readAdd}
               setReadAdd={setReadAdd}
@@ -133,9 +176,7 @@ export default function ListStudents() {
               saveData={edit ? addNewStudent : saveUpdateStudent}
               edit={edit}
               cancelData={cancelData}
-
             />
-
           </div>
         </div>
         <div className="Boxfilter">
@@ -143,9 +184,10 @@ export default function ListStudents() {
         </div>
         <div className="ListStudents">
           {students.map((dataStudent, key) => (
-            <Fragment key={dataStudent[key]}>
-
-              <Student dataStudent={dataStudent} readAdd={readAdd}
+            <Fragment key={key}>
+              <Student
+                dataStudent={dataStudent}
+                readAdd={readAdd}
                 setStudentSelected={setStudentSelected}
                 setEditStudent={setEditStudent}
                 removeStudent={removeStudent}
@@ -155,6 +197,22 @@ export default function ListStudents() {
           ))}
         </div>
       </div>
+      {history && (
+        <div
+          className="div-History"
+          style={{ inset: "0.5% .5% .5% 1.9em", gap: "5px" }}
+          tabIndex={0}
+          onKeyDown={(event) => {
+            escPress(event);
+          }}
+        >
+          <History
+            NotificationManager={NotificationManager}
+            Student={studentSelected}
+          />
+        </div>
+      )}
+
       <NotificationContainer />
     </>
   );

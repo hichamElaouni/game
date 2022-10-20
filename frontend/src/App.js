@@ -5,7 +5,7 @@ import "./style.css";
 import "./Components/SideBar/SideBar.css";
 
 import SideBar from "./Components/SideBar/SideBar";
-import Home from "./Components/Home";
+import Games from "./Components/Games";
 import Dashboard from "./Components/admin/pages/Dashboard";
 
 import ListStudents from "./Components/admin/pages/Student/ListStudents";
@@ -20,10 +20,14 @@ const App = () => {
     <Router>
       <SideBar>
         <Routes>
-          <Route path="/game" element={<Home />} />
+          <Route path="/game" element={<Games />} />
           <Route path="/JoinRoom" element={<Waiting />} />
-          <Route path="/" element={<Dashboard />} />
 
+          <Route path="/RoomNotAvailable" element={<>Room Not Available</>} />
+          <Route path="/ErorrSingIn" element={<>Erorr SingIn</>} />
+          <Route path="/OccupiedRoom" element={<>Occupied Room</>} />
+
+          <Route path="/" element={<Dashboard />} />
           <Route path="/ListStudents" element={<ListStudents />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/Questions" element={<Questions />} />

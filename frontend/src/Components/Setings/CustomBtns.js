@@ -23,8 +23,7 @@ export default function CustomBtns(props) {
     saveData,
     deleteData,
     updateData,
-    cancelData
-
+    cancelData,
   } = props;
 
   return (
@@ -38,12 +37,11 @@ export default function CustomBtns(props) {
               background: "rgba(63, 227, 29, 0.94)",
               height: "100%",
             }}
+            onClick={() => {
+              setCompAddStudent();
+            }}
           >
-            <Add
-              onClick={() => {
-                setCompAddStudent();
-              }}
-            />
+            <Add />
           </IconButton>
         ) : (
           <Fragment>
@@ -54,12 +52,11 @@ export default function CustomBtns(props) {
                 color: "whitesmoke",
                 background: "#4fcd3596",
               }}
+              onClick={(event) => {
+                saveData(event);
+              }}
             >
-              <Save
-                onClick={(event) => {
-                  saveData(event);
-                }}
-              />
+              <Save />
             </IconButton>
             <IconButton
               aria-label="Cancel"
@@ -68,12 +65,11 @@ export default function CustomBtns(props) {
                 background: "#e5d0d0ab",
                 height: "100%",
               }}
+              onClick={() => {
+                cancelData();
+              }}
             >
-              <Cancel
-                onClick={() => {
-                  cancelData()
-                }}
-              />
+              <Cancel />
             </IconButton>
           </Fragment>
         )
@@ -86,13 +82,11 @@ export default function CustomBtns(props) {
               background: "#e5d0d0ab",
               height: "100%",
             }}
+            onClick={(event) => {
+              deleteData(event);
+            }}
           >
-            <Delete
-              id={id}
-              onClick={(event) => {
-                deleteData(event);
-              }}
-            />
+            <Delete id={id} />
           </IconButton>
           <IconButton
             aria-label="updete"
@@ -101,19 +95,17 @@ export default function CustomBtns(props) {
               background: "#4fcd3596",
               height: "100%",
             }}
+            id={id}
+            onClick={(event) => {
+              updateData(event);
+            }}
           >
-
-            <Update
-              id={id}
-              onClick={(event) => { updateData(event) }}
-            />
+            <Update />
           </IconButton>
         </Fragment>
       )}
 
-      {stateBts ? (
-        console.log("btns Students")
-      ) : (
+      {!stateBts && (
         <IconButton
           aria-label="Send"
           style={{

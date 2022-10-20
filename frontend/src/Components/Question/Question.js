@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ListChoices from "../Choice/ListChoices";
-import Timer from "../Timer/Timer";
+import CountDown from "../Timer/CountDown";
 import { socket } from "../service/socket";
 
 const NextQuestion = async (
@@ -49,7 +49,6 @@ export default function Question(props) {
     setlastId,
     setPauseGame,
     count,
-    setScores,
     student,
     idHistoryRoom,
     addQuestionHistory,
@@ -76,7 +75,7 @@ export default function Question(props) {
     <div className="players ">
       <h1>{student.current.fullName}</h1>
       <div className="boardquetion">
-        <Timer
+        <CountDown
           setPauseGame={setPauseGame}
           idQuestion={idQuestion}
           setVisible={setVisible}

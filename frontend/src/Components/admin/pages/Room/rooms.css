@@ -96,8 +96,9 @@
 .Room:hover .infoRoom {
   display: flex;
 }
-
-.div-Add-Room {
+/********  div-History for history Rounds  *********/
+.div-Add-Room,
+.div-History {
   position: absolute;
   bottom: 0;
   background: linear-gradient(

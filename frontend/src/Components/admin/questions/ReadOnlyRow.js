@@ -10,7 +10,7 @@ const ReadOnlyRow = ({
 }) => {
   return (
     <tr>
-      {selected ? (
+      {selected && (
         <td className="container FromStudent">
           <Choices
             type="checkbox"
@@ -19,8 +19,6 @@ const ReadOnlyRow = ({
             onclick={getselectedQuestions}
           />
         </td>
-      ) : (
-        ""
       )}
       <td>{question.title}</td>
       <td>{question.choices}</td>

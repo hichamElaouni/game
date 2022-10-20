@@ -18,8 +18,8 @@ export default function WaitingJoin() {
   const [typeInputPassword, setTypeInputPassword] = useState(false);
   const [alert, setAlert] = useState({ state: false, message: "" });
 
-  const email = useRef("")
-  const password = useRef("")
+  const email = useRef();
+  const password = useRef("");
 
   const [room, setRoom] = useState({
     id: "",
@@ -36,6 +36,7 @@ export default function WaitingJoin() {
 
   useEffect(() => {
     getRoom(tokenParams, setRoom);
+    email.current.focus();
   }, []);
 
   const getRoom = async (token, setRoom) => {
@@ -49,94 +50,118 @@ export default function WaitingJoin() {
     }
   };
 
-
   if (!room.token) {
     navigate("/RoomNotAvailable");
   }
-  socket.on("RoomNotAvailable", () => {
-    navigate("/RoomNotAvailable");
+
+  socket.on("RoomNotAvailable", (page) => {
+    navigate("/" + page);
   });
 
   socket.on("Startplaying", (indexPlayer, student) => {
-    localStorage.setItem("dataStudent", JSON.stringify({ indexPlayer, student, room }))
-    navigate(
-      "/game?&token=" +
-      tokenParams
+    localStorage.setItem(
+      "dataStudent",
+      JSON.stringify({ indexPlayer, student, room })
     );
+    navigate("/game?&token=" + tokenParams);
   });
 
-  console.log("dd");
   const Join_room = async () => {
-    if (email.current !== undefined) {
-
-      const { data: { data, success, message } } = await getStudentByEmail(email.current.value, password.current.value)
+    if (email.current.value !== "") {
+      // if (email.current.value.match("[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$")) {
+      //   if (
+      //     password.current.value.match(
+      //       "(?=^.{8,}$)((?=.*[0-9])|(?=.*/W+))(?![./n])(?=.*[A-Z])(?=.*[a-z]).*$"
+      //     )
+      //   ) {
+      const {
+        data: { data, success, message },
+      } = await getStudentByEmail(email.current.value, password.current.value);
       if (!success) {
         setAlert({ state: true, message: message });
-      }
-      else {
+      } else {
         const student = data;
         socket.emit("joinRoom", { tokenParams, student });
       }
     } else {
       NotificationManager.warning(
         "Warning message",
-        "enter your name firse",
+        "Password Not Correct",
         2000
       );
     }
+    // } else {
+    //   NotificationManager.warning(
+    //     "Warning message",
+    //     "Email Not Correct",
+    //     2000
+    //   );
+    // }
+    // } else {
+    //   NotificationManager.warning(
+    //     "Warning message",
+    //     "enter your Email firse",
+    //     2000
+    //   );
+    // }
   };
 
   return (
     <>
       <div className="join">
         <section className="glass">
-          {alert.state ?
+          {alert.state ? (
             <div className="alert">
-
               <BsInfoCircle />
               <h2>{alert.message}</h2>
-            </div> :
+            </div>
+          ) : (
             <br />
-          }
+          )}
           <h1>Singin To Join Room</h1>
           <div className="div-inputs-join">
             <div className="FildEmail">
-              <label htmlFor="email">Entre Your Email </label>
+              <label>Entre Your Email </label>
               <input
                 className="inputs-join"
                 type="email"
                 ref={email}
-                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                required
-                title="Format Email it not currect "
                 placeholder="Entre your Email ..."
-
               />
             </div>
-
-
             <div className="FildPassword">
-              <label htmlFor="Password">Entre Your Password</label>
+              <label>Entre Your Password</label>
               <div className="typeInputpassword">
-
                 <input
                   className="inputs-join"
                   type={typeInputPassword ? "text" : "password"}
-                  // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                  required
-                  // title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters "
                   placeholder="Entre your Password ..."
                   ref={password}
                 />
-                {typeInputPassword ? <VisibilityOff onClick={() => { setTypeInputPassword(false) }} />
-                  : <Visibility onClick={() => { setTypeInputPassword(true) }} />}
+                {typeInputPassword ? (
+                  <VisibilityOff
+                    onClick={() => {
+                      setTypeInputPassword(false);
+                    }}
+                  />
+                ) : (
+                  <Visibility
+                    onClick={() => {
+                      setTypeInputPassword(true);
+                    }}
+                  />
+                )}
               </div>
             </div>
 
-            <button className="btn-join" onClick={() => { Join_room() }}>
+            <button
+              className="btn-join"
+              onClick={() => {
+                Join_room();
+              }}
+            >
               Join Room
             </button>
-
           </div>
           {/* <SignIn /> */}
         </section>

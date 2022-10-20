@@ -1,11 +1,16 @@
 import React from "react";
 
 export default function StudentReadOnly(props) {
-  const { studentSelected } = props;
+  const { studentSelected, showHistory } = props;
   return (
     <>
       <div className="textBox">
-        <div className="titlebox">
+        <div
+          className="titlebox"
+          id={studentSelected.id}
+          style={{ cursor: "pointer" }}
+          onClick={(event) => showHistory(event)}
+        >
           <h2>Full Name</h2>
           <h3>{studentSelected.fullName}</h3>
         </div>

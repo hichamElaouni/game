@@ -145,10 +145,25 @@ const getStudentById = async (req, res) => {
 const addStudent = async (req, res) => {
   try {
     const { id, ...rest } = req.body;
-    // const password = bcrypt.hashSync(ps, bcrypt.genSaltSync(8), null);
-    // const student = { password, rest };
-    const result = await db.Students.create(rest);
-    res.status(201).json({ success: true, result });
+    const data = Object(
+      await db.Students.findOne({
+        where: {
+          email: rest.email,
+        },
+      })
+    );
+    if (!data.email) {
+      // const { password, ...restData } = rest;
+      // const hashedPassword = await bcrypt.hash(rest.password, 10);
+      // const student = { ...restData, password: hashedPassword };
+      const result = await db.Students.create(rest);
+
+      res.status(201).json({ success: true, result });
+    } else {
+      res
+        .status(203)
+        .json({ success: false, data: [], message: "Email already exists" });
+    }
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -157,6 +172,10 @@ const addStudent = async (req, res) => {
 const updateStudent = async (req, res) => {
   try {
     const { id, studentData } = req.body;
+    console.log(
+      "🚀 ~ file: controller.js ~ line 175 ~ updateStudent ~  id, studentData",
+      req.body
+    );
     const result = await db.Students.update(studentData, {
       where: { id: id },
     });
@@ -412,9 +431,8 @@ const getStudentByEmail = async (req, res) => {
       where: { email: email },
     });
     if (data) {
-      // const password_valid = await compare(password, data.password);
+      // if (await bcrypt.compare(password, data.password)) {
       if (password === data.password) {
-        // token = jwt.sign({ "id" : user.id,"email" : user.email,"first_name":user.first_name },process.env.SECRET);
         res.status(200).json({ success: true, data: data });
       } else {
         res
@@ -468,6 +486,67 @@ const updateRoomHistory = async (req, res) => {
   }
 };
 
+const getRoomsHistory = async (req, res) => {
+  try {
+    const { idStudent, limit, page } = req.body;
+    const offset = getOffset(limit, page);
+    const { RoomHistory, Students, Rooms } = db;
+
+    RoomHistory.belongsTo(Students, {
+      foreignKey: "idStudent_2",
+      sourceKey: "id",
+    });
+    RoomHistory.hasMany(Rooms, { foreignKey: "id", sourceKey: "idRoom" });
+
+    const roomHistory = await RoomHistory.findAll({
+      limit: parseInt(limit) || null,
+      offset: parseInt(offset) || null,
+      include: [
+        {
+          model: Rooms,
+          //attributes: ["nameRoom"],
+        },
+        {
+          model: Students,
+        },
+      ],
+      where: { idStudent_1: idStudent },
+      raw: true,
+      nest: true,
+    });
+
+    res.status(200).json({ success: true, data: roomHistory });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+const getAllHistoryQuestions = async (req, res) => {
+  try {
+    const { idRoomHistory, idStudent } = req.body;
+
+    const { QuestionsHistory, Questions } = db;
+
+    QuestionsHistory.belongsTo(Questions, {
+      foreignKey: "idQuestion",
+      sourceKey: "id",
+    });
+
+    const questionsHistory = await QuestionsHistory.findAll({
+      include: [
+        {
+          model: Questions,
+          //attributes: ["nameRoom"],
+        },
+      ],
+      where: { idStudent: idStudent, idRoomHistory: idRoomHistory },
+    });
+
+    res.status(200).json({ success: true, data: questionsHistory });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
 module.exports = {
   getAllQUestions,
   getQuestionById,
@@ -500,7 +579,10 @@ module.exports = {
   addQuestionsRoom,
 
   getQuestionByRoom,
+  /********** History ***********/
   addRoomHistory,
   addQuestionHistory,
   updateRoomHistory,
+  getRoomsHistory,
+  getAllHistoryQuestions,
 };

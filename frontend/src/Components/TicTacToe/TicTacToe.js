@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { Board } from "./Board";
 import { socket } from "../service/socket";
 
-const Game = (props) => {
+const TicTacToe = (props) => {
   const {
     xPlaying,
     scores,
     setPauseGame,
+    pauseGame,
     setVisible,
     pointGame,
     turn,
     setTurn,
-    roundOver,
+    roundGameOver,
     flagGame,
+    getOver,
+    count,
+    NotificationManager,
+    quitGame,
   } = props;
   const WIN_CONDITIONS = [
     [0, 1, 2],
@@ -27,10 +32,56 @@ const Game = (props) => {
   ];
 
   const [board, setBoard] = useState(Array(9).fill(null));
-  const [gameOver, setGameOver] = useState(false);
+  const [roundOver, setRoundOver] = useState(false);
   const [winningShow, setWinningShow] = useState(false);
   const [messageWin, setMessageWin] = useState();
-  const [index, setIndex] = useState(0);
+  const index = useRef(0);
+
+  const [countDown, setCountDown] = useState(count);
+
+  useEffect(() => {
+    console.log(countDown);
+
+    if (countDown === parseInt(count / 2, 10)) {
+      const NotifTime = parseInt(count / 6, 10) * 1000;
+      console.log(NotifTime, "*************", typeof NotifTime);
+      NotificationManager.warning(
+        "Half the time allotted to play has passed. left for you  " +
+          countDown +
+          " S ",
+        "Warning ",
+        NotifTime + 1
+      );
+      //messag parseInt(  count / 6, 10 )
+    }
+    if (countDown === parseInt(count / 3, 10)) {
+      //messageDesconnected
+
+      NotificationManager.error(
+        "If you don't play within " +
+          countDown +
+          " S , you will be considered forfeited",
+        "Warning ",
+        5000 + 1
+      );
+    }
+
+    if (countDown <= 0) {
+      window.location.reload(false);
+      quitGame();
+      return;
+    }
+    if (!pauseGame) {
+      const interval = setInterval(() => {
+        setCountDown((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [pauseGame, countDown]);
+
+  // const halfTime=()=>{
+
+  // }
 
   useEffect(() => {
     socket.on("getxScore", (xScore, xGameScore) => {
@@ -40,7 +91,7 @@ const Game = (props) => {
 
     socket.on("getoScore", (oScore, oGameScore) => {
       scores.current.oScore = oScore;
-      oGameScore !== undefined && (scores.current.oGameScore = oGameScore);
+      oGameScore !== null && (scores.current.oGameScore = oGameScore);
     });
 
     // socketOpen("switch", ({ turn, updatedBoard }) => {
@@ -62,7 +113,7 @@ const Game = (props) => {
     });
 
     socket.on("getwin", (winMessage) => {
-      setGameOver(true);
+      setRoundOver(true);
       setWinningShow(true);
       setMessageWin(winMessage);
     });
@@ -75,7 +126,8 @@ const Game = (props) => {
 
       return value;
     });
-    setIndex(index + 1);
+    setCountDown(count);
+    index.current += 1;
     setBoard(updatedBoard);
     setPauseGame(true);
     setVisible((prevCheck) => !prevCheck);
@@ -115,11 +167,7 @@ const Game = (props) => {
 
     socket.emit("switch_turn", { turn, updatedBoard });
 
-    roundOver();
-
-    if (index === 4) {
-      let { oGameScore, xGameScore } = scores;
-
+    if (index.current === 4) {
       scores.current.oScore += pointGame / 2;
       scores.current.xScore += pointGame / 2;
 
@@ -129,6 +177,9 @@ const Game = (props) => {
       socket.emit("setResetGame");
       resetBoard();
     }
+
+    // Round over
+    getOver.current && roundGameOver();
 
     // Step 3: Change active player
     // setXPlaying(!xPlaying);
@@ -140,7 +191,7 @@ const Game = (props) => {
 
       // Iterate through win conditions and check if either player satisfies them
       if (board[x] && board[x] === board[y] && board[y] === board[z]) {
-        setGameOver(true);
+        setRoundOver(true);
 
         return board[x];
       }
@@ -148,12 +199,10 @@ const Game = (props) => {
   };
 
   const resetBoard = () => {
-    setGameOver(false);
+    setRoundOver(false);
     setBoard(Array(9).fill(null));
     setWinningShow(false);
-    setIndex(0);
-    flagGame.current = true;
-    roundOver();
+    index.current = 0;
   };
   return (
     <>
@@ -161,7 +210,7 @@ const Game = (props) => {
         <Board
           board={board}
           currentClass={xPlaying}
-          onClick={gameOver ? resetBoard : handleBoxClick}
+          onClick={roundOver ? resetBoard : handleBoxClick}
         />
       </div>
 
@@ -174,4 +223,4 @@ const Game = (props) => {
   );
 };
 
-export default Game;
+export default TicTacToe;

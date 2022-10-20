@@ -21,112 +21,121 @@ const io = new Server(server, {
   },
 });
 
-let Room = "";
-let indexPlayer = 0;
-let rooms = [];
-let Emails = {};
+//  >>>>>>>>> Start Sockits <<<<<<<<<<<<
+
+let Token = "";
+let RoomsArray = [];
+let EmailsArray = {};
+let studentsPlaySameRoom = "";
 
 io.on("connection", (socket) => {
-  let students = "";
-
   socket.on("joinRoom", ({ token, student }) => {
     socket.join(token);
+    EmailsArray[socket.id] = student;
 
-    students = { roomtId: token, players: [student.email] };
-    let roomMemeberNumber = io.sockets.adapter.rooms.get(token) || 0;
-    Emails[socket.id] = student;
-    if (roomMemeberNumber && roomMemeberNumber.size > 2) {
+    studentsPlaySameRoom = { roomId: token, studentId: [student.email] };
+
+    let roomlengthMembers = io.sockets.adapter.rooms.get(token) || 0;
+
+    if (roomlengthMembers.size > 2) {
       socket.leave(token, socket.id);
-      socket.emit("RoomNotAvailable");
+      socket.emit("RoomNotAvailable", "OccupiedRoom");
     } else {
-      const roomIndex = rooms.findIndex((room) => room.roomtId === token);
-      if (roomIndex !== -1) {
-        const room = rooms[roomIndex].players;
+      const roomIndex = RoomsArray.findIndex((room) => room.roomId === token);
 
-        if (!room.includes(student.email)) {
-          room.push(student.email);
+      if (roomIndex !== -1) {
+        const studentId = RoomsArray[roomIndex].studentId;
+
+        if (!studentId.includes(student.email)) {
+          //نشو دور ديالو؟؟
+          studentId.push(student.email);
         } else {
-          room.splice(room.indexOf(student.email), 1);
-          delete Emails[socket.id];
-          socket.leave(token, socket.id);
-          socket.emit("RoomNotAvailable", { page: "doubleSingIn" });
-          console.log("Not Allowed");
+          studentId.splice(studentId.indexOf(student.email), 1);
+
+          console.log(
+            "🚀 ~ file: index.js ~ line 54 ~ socket.on ~ EmailsArray[socket.id]",
+            EmailsArray[socket.id],
+            studentId,
+            RoomsArray
+          );
+          // delete EmailsArray[socket.id];
+          // socket.leave(token, socket.id);
+          // socket.emit("RoomNotAvailable", "ErorrSingIn");
 
           return;
         }
       } else {
-        rooms.push(students);
+        RoomsArray.push(studentsPlaySameRoom);
       }
 
-      indexPlayer = roomMemeberNumber.size;
-      socket.emit("Startplaying", indexPlayer, student);
-      Room = token;
+      socket.emit("Startplaying", roomlengthMembers.size, student);
+      Token = token;
     }
   });
 
   socket.on("setPlayer", (player) => {
-    socket.to(Room).emit("getPlayer", player);
+    socket.to(Token).emit("getPlayer", player);
   });
 
   socket.on("setxScore", (xScore, xGameScore) => {
-    socket.to(Room).emit("getxScore", xScore, xGameScore);
+    socket.to(Token).emit("getxScore", xScore, xGameScore);
   });
 
   socket.on("setoScore", (oScore, oGameScore) => {
-    socket.to(Room).emit("getoScore", oScore, oGameScore);
+    socket.to(Token).emit("getoScore", oScore, oGameScore);
   });
 
   socket.on("switch_turn", ({ turn, updatedBoard }) => {
-    socket.to(Room).emit("switch", { turn, updatedBoard });
+    socket.to(Token).emit("switch", { turn, updatedBoard });
   });
 
   socket.on("setwin", (winMessage) => {
-    socket.to(Room).emit("getwin", winMessage);
+    socket.to(Token).emit("getwin", winMessage);
   });
 
   socket.on("setStateRoom", ({ indexPlayer, idStudent, fullName }) => {
-    socket.to(Room).emit("getStateRoom", { indexPlayer, idStudent, fullName });
+    socket.to(Token).emit("getStateRoom", { indexPlayer, idStudent, fullName });
   });
 
   socket.on(
     "setStudents",
-    ({ indexPlayer, idStudent, fullName, idHistoryRoom }) => {
-      socket.to(Room).emit("getStudents", {
-        indexPlayer,
+    ({ idStudent, fullName, point, victories, losses, idHistoryRoom }) => {
+      socket.to(Token).emit("getStudents", {
         idStudent,
         fullName,
+        point,
+        victories,
+        losses,
         idHistoryRoom,
       });
     }
   );
 
-  socket.on("setGameOver", () => {
-    socket.to(Room).emit("getGameOver");
-  });
-
-  socket.on("setOver", (MsgOver) => {
-    io.to(Room).emit("getOver", MsgOver);
+  socket.on("setGameOver", (MsgOver) => {
+    io.to(Token).emit("getGameOver", MsgOver);
   });
 
   socket.on("setResetGame", () => {
-    socket.to(Room).emit("getResetGame");
+    socket.to(Token).emit("getResetGame");
   });
 
   socket.on("disconnect", () => {
     try {
-      const roomIndex = rooms.findIndex((room) => room.roomtId === Room);
+      const roomIndex = RoomsArray.findIndex((Token) => room.roomId === Token);
 
-      const room = rooms[roomIndex]?.players;
+      const room = RoomsArray[roomIndex]?.studentId;
 
-      room.splice(room.indexOf(Emails[socket.id].email), 1);
-      socket.to(Room).emit("disconnected", Emails[socket.id]);
-      delete Emails[socket.id];
-      socket.leave(Room);
+      room.splice(room.indexOf(EmailsArray[socket.id].email), 1);
+      socket.to(Token).emit("disconnected", EmailsArray[socket.id]);
+
+      delete EmailsArray[socket.id];
+      socket.leave(Token);
     } catch (error) {
       console.log("🚀 ~ file: index.js ~ line 120 ~ socket.on ~ error", error);
     }
   });
 });
+//  >>>>>>>>> ENG Sockits <<<<<<<<<<<<
 
 dotenv.config();
 moment.suppressDeprecationWarnings = true;

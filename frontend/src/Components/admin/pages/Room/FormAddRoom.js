@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Grid from "../../questions/Grid";
 import CustumCombobox from "../../../Setings/CustumCombobox";
 import { addRoom, getAllQUestions } from "../../../service/api";
@@ -18,9 +18,10 @@ export default function FormAddRoom(props) {
   const [questions, setQuestions] = useState([]);
   const [questionsSelected, setQuestionsSelected] = useState([]);
 
-  const [point, setPoint] = useState(2);
-  const [timeRoom, setTimeRoom] = useState(15);
-  const [nameRoom, setNameRoom] = useState();
+  const refPoint = useRef(2);
+  const refTimeRoom = useRef(15);
+  const refName = useRef();
+  const refLimitQuestions = 4;
 
   const getQuestions = async (setQuestions) => {
     const {
@@ -34,25 +35,30 @@ export default function FormAddRoom(props) {
 
   useEffect(() => {
     getQuestions(setQuestions);
+    refName.current.focus();
   }, []);
 
-  const ConfirmAdd = async (event) => {
-    if (nameRoom === undefined) {
+  const ConfirmAdd = async () => {
+    if (refName.current.value === "") {
       NotificationManager.warning(" enter Name Room ", "warning", 3000);
     } else {
-      if (questionsSelected.length <= 0) {
+      if (questionsSelected.length <= refLimitQuestions) {
+        console.log(
+          "🚀 ~ file: FormAddRoom.js ~ line 47 ~ ConfirmAdd ~ refLimitQuestions",
+          refLimitQuestions
+        );
         NotificationManager.warning(
           " Please select the questions, you still need to selected = " +
-            (10 - questionsSelected.length),
+            (refLimitQuestions - questionsSelected.length),
           "warning",
           3000
         );
       } else {
         let Room = {
-          nameRoom: nameRoom,
+          nameRoom: refName.current.value,
           token: token,
-          point: point,
-          TimeTurn: timeRoom,
+          point: refPoint.current.value,
+          TimeTurn: refTimeRoom.current.value,
           idGame: 1,
         };
 
@@ -90,35 +96,21 @@ export default function FormAddRoom(props) {
         <div className="contant-add">
           <label>Name Room</label>
           <input
+            ref={refName}
             type="text"
             id="txtName"
             className="Name-Room"
             placeholder="Name Room ..."
             required
-            onChange={(event) => {
-              setNameRoom(event.target.value);
-            }}
           />
         </div>
         <div className="contant-add">
           <label>Time</label>
-          <NumberPicker
-            defaultValue={10}
-            step={10}
-            onChange={(event) => {
-              setTimeRoom(event);
-            }}
-          />
+          <NumberPicker defaultValue={10} step={10} ref={refTimeRoom} />
         </div>
         <div className="contant-add">
           <label>Point</label>
-          <NumberPicker
-            defaultValue={2}
-            step={1}
-            onChange={(event) => {
-              setPoint(event);
-            }}
-          />
+          <NumberPicker defaultValue={2} step={1} ref={refPoint} />
         </div>
         <div className="contant-add">
           <label>Game</label>
@@ -134,7 +126,11 @@ export default function FormAddRoom(props) {
         />
       </div>
 
-      <div className="btnAdd" style={{ right: "5%", bottom: "6%" }}>
+      <div
+        className="btnAdd"
+        style={{ right: "5%", bottom: "6%" }}
+        onClick={ConfirmAdd}
+      >
         <IconButton
           aria-label="Add"
           style={{
@@ -142,7 +138,7 @@ export default function FormAddRoom(props) {
             background: "rgba(58, 239, 51, 0.87)",
           }}
         >
-          <Add onClick={ConfirmAdd} />
+          <Add />
         </IconButton>
       </div>
     </>

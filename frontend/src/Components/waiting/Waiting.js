@@ -1,19 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import "./waiting.css";
 import CircularIndeterminate from "./CircularIndeterminate";
-import { useNavigate } from "react-router-dom";
 
 export default function Waiting(props) {
-  const { namePlayer, State, Message, token } = props;
-  let navigate = useNavigate();
-
-  const navigated = () => {
-    window.onbeforeunload = function () {
-      localStorage.clear();
-    };
-    navigate(`/JoinRoom/?token=${token}`);
-  };
+  const { namePlayer, State, Message, quitGame } = props;
 
   return (
     <div className="players ">
@@ -22,12 +13,14 @@ export default function Waiting(props) {
         <h1> {Message} </h1>
         {State ? (
           <div className="divWaitForm">
-            <button className="btnReturn" onClick={() => navigated()}>
+            <button className="btnReturn" onClick={() => quitGame()}>
               Go To Join Room
             </button>
           </div>
         ) : (
-          <CircularIndeterminate />
+          <>
+            <CircularIndeterminate />
+          </>
         )}
       </div>
     </div>

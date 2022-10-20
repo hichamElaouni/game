@@ -133,11 +133,6 @@ const Grid = (props) => {
                       selected={selected}
                     />
                   )}
-                  {/* <DailogConfirm
-                    setOpen={setOpen}
-                    open={open}
-                    handleDeleteClick={handleDeleteClick}
-                  /> */}
                 </Fragment>
               ))}
             </tbody>

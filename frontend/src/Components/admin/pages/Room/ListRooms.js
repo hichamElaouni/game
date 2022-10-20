@@ -55,6 +55,12 @@ export default function ListRooms() {
     getRooms(setRooms);
   }, [token]);
 
+  const escPress = (event) => {
+    if (event.keyCode === 27) {
+      setAdding(false);
+    }
+  };
+
   const add_Room = () => {
     setAdding(true);
     setTitlePage("Add Room");
@@ -99,8 +105,14 @@ export default function ListRooms() {
       </div>
       <NotificationContainer />
 
-      {adding ? (
-        <div className="div-Add-Room">
+      {adding && (
+        <div
+          className="div-Add-Room"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            escPress(event);
+          }}
+        >
           <FormAddRoom
             setAdding={setAdding}
             setTitlePage={setTitlePage}
@@ -110,8 +122,6 @@ export default function ListRooms() {
             setToken={setToken}
           />
         </div>
-      ) : (
-        console.log("")
       )}
     </>
   );

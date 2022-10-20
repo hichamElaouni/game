@@ -94,17 +94,25 @@ const getAllStudents = async () =>
   await axios.get(`http://${fullUrl}/db/students`);
 
 const addStudent = async (data) => {
-  await axios.post(`http://${fullUrl}/db/student`, data);
+  try {
+    return await axios.post(`http://${fullUrl}/db/student`, data);
+  } catch (error) {
+    return error?.response || error.message;
+  }
 };
 
 const deleteStudent = async (id) =>
   await axios.delete(`http://${fullUrl}/db/student/${id}`);
 
-const updateStudent = async (id, studentData) =>
+const updateStudent = async (id, studentData) => {
+  console.log("🚀 ~ file: api.js ~ line 108 ~ id", id);
+
   await axios.put(`http://${fullUrl}/db/student`, { id, studentData });
+};
 
 /***Students */
 
+/***   History ********/
 const addRoomHistory = async (data) => {
   return await axios.post(`http://${fullUrl}/db/roomHistory`, data);
 };
@@ -115,6 +123,19 @@ const updateRoomHistory = async (idHistoryRoom, roomHistory) =>
   await axios.put(`http://${fullUrl}/db/roomHistory`, {
     idHistoryRoom,
     roomHistory,
+  });
+
+const getRoomsHistory = async (idStudent, limit, page) =>
+  await axios.post(`http://${fullUrl}/db/roomsHistory`, {
+    idStudent,
+    limit,
+    page,
+  });
+
+const getAllHistoryQuestions = async (idRoomHistory, idStudent) =>
+  await axios.post(`http://${fullUrl}/db/questionsHistory`, {
+    idRoomHistory,
+    idStudent,
   });
 
 export {
@@ -157,4 +178,6 @@ export {
   addRoomHistory,
   addQuestionHistory,
   updateRoomHistory,
+  getRoomsHistory,
+  getAllHistoryQuestions,
 };

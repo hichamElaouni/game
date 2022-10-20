@@ -50,10 +50,10 @@ export default function Timer(props) {
       return;
     }
     const interval = setInterval(() => {
-      setCountDown((countDown) => countDown - 1);
+      setCountDown((prev) => prev - 1);
     }, 1000);
     return () => clearInterval(interval);
-  }, [countDown]);
+  }, []);
 
   return (
     <span className="timer" id="timer">
