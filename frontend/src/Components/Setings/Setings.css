@@ -1,0 +1,15 @@
+.pagination {
+  background: rgb(95, 202, 166);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  /* width: -webkit-fill-available; */
+  align-items: center;
+  bottom: 1%;
+  width: -moz-available;
+}
+
+.MuiPagination-ul :last-child {
+  font-size: 1.2rem;
+}

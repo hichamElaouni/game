@@ -29,8 +29,9 @@ let EmailsArray = {};
 let studentsPlaySameRoom = "";
 
 io.on("connection", (socket) => {
-  socket.on("joinRoom", ({ token, student }) => {
+  socket.on("joinRoom", (token, student) => {
     socket.join(token);
+
     EmailsArray[socket.id] = student;
 
     studentsPlaySameRoom = { roomId: token, studentId: [student.email] };
@@ -43,25 +44,18 @@ io.on("connection", (socket) => {
     } else {
       const roomIndex = RoomsArray.findIndex((room) => room.roomId === token);
 
+      console.log("************", EmailsArray);
+
       if (roomIndex !== -1) {
         const studentId = RoomsArray[roomIndex].studentId;
 
         if (!studentId.includes(student.email)) {
-          //نشو دور ديالو؟؟
           studentId.push(student.email);
         } else {
-          studentId.splice(studentId.indexOf(student.email), 1);
-
-          console.log(
-            "🚀 ~ file: index.js ~ line 54 ~ socket.on ~ EmailsArray[socket.id]",
-            EmailsArray[socket.id],
-            studentId,
-            RoomsArray
-          );
-          // delete EmailsArray[socket.id];
-          // socket.leave(token, socket.id);
-          // socket.emit("RoomNotAvailable", "ErorrSingIn");
-
+          // studentId.splice(studentId.indexOf(student.email), 1);
+          delete EmailsArray[socket.id];
+          socket.leave(token, socket.id);
+          socket.emit("RoomNotAvailable", "ErorrSingIn");
           return;
         }
       } else {
@@ -121,7 +115,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     try {
-      const roomIndex = RoomsArray.findIndex((Token) => room.roomId === Token);
+      const roomIndex = RoomsArray.findIndex((room) => room.roomId === Token);
 
       const room = RoomsArray[roomIndex]?.studentId;
 

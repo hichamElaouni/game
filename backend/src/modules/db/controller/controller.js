@@ -110,16 +110,20 @@ const deleteQuestion = async (req, res) => {
   }
 };
 
+
+
 const getAllStudents = async (req, res) => {
   try {
-    const { limit, page } = req.query;
+    const { limit = 10, page } = req.query;
+
+    const lengthTable = await db.Students.count();
     const offset = getOffset(limit, page);
 
     const students = await db.Students.findAll({
       limit: parseInt(limit) || null,
       offset: parseInt(offset) || null,
     });
-    res.status(200).json({ success: true, data: students });
+    res.status(200).json({ success: true, data: students, lengthTable: lengthTable });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, message: error.message });
@@ -379,11 +383,11 @@ const getQuestionByRoom = async (req, res) => {
 
     let additionalData = token
       ? {
-          where: {
-            idQuestion: { [Op.gt]: id },
-          },
-          limit: 1,
-        }
+        where: {
+          idQuestion: { [Op.gt]: id },
+        },
+        limit: 1,
+      }
       : {};
 
     QuestionsRoom.belongsTo(Questions, {
@@ -488,7 +492,7 @@ const updateRoomHistory = async (req, res) => {
 
 const getRoomsHistory = async (req, res) => {
   try {
-    const { idStudent, limit, page } = req.body;
+    const { idStudent, limit = 10, page } = req.body;
     const offset = getOffset(limit, page);
     const { RoomHistory, Students, Rooms } = db;
 
@@ -504,7 +508,7 @@ const getRoomsHistory = async (req, res) => {
       include: [
         {
           model: Rooms,
-          //attributes: ["nameRoom"],
+
         },
         {
           model: Students,
@@ -515,7 +519,9 @@ const getRoomsHistory = async (req, res) => {
       nest: true,
     });
 
-    res.status(200).json({ success: true, data: roomHistory });
+    const lengthTable = await db.RoomHistory.count();
+
+    res.status(200).json({ success: true, data: roomHistory, lengthTable: lengthTable });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -547,6 +553,8 @@ const getAllHistoryQuestions = async (req, res) => {
     res.status(400).json({ success: false, message: error.message });
   }
 };
+
+
 module.exports = {
   getAllQUestions,
   getQuestionById,
@@ -585,4 +593,6 @@ module.exports = {
   updateRoomHistory,
   getRoomsHistory,
   getAllHistoryQuestions,
+
+
 };

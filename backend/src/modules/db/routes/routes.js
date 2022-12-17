@@ -37,4 +37,6 @@ route.post("/questionHistory", ctrl.addQuestionHistory);
 route.put("/roomHistory", ctrl.updateRoomHistory);
 route.post("/roomsHistory", ctrl.getRoomsHistory);
 route.post("/questionsHistory", ctrl.getAllHistoryQuestions);
+
+
 export default route;

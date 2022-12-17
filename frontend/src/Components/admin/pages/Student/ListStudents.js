@@ -12,20 +12,23 @@ import "react-notifications/lib/notifications.css";
 import StudentReadOnly from "./StudentReadOnly";
 import AddStudent from "./AddStudent";
 import FilterStudents from "./FilterStudents";
+import Pagination from '../../../Setings/Pagination'
+
 import {
   getAllStudents,
   deleteStudent,
   updateStudent,
-  addStudent,
+  addStudent
 } from "../../../service/api";
 
-const getStudents = async (setStudents, setStudentSelected) => {
+const getStudents = async (setStudents, setStudentSelected, setLengthTable, page) => {
   const {
-    data: { data, success },
-  } = await getAllStudents();
+    data: { data, success, lengthTable },
+  } = await getAllStudents(page);
   if (!success) console.log("error data");
   else {
     setStudents(data);
+    setLengthTable(lengthTable / 10);
     if (data && Array.isArray(data) && data.length > 0)
       setStudentSelected(data[0]);
   }
@@ -37,6 +40,8 @@ export default function ListStudents() {
   const [edit, setEdit] = useState(true);
   const [history, setHistory] = useState(false);
   const IdStudent = useRef(0);
+
+
   const initialStateStudent = {
     fullName: "",
     email: "",
@@ -50,12 +55,14 @@ export default function ListStudents() {
     point: 0,
   };
   const [newDataStudent, setNewDataStudent] = useState(initialStateStudent);
-  const [refPage, setRefPage] = useState(0);
   const [studentSelected, setStudentSelected] = useState(initialStateStudent);
 
+  const [numPage, setNumPage] = useState(1);
+  const [lengthTable, setLengthTable] = useState(0);
+
   useEffect(() => {
-    getStudents(setStudents, setStudentSelected);
-  }, [refPage]);
+    getStudents(setStudents, setStudentSelected, setLengthTable);
+  }, [numPage]);
 
   const getInfoStudent = (event) => {
     const fieldName = event.target.getAttribute("name");
@@ -87,7 +94,8 @@ export default function ListStudents() {
             3000
           );
           setReadAdd(true);
-          setRefPage(Math.random());
+          setStudents([...students, newDataStudent]);
+
         } else {
           NotificationManager.warning(data.message, "Warning", 3000);
         }
@@ -108,12 +116,16 @@ export default function ListStudents() {
     setStudentSelected(initialStateStudent);
   };
 
-  const setEditStudent = async () => {
+  const setEditStudent = async (event) => {
     setEdit(false);
-    setNewDataStudent(studentSelected);
+
+    const indexSelected = students.findIndex((student) => student.id === parseInt(event.currentTarget.id))
+    setNewDataStudent(students[indexSelected]);
   };
 
   const saveUpdateStudent = async (event) => {
+
+
     NotificationManager.success(
       " succufully  Updated ",
       "info",
@@ -121,8 +133,11 @@ export default function ListStudents() {
       await updateStudent(studentSelected.id, newDataStudent)
     );
     setEdit(true);
-    setRefPage(Math.random());
+
     setStudentSelected(newDataStudent);
+    const indexSelected = students.findIndex((student) => student.email === studentSelected.email)
+    students[indexSelected] = newDataStudent;
+
   };
 
   const removeStudent = async (event) => {
@@ -133,7 +148,7 @@ export default function ListStudents() {
       3000,
       await deleteStudent(studentId)
     );
-    setRefPage(Math.random());
+    setNumPage(Math.random());
   };
   const showHistory = (event) => {
     IdStudent.current = event.currentTarget.id;
@@ -148,6 +163,10 @@ export default function ListStudents() {
       setHistory(false);
     }
   };
+
+  const nextPage = async (event) => {
+    await getStudents(setStudents, setStudentSelected, setLengthTable, event.target.textContent);
+  }
 
   return (
     <>
@@ -200,19 +219,18 @@ export default function ListStudents() {
       {history && (
         <div
           className="div-History"
-          style={{ inset: "0.5% .5% .5% 1.9em", gap: "5px" }}
+          style={{ height: "100vh", gap: "5px", top: "auto" }}
           tabIndex={0}
           onKeyDown={(event) => {
             escPress(event);
           }}
         >
           <History
-            NotificationManager={NotificationManager}
             Student={studentSelected}
           />
         </div>
       )}
-
+      <Pagination lengthPages={Math.ceil(lengthTable)} nextPage={nextPage} />
       <NotificationContainer />
     </>
   );

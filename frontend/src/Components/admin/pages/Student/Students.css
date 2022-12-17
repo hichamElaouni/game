@@ -132,6 +132,7 @@
   justify-content: space-around;
   align-items: flex-start;
   /* flex-flow: wrap; */
+  overflow: scroll;
   flex-wrap: wrap;
   align-content: flex-start;
   padding: 15px;

@@ -1,57 +1,57 @@
 import React, { useEffect, useRef, useState } from "react";
 import { getRoomsHistory, getAllHistoryQuestions } from "../../../service/api";
 import Rounds from "./Rounds";
+import Pagination from '../../../Setings/Pagination'
+
 
 export default function History(props) {
     const { Student } = props;
 
-    const limit = useRef(10);
-    const page = useRef(1);
+
     const [student, setStudent] = useState(Student);
     const [questionsHistory, setQuestionsHistory] = useState();
+    const [lengthTable, setLengthTable] = useState(0);
+    const [numPage, setNumPage] = useState(1);
+
 
     const refEffect = useRef(false);
-    const refTable = useRef("");
+
     let RoomsHistory = useRef([]);
+
+    const getHistoryRooms = async (numPage) => {
+        const {
+            data: { data, success, lengthTable },
+        } = await getRoomsHistory(student.id, numPage);
+        if (!success) console.log("error data");
+        else {
+            RoomsHistory.current = [];
+            data.map((room) => {
+                const { Rooms, Student, ...rest } = room;
+                RoomsHistory.current = [
+                    ...RoomsHistory.current,
+                    {
+                        idStudent: Student.id,
+                        nameStudent: Student.fullName,
+                        nameRoom: Rooms.nameRoom,
+                        ...rest,
+                    },
+                ];
+            });
+
+            setLengthTable(lengthTable);
+            getHistoryQuestions(data[0].id, Student.id)
+        }
+    };
+
 
     useEffect(() => {
         if (refEffect.current) {
-            const getHistoryRooms = async () => {
-                const {
-                    data: { data, success },
-                } = await getRoomsHistory(student.id, limit.current, page.current);
-                if (!success) console.log("error data");
-                else {
-
-                    RoomsHistory.current = [];
-
-                    data.map((room) => {
-
-                        const { Rooms, Student, ...rest } = room;
-                        RoomsHistory.current = [
-                            ...RoomsHistory.current,
-                            {
-                                idStudent: Student.id,
-                                nameStudent: Student.fullName,
-                                nameRoom: Rooms.nameRoom,
-                                ...rest,
-                            },
-                        ];
-
-                    });
-
-
-                }
-                getHistoryQuestions(data[0].id, Student.id)
-            };
-            getHistoryRooms();
-
+            getHistoryRooms(numPage);
         }
-        // refTable.current.focus();
         return () => {
             refEffect.current = true;
         };
-    }, [student, limit.current, page.current]);
+    }, []);
 
 
 
@@ -72,7 +72,9 @@ export default function History(props) {
         }
     }
 
-
+    const nextPage = async (event) => {
+        await getHistoryRooms(event.target.textContent);
+    }
     const Style = {
         background: "#79746e1a",
         textAlign: "center",
@@ -123,6 +125,9 @@ export default function History(props) {
                     />
                 ))}
             </div>
+
+            <Pagination lengthPages={Math.ceil(lengthTable)} nextPage={nextPage} />
+
         </>
     );
 }

@@ -81,7 +81,7 @@ export default function WaitingJoin() {
         setAlert({ state: true, message: message });
       } else {
         const student = data;
-        socket.emit("joinRoom", { tokenParams, student });
+        socket.emit("joinRoom", tokenParams, student);
       }
     } else {
       NotificationManager.warning(

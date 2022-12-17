@@ -90,8 +90,9 @@ const getStudentByEmail = async (email, password) => {
 const getStudentById = async (id) =>
   await axios.get(`http://${fullUrl}/db/student/${id}`);
 
-const getAllStudents = async () =>
-  await axios.get(`http://${fullUrl}/db/students`);
+const getAllStudents = async (page) =>
+  await axios.get(`http://${fullUrl}/db/students?page=${page}`);
+
 
 const addStudent = async (data) => {
   try {
@@ -104,11 +105,8 @@ const addStudent = async (data) => {
 const deleteStudent = async (id) =>
   await axios.delete(`http://${fullUrl}/db/student/${id}`);
 
-const updateStudent = async (id, studentData) => {
-  console.log("🚀 ~ file: api.js ~ line 108 ~ id", id);
-
+const updateStudent = async (id, studentData) =>
   await axios.put(`http://${fullUrl}/db/student`, { id, studentData });
-};
 
 /***Students */
 
@@ -125,10 +123,9 @@ const updateRoomHistory = async (idHistoryRoom, roomHistory) =>
     roomHistory,
   });
 
-const getRoomsHistory = async (idStudent, limit, page) =>
+const getRoomsHistory = async (idStudent, page) =>
   await axios.post(`http://${fullUrl}/db/roomsHistory`, {
     idStudent,
-    limit,
     page,
   });
 
@@ -137,6 +134,7 @@ const getAllHistoryQuestions = async (idRoomHistory, idStudent) =>
     idRoomHistory,
     idStudent,
   });
+
 
 export {
   /**Questions */
@@ -180,4 +178,6 @@ export {
   updateRoomHistory,
   getRoomsHistory,
   getAllHistoryQuestions,
+
+
 };
