@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       choices: DataTypes.STRING,
       answer: DataTypes.INTEGER(11),
       point: DataTypes.INTEGER(11),
+      idSubject: DataTypes.INTEGER(11),
     },
     {
       tableName: "Questions",

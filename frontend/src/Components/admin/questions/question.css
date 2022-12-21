@@ -39,6 +39,7 @@ table {
 tr {
   height: 1.8em;
 }
+
 .btns {
   width: 45%;
   height: 30px;
@@ -114,15 +115,16 @@ tr {
   text-align: center;
 }
 
-tr input {
+td input,
+tr select {
   width: 90%;
-  font-size: 1.3em;
+  font-size: 1.2em;
   text-align: center;
   border: none;
-  border-radius: 3px;
+  border-radius: 4px;
   color: #0e2934;
 }
-.addquestion form {
+.formAddQuestion {
   background-color: #134254;
   height: 100%;
   width: 100%;
@@ -133,9 +135,10 @@ tr input {
 
   border-radius: 4px;
 }
-.addquestion input {
+.addquestion input,
+select {
   height: 60%;
-  width: 19%;
+  width: 16%;
   font-size: 1.2em;
   text-align: center;
   border: none;
@@ -263,4 +266,55 @@ tr:hover .trActions {
 .AnswerNumber {
   box-shadow: 0px 0px 0px 1.5px #e9ff00;
   background: #fdf8e9;
+}
+.titleRooms {
+  cursor: pointer;
+  display: inline;
+}
+.titleRooms:hover {
+  /* background-color: #ddf1f463; */
+  color: #143846;
+  border-radius: 4px;
+  box-shadow: 0px 0px 1px 1px #3f6f822b;
+}
+.titleRooms:active {
+  color: #1a3d12;
+  box-shadow: 0px 0px 1px 1px #35d26f2b;
+}
+.thSubjects {
+  cursor: pointer;
+  position: relative;
+}
+.thSubjects:hover {
+  /* background-color: #ddf1f463; */
+  background: #194a5d;
+  color: #e1ebeb;
+  box-shadow: 0px 0px 0px 0.7px #adff2f75;
+}
+/* .thSubjects:active {
+  background: #215c73;
+  color: #070909;
+  box-shadow: 0px 0px 1px 0.8px #a5e83eba;
+} */
+.classFilter::before {
+  content: "";
+  display: flex;
+  background-color: #142d376b;
+  cursor: not-allowed;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(2px);
+  position: absolute;
+}
+.Filter {
+  background: #364d55ba;
+  padding: 1px;
+  border-radius: 5px;
+  position: absolute;
+  inset: 80% 6% auto;
+  z-index: 1;
+}
+
+.Filter > .option_item > .option_inner {
+  padding: 2px 0px;
 }

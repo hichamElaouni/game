@@ -27,7 +27,18 @@ module.exports = {
         type: Sequelize.INTEGER(11),
         defaultValue: 1,
       },
-
+      idSubject: {
+        allowNull: false,
+        type: Sequelize.INTEGER(11),
+        references: {
+          model: {
+            tableName: "Subjects",
+          },
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

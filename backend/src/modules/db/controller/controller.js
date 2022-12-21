@@ -17,11 +17,25 @@ const getAllQUestions = async (req, res) => {
   try {
     const { limit, page } = req.query;
     const offset = getOffset(limit, page);
+
+    db.Questions.hasMany(db.Subjects, {
+      foreignKey: "id",
+      sourceKey: "idSubject",
+    });
     const questions = await db.Questions.findAll({
       limit: parseInt(limit) || null,
       offset: parseInt(offset) || null,
+      include: [
+        {
+          model: db.Subjects,
+          attributes: ["name"]
+        },
+      ],
     });
-    res.status(200).json({ success: true, data: questions });
+
+
+    const subjects = await db.Subjects.findAll()
+    res.status(200).json({ success: true, data: questions, subjects: subjects });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, message: error.message });
@@ -176,10 +190,6 @@ const addStudent = async (req, res) => {
 const updateStudent = async (req, res) => {
   try {
     const { id, studentData } = req.body;
-    console.log(
-      "🚀 ~ file: controller.js ~ line 175 ~ updateStudent ~  id, studentData",
-      req.body
-    );
     const result = await db.Students.update(studentData, {
       where: { id: id },
     });
@@ -379,7 +389,7 @@ const getQuestionByRoom = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, message: "Token or room id is required !!!" });
-    const { Questions, QuestionsRoom, Rooms } = db;
+    const { Questions, QuestionsRoom, Rooms, Subjects } = db;
 
     let additionalData = token
       ? {
@@ -396,6 +406,11 @@ const getQuestionByRoom = async (req, res) => {
     });
     QuestionsRoom.hasMany(Rooms, { foreignKey: "id", sourceKey: "idRoom" });
 
+    db.Questions.hasMany(Subjects, {
+      foreignKey: "id",
+      sourceKey: "idSubject",
+    });
+
     const data = await QuestionsRoom.findAll({
       include: [
         {
@@ -410,7 +425,12 @@ const getQuestionByRoom = async (req, res) => {
           attributes: {
             exclude: ["createdAt", "updatedAt"],
           },
-        },
+          include: [{
+            model: Subjects,
+          }
+          ]
+        }
+
       ],
       ...additionalData,
 

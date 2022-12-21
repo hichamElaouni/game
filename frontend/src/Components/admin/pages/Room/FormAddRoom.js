@@ -16,6 +16,7 @@ export default function FormAddRoom(props) {
     setToken,
   } = props;
   const [questions, setQuestions] = useState([]);
+
   const [questionsSelected, setQuestionsSelected] = useState([]);
 
   const refPoint = useRef(2);
@@ -29,7 +30,24 @@ export default function FormAddRoom(props) {
     } = await getAllQUestions();
     if (!success) console.log("error data");
     else {
-      setQuestions(data);
+
+      let resultData = []
+
+      data.map((dt) => {
+        const { Subjects, ...rest } = dt;
+        return (
+          resultData = [
+            ...resultData,
+            {
+              nameSubject: Subjects[0].name,
+              ...rest,
+            },
+          ]
+        );
+      });
+
+
+      setQuestions(resultData);
     }
   };
 
@@ -42,14 +60,14 @@ export default function FormAddRoom(props) {
     if (refName.current.value === "") {
       NotificationManager.warning(" enter Name Room ", "warning", 3000);
     } else {
-      if (questionsSelected.length <= refLimitQuestions) {
+      if (questionsSelected.length < refLimitQuestions) {
         console.log(
           "🚀 ~ file: FormAddRoom.js ~ line 47 ~ ConfirmAdd ~ refLimitQuestions",
           refLimitQuestions
         );
         NotificationManager.warning(
           " Please select the questions, you still need to selected = " +
-            (refLimitQuestions - questionsSelected.length),
+          (refLimitQuestions - questionsSelected.length),
           "warning",
           3000
         );
@@ -122,6 +140,7 @@ export default function FormAddRoom(props) {
           questions={questions}
           setQuestions={setQuestions}
           getselectedQuestions={(event) => getQuestionsSelected(event)}
+
           selected={true}
         />
       </div>

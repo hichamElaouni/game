@@ -2,7 +2,6 @@ import React, { useState, Fragment, useEffect } from "react";
 
 import { getAllRooms, getQuestionByRoom } from "../../service/api";
 
-// create function to get All informations about 3 tables(question games room)
 const getRooms = async (setRooms) => {
   const {
     data: { data, success },
@@ -12,9 +11,8 @@ const getRooms = async (setRooms) => {
 };
 
 export default function ViewRooms(props) {
-  const { setQuestions, questions } = props;
+  const { setQuestions } = props;
   const [rooms, setRooms] = useState([]);
-  const [nbQuestions, setNbQuestions] = useState([]);
 
   const getQuestionsRoom = async (idRoom, setQuestions) => {
     const {
@@ -24,7 +22,23 @@ export default function ViewRooms(props) {
     else {
       const result = Object.keys(data).map((key) => data[key].Question);
 
-      setQuestions(result);
+      let resultData = []
+
+      result.map((dt) => {
+        const { Subjects, ...rest } = dt;
+        return (
+          resultData = [
+            ...resultData,
+            {
+              nameSubject: Subjects[0].name,
+              ...rest,
+            },
+          ]
+        );
+      });
+
+
+      setQuestions(resultData);
     }
   };
   useEffect(() => {
@@ -43,7 +57,7 @@ export default function ViewRooms(props) {
               onClick={(event) =>
                 getQuestionsRoom(event.currentTarget.id, setQuestions)
               }
-              // onMouseEnter={(event) => console.log(event.currentTarget.id)}
+            // onMouseEnter={(event) => console.log(event.currentTarget.id)}
             >
               <h3 className="titleRoom">{room.nameRoom}</h3>
               <div className="imgGame">

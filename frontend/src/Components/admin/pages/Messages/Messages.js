@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Pagination from '../../../Setings/Pagination'
+import Filter from '../../questions/Filter';
 // import { getLengthTable } from '../../../service/api'
 
 
@@ -17,8 +18,28 @@ export default function Messages() {
 
   return (
     <>
-      <Pagination lengthPages={lengthTable} />
+      <h1>Messages</h1>
+      {/* <div className="container ">
+
+        <Filter dataFilter={subjects} />
+      </div> */}
+
+      {/* <Pagination lengthPages={lengthTable} /> */}
     </>
 
   )
 }
+const subjects = [
+  {
+    id: 1,
+    name: "Math",
+  },
+  {
+    id: 2,
+    name: "English",
+  },
+  {
+    id: 3,
+    name: "phisic",
+  }
+]

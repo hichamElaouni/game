@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import Choices from "./Choices";
 
 export default function ListChoices({ choice = [], onclick }) {
