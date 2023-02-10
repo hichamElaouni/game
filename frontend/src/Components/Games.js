@@ -5,7 +5,7 @@ import {
   addRoomHistory,
   addQuestionHistory,
   updateRoomHistory,
-  updateStudent,
+  updateUser,
 } from "./service/api";
 import Question from "./Question/Question";
 import TicTacToe from "./TicTacToe/TicTacToe";
@@ -38,7 +38,7 @@ function App() {
   const [lastId, setlastId] = useState(0);
   const [roomQuestions, setRoomQuestions] = useState([]);
 
-  const studentsPlay = useRef([{}, {}]);
+  const usersPlay = useRef([{}, {}]);
 
   const [idHistoryRoom, setIdHistoryRoom] = useState(0);
 
@@ -48,7 +48,7 @@ function App() {
   let navigate = useNavigate();
   const flagGame = useRef(true);
   let indexPlayer = 0;
-  let student = useRef({});
+  let user = useRef({});
   let Room = {};
   const xPlaying = useRef();
   const refRoom = useRef(false);
@@ -58,16 +58,16 @@ function App() {
     navigate(`/JoinRoom/?token=${token}`);
   };
 
-  if (localStorage.getItem("dataStudent") === null) {
+  if (localStorage.getItem("dataUser") === null) {
     navigate("/JoinRoom?token=" + token);
   } else {
     const {
       indexPlayer: index,
-      student: data,
+      user: data,
       room,
-    } = JSON.parse(localStorage.getItem("dataStudent"));
+    } = JSON.parse(localStorage.getItem("dataUser"));
     indexPlayer = index;
-    student.current = data;
+    user.current = data;
     Room = room;
   }
   useEffect(() => {
@@ -104,26 +104,26 @@ function App() {
       setStateRoom(false);
 
       socket.emit("setStateRoom", {
-        idStudent: student.current.id,
-        point: student.current.point,
-        victories: student.current.victories,
-        fullName: student.current.fullName,
+        idUser: user.current.id,
+        point: user.current.point,
+        victories: user.current.victories,
+        fullName: user.current.fullName,
       });
     }
   }, []);
 
   const updatePoint = async (index, point, victories, losses) => {
-    let pointPlayer = studentsPlay.current[index].point + point;
+    let pointPlayer = usersPlay.current[index].point + point;
     let victoriesPlayer =
-      studentsPlay.current[index].victories + victories / Room.point;
-    let lossesPlayer = studentsPlay.current[index].losses + losses / Room.point;
-    const studentData = {
+      usersPlay.current[index].victories + victories / Room.point;
+    let lossesPlayer = usersPlay.current[index].losses + losses / Room.point;
+    const userData = {
       point: pointPlayer,
       victories: victoriesPlayer,
       losses: lossesPlayer,
     };
 
-    await updateStudent(studentsPlay.current[index].idStudent, studentData);
+    await updateUser(usersPlay.current[index].idUser, userData);
   };
 
   const roundGameOver = async (disconnectedPlayer) => {
@@ -131,7 +131,7 @@ function App() {
       let MsgOver = "aze";
       let roomHistory = {};
       if (disconnectedPlayer) {
-        if (disconnectedPlayer.id == studentsPlay.current[0].idStudent) {
+        if (disconnectedPlayer.id == usersPlay.current[0].idUser) {
           MsgOver = "You Win with Srore = " + scores.current.oScore;
           updatePoint(
             1,
@@ -141,8 +141,8 @@ function App() {
           );
 
           roomHistory = {
-            idStudent_1: studentsPlay.current[0].idStudent,
-            idStudent_2: studentsPlay.current[1].idStudent,
+            idUser_1: usersPlay.current[0].idUser,
+            idUser_2: usersPlay.current[1].idUser,
             IdRoom: Room.id,
             victories: scores.current.oGameScore / Room.point,
             losses: 0,
@@ -158,8 +158,8 @@ function App() {
           );
 
           roomHistory = {
-            idStudent_1: studentsPlay.current[1].idStudent,
-            idStudent_2: studentsPlay.current[0].idStudent,
+            idUser_1: usersPlay.current[1].idUser,
+            idUser_2: usersPlay.current[0].idUser,
             IdRoom: Room.id,
             victories: scores.current.xGameScore / Room.point,
             losses: 0,
@@ -172,8 +172,8 @@ function App() {
 
       if (scores.current.oScore < scores.current.xScore) {
         roomHistory = {
-          idStudent_1: studentsPlay.current[0].idStudent,
-          idStudent_2: studentsPlay.current[1].idStudent,
+          idUser_1: usersPlay.current[0].idUser,
+          idUser_2: usersPlay.current[1].idUser,
           idRoom: Room.id,
           victories: scores.current.xGameScore / Room.point,
           losses: scores.current.oGameScore / Room.point,
@@ -184,11 +184,11 @@ function App() {
 
         MsgOver =
           "Game over, " +
-          studentsPlay.current[0].fullName +
+          usersPlay.current[0].fullName +
           " 'X'  win the Game with Total Points =  " +
           scores.current.xScore +
           " Vs " +
-          studentsPlay.current[1].fullName +
+          usersPlay.current[1].fullName +
           " 'O' Points = " +
           scores.current.oScore;
 
@@ -207,8 +207,8 @@ function App() {
         );
       } else if (scores.current.oScore > scores.current.xScore) {
         roomHistory = {
-          idStudent_1: studentsPlay.current[1].idStudent,
-          idStudent_2: studentsPlay.current[0].idStudent,
+          idUser_1: usersPlay.current[1].idUser,
+          idUser_2: usersPlay.current[0].idUser,
           IdRoom: Room.id,
           victories: scores.current.oGameScore / Room.point,
           losses: scores.current.xGameScore / Room.point,
@@ -219,11 +219,11 @@ function App() {
 
         MsgOver =
           "Game over, " +
-          studentsPlay.current[1].fullName +
+          usersPlay.current[1].fullName +
           " 'O' win the Game with Total Points =  " +
           scores.current.oScore +
           " Vs " +
-          studentsPlay.current[0].fullName +
+          usersPlay.current[0].fullName +
           " 'X' Points =  " +
           scores.current.xScore;
 
@@ -241,8 +241,8 @@ function App() {
         );
       } else {
         roomHistory = {
-          idStudent_1: studentsPlay.current[0].idStudent,
-          idStudent_2: studentsPlay.current[1].idStudent,
+          idUser_1: usersPlay.current[0].idUser,
+          idUser_2: usersPlay.current[1].idUser,
           IdRoom: Room.id,
           victories: scores.current.oGameScore / Room.point,
           losses: scores.current.xGameScore / Room.point,
@@ -278,20 +278,20 @@ function App() {
   useEffect(() => {
     socket.on(
       "getStateRoom",
-      async ({ idStudent, point, victories, losses, fullName }) => {
+      async ({ idUser, point, victories, losses, fullName }) => {
         if (Room.id !== undefined) {
           if (refRoom.current) {
-            studentsPlay.current = [
+            usersPlay.current = [
               {
-                idStudent: student.current.id,
-                fullName: student.current.fullName,
-                point: student.current.point,
-                victories: student.current.victories,
-                losses: student.current.losses,
+                idUser: user.current.id,
+                fullName: user.current.fullName,
+                point: user.current.point,
+                victories: user.current.victories,
+                losses: user.current.losses,
               },
               {
                 indexPlayer,
-                idStudent,
+                idUser,
                 fullName,
                 point,
                 victories,
@@ -300,8 +300,8 @@ function App() {
             ];
 
             const { data } = await addRoomHistory({
-              idStudent_1: student.current.id,
-              idStudent_2: idStudent,
+              idUser_1: user.current.id,
+              idUser_2: idUser,
               idRoom: Room.id,
               victories: 0,
               losses: 0,
@@ -312,12 +312,12 @@ function App() {
             setVisible(true);
             setIdHistoryRoom(data.idHistoryRoom);
 
-            socket.emit("setStudents", {
-              idStudent: student.current.id,
-              fullName: student.current.fullName,
-              point: student.current.point,
-              victories: student.current.victories,
-              losses: student.current.losses,
+            socket.emit("setUsers", {
+              idUser: user.current.id,
+              fullName: user.current.fullName,
+              point: user.current.point,
+              victories: user.current.victories,
+              losses: user.current.losses,
               idHistoryRoom: data.idHistoryRoom,
             });
             refRoom.current = false;
@@ -327,17 +327,17 @@ function App() {
     );
 
     socket.on(
-      "getStudents",
-      ({ idStudent, fullName, point, victories, losses, idHistoryRoom }) => {
+      "getUsers",
+      ({ idUser, fullName, point, victories, losses, idHistoryRoom }) => {
         if (refRoom.current) {
-          studentsPlay.current = [
-            { idStudent, fullName, point, victories, losses },
+          usersPlay.current = [
+            { idUser, fullName, point, victories, losses },
             {
-              idStudent: student.current.id,
-              fullName: student.current.fullName,
-              point: student.current.point,
-              victories: student.current.victories,
-              losses: student.current.losses,
+              idUser: user.current.id,
+              fullName: user.current.fullName,
+              point: user.current.point,
+              victories: user.current.victories,
+              losses: user.current.losses,
             },
           ];
           setIdHistoryRoom(idHistoryRoom);
@@ -362,16 +362,16 @@ function App() {
       localStorage.clear();
     };
 
-    socket.on("disconnected", (Student) => {
+    socket.on("disconnected", (User) => {
       if (!refRoom.current) {
         NotificationManager.info(
-          "Player " + Student.fullName + " disconnected you Win.",
+          "Player " + User.fullName + " disconnected you Win.",
           "Information",
           3000
         );
         getOver.current = true;
 
-        roundGameOver(Student);
+        roundGameOver(User);
       }
     });
 
@@ -386,11 +386,12 @@ function App() {
         <section className="SectionP1">
           {visible && turn ? (
             <Question
-              student={student}
+              user={user}
               setVisible={setVisible}
               setPauseGame={setPauseGame}
               scores={scores}
-              count={Room.TimeTurn || 15}
+              count={Room.TimeTurn * 3 || 15}
+
               setlastId={setlastId}
               lastId={lastId}
               indexPlayer={indexPlayer}
@@ -399,13 +400,13 @@ function App() {
               addQuestionHistory={addQuestionHistory}
             />
           ) : (
-            <Waiting namePlayer={student.current.fullName} />
+            <Waiting namePlayer={user.current.fullName} />
           )}
         </section>
         <div className="flex-score-game">
           <ScoreBoard
             xPlaying={xPlaying.current}
-            studentsPlay={studentsPlay.current}
+            usersPlay={usersPlay.current}
             scores={scores}
           />
           <section className={`SectionG  ${pauseGame ? "pauseGame" : ""}`}>
@@ -421,6 +422,8 @@ function App() {
               scores={scores}
               roundGameOver={roundGameOver}
               flagGame={flagGame}
+
+
               count={Room.TimeTurn * 3 || 15}
               NotificationManager={NotificationManager}
               quitGame={() => {
@@ -433,7 +436,7 @@ function App() {
       </div>
       <div className={`div-wait ${stateRoom ? "start-Playing" : ""} `}>
         <Waiting
-          namePlayer={student.current.fullName}
+          namePlayer={user.current.fullName}
           Message={waitState.current.message}
           State={waitState.current.state}
           quitGame={() => {
@@ -441,7 +444,6 @@ function App() {
           }}
         />
       </div>
-      <NotificationContainer />
     </>
   );
 }

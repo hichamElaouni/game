@@ -155,6 +155,18 @@
   justify-content: space-around;
 }
 .div-grid {
+  display: contents;
   margin-right: 13%;
   margin-left: 10%;
+}
+
+@media (max-width: 450px) {
+  .Room {
+    width: 13em;
+    height: 13em;
+  }
+  .Room:hover {
+    width: 13.5em;
+    height: 13.5em;
+  }
 }

@@ -5,48 +5,52 @@ import Pagination from '../../../Setings/Pagination'
 
 
 export default function History(props) {
-    const { Student } = props;
+    const { User } = props;
 
 
-    const [student, setStudent] = useState(Student);
+    const [user, setUser] = useState(User);
     const [questionsHistory, setQuestionsHistory] = useState();
-    const [lengthTable, setLengthTable] = useState(0);
-    const [numPage, setNumPage] = useState(1);
+    const refLengthTable = useRef(0);
 
 
     const refEffect = useRef(false);
+    const refLimit = useRef(25);
+    const refPage = useRef(1);
 
     let RoomsHistory = useRef([]);
 
-    const getHistoryRooms = async (numPage) => {
+    const getHistoryRooms = async (limit, page) => {
         const {
             data: { data, success, lengthTable },
-        } = await getRoomsHistory(student.id, numPage);
+        } = await getRoomsHistory(user.id, limit, page);
         if (!success) console.log("error data");
         else {
+            console.log("🚀 ~ file: History.js:25 ~ getHistoryRooms ~ lengthTable", lengthTable)
             RoomsHistory.current = [];
             data.map((room) => {
-                const { Rooms, Student, ...rest } = room;
+                const { Rooms, User, ...rest } = room;
                 RoomsHistory.current = [
                     ...RoomsHistory.current,
                     {
-                        idStudent: Student.id,
-                        nameStudent: Student.fullName,
+                        idUser: User.id,
+                        nameUser: User.fullName,
                         nameRoom: Rooms.nameRoom,
                         ...rest,
                     },
                 ];
             });
 
-            setLengthTable(lengthTable);
-            getHistoryQuestions(data[0].id, Student.id)
+
+            refLengthTable.current = (lengthTable / refLimit.current);
+
+            getHistoryQuestions(data[0].id, User.id)
         }
     };
 
 
     useEffect(() => {
         if (refEffect.current) {
-            getHistoryRooms(numPage);
+            getHistoryRooms(refLimit.current, refPage.current);
         }
         return () => {
             refEffect.current = true;
@@ -56,10 +60,10 @@ export default function History(props) {
 
 
 
-    const getHistoryQuestions = async (idRoomHistory, idStudent) => {
+    const getHistoryQuestions = async (idRoomHistory, idUser) => {
         const {
             data: { data, success },
-        } = await getAllHistoryQuestions(idRoomHistory, idStudent);
+        } = await getAllHistoryQuestions(idRoomHistory, idUser);
         if (!success) console.log("error data");
         else {
             let history = [];
@@ -68,13 +72,20 @@ export default function History(props) {
                 history = [...history, { ...Question, selectedAnswer: rest.selectedAnswer }]
             })
 
+
             setQuestionsHistory(history)
         }
     }
 
     const nextPage = async (event) => {
-        await getHistoryRooms(event.target.textContent);
+        refPage.current = event.target.textContent;
+        await getHistoryRooms(refLimit.current, event.target.textContent);
     }
+    const limitPage = async (event) => {
+        refLimit.current = event.target.value;
+        await getHistoryRooms(refLimit.current, refPage.current);
+    }
+
     const Style = {
         background: "#79746e1a",
         textAlign: "center",
@@ -113,20 +124,20 @@ export default function History(props) {
                 </div>
             </div>
             <div className="line-3"></div>
-            <h3 style={Style}>Student {student.fullName} was played with :</h3>
+            <h3 style={Style}>User {user.fullName}  played {RoomsHistory.current.length} with :</h3>
             <div className="historyRounds">
                 {RoomsHistory.current.map((rooms, key) => (
                     <Rounds
                         key={key}
                         Room={rooms}
-                        setStudent={setStudent}
+                        setUser={setUser}
                         getHistoryQuestions={getHistoryQuestions}
 
                     />
                 ))}
             </div>
 
-            <Pagination lengthPages={Math.ceil(lengthTable)} nextPage={nextPage} />
+            <Pagination lengthPages={refLengthTable.current} onclick={nextPage} onchange={limitPage} />
 
         </>
     );

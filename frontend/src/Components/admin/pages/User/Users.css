@@ -19,7 +19,7 @@
   gap: 2px;
 }
 
-.Boxstudent {
+.Boxuser {
   width: 100%;
   height: 30%;
   display: flex;
@@ -35,33 +35,27 @@
 }
 
 .imgsingel {
-  width: 20%;
   height: 100%;
-  position: relative;
-  background-image: url("./ImageStudents/student.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  cursor: pointer;
-  border-radius: 0 0 4px 4px;
-  display: flex;
   position: absolute;
-  border-radius: 4px;
+  border-radius: 5px;
+  right: 4px;
+  top: 3%;
 }
 
 .textBox {
-  width: 78%;
+  width: 100%;
   height: 100%;
-  position: absolute;
+  /* position: absolute;
   float: right;
-  right: 5px;
+  right: 5px; */
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
   flex-wrap: wrap;
-
-  gap: 5px;
+  gap: 10px;
+  z-index: 1;
+  opacity: 0.87;
 }
 
 .titlebox {
@@ -125,7 +119,7 @@
   align-content: center;
 }
 
-.ListStudents {
+.ListUsers {
   display: flex;
   height: 60%;
   width: 100%;
@@ -139,7 +133,7 @@
   gap: 5px;
 }
 
-.student {
+.user {
   display: flex;
   width: 15em;
   height: 15em;
@@ -158,7 +152,7 @@
   transition: width 0.5s, height 0.5s;
 }
 
-.nameStudents {
+.nameUsers {
   border-radius: 4px 4px 0 0;
   align-content: stretch;
   text-align: center;
@@ -176,25 +170,7 @@
   padding: 1px 5px;
 }
 
-.ImageStudent {
-  background-image: url("./ImageStudents/student.png");
-  width: 100%;
-  height: 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  cursor: pointer;
-  border-radius: 0 0 4px 4px;
-  display: flex;
-
-  align-items: flex-end;
-  /* flex-flow: wrap; */
-  flex-wrap: wrap;
-  align-content: stretch;
-  justify-content: center;
-}
-
-.student:hover {
+.user:hover {
   width: 14.3em;
   height: 14.5em;
   box-shadow: 0px 0px 4px 0px seagreen;
@@ -202,7 +178,7 @@
 .rounds:hover {
   box-shadow: inset 0px 50px 10px 50px seagreen;
 }
-.student:hover .infoStubents {
+.user:hover .infoUsers {
   display: flex;
 }
 .scoreRound {
@@ -220,7 +196,7 @@
     rgba(43, 138, 142, 0.68)
   );
 }
-.infoStubents {
+.infoUsers {
   position: absolute;
   display: none;
   width: 100%;
@@ -239,7 +215,7 @@
   row-gap: 4px;
 }
 
-.student:active {
+.user:active {
   box-shadow: 0px 0px 2.5px 0.8px #04b804;
 }
 .scoreRound:active {
@@ -256,7 +232,7 @@
   width: 100%;
   height: 100%;
   background-color: #3cb3f4;
-  display: flex;
+  display: none;
   justify-content: center;
 }
 .historyQuestions {
@@ -276,7 +252,7 @@
   gap: 4px;
 }
 .historyQuestions > table {
-  width: 85%;
+  margin: 1px 1px 0px 7px;
 }
 
 .historyQuestions > table > thead {
@@ -316,4 +292,49 @@
 }
 .falseAnswer:hover {
   background: #ac3b3be0;
+}
+.titlebox:has(h3:empty) {
+  display: none;
+}
+.titlebox > .filds > svg {
+  width: 1.2em;
+}
+.titlebox > .filds > input {
+  font-size: 1em;
+}
+@media (max-width: 450px) {
+  .boxs {
+    gap: 0px;
+    font-size: 0.6em;
+  }
+  .textBox {
+    width: auto;
+    position: absolute;
+  }
+  .titlebox {
+    width: auto;
+    gap: 7px;
+  }
+  .titlebox > .filds > svg {
+    width: 0.8em;
+  }
+  .Boxuser > .btnAdd {
+    right: -5%;
+    bottom: -18%;
+  }
+  .infoUsers > .btnRoom > .MuiIconButton-root {
+    padding: 7px;
+  }
+  .infoUsers {
+    height: 56%;
+  }
+  .imgsingel {
+    width: 50%;
+    bottom: 1px;
+    height: auto;
+    top: none;
+  }
+  .div-History {
+    font-size: 0.8em;
+  }
 }

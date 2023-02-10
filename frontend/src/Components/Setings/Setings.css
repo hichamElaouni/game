@@ -4,9 +4,9 @@
   display: flex;
   justify-content: center;
   position: absolute;
-  /* width: -webkit-fill-available; */
   align-items: center;
   bottom: 1%;
+  width: -webkit-fill-available;
   width: -moz-available;
 }
 

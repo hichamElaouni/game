@@ -21,6 +21,8 @@ module.exports = {
 
       answer: {
         type: Sequelize.INTEGER(11),
+        allowNull: false,
+
         defaultValue: 1,
       },
       point: {
@@ -28,11 +30,23 @@ module.exports = {
         defaultValue: 1,
       },
       idSubject: {
-        allowNull: false,
+
         type: Sequelize.INTEGER(11),
         references: {
           model: {
             tableName: "Subjects",
+          },
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      },
+      idLevel: {
+
+        type: Sequelize.INTEGER(11),
+        references: {
+          model: {
+            tableName: "Levels",
           },
           key: "id",
         },

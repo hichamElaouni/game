@@ -16,6 +16,9 @@ export default function FormAddRoom(props) {
     setToken,
   } = props;
   const [questions, setQuestions] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [levels, setLevels] = useState([]);
+
 
   const [questionsSelected, setQuestionsSelected] = useState([]);
 
@@ -23,36 +26,45 @@ export default function FormAddRoom(props) {
   const refTimeRoom = useRef(15);
   const refName = useRef();
   const refLimitQuestions = 4;
+  const page = useRef(1);
+  const limit = useRef(25);
+  const refLengthTable = useRef(0);
 
-  const getQuestions = async (setQuestions) => {
+
+
+  const getQuestions = async (limit, page, idSubject, level) => {
     const {
-      data: { data, success },
-    } = await getAllQUestions();
+      data: { data, success, subjects, levels, lengthTable },
+    } = await getAllQUestions(limit, page, idSubject, level);
     if (!success) console.log("error data");
     else {
 
+      // id ,idsubject , namesuject ... ,
       let resultData = []
 
       data.map((dt) => {
-        const { Subjects, ...rest } = dt;
+        const { Subjects, Levels, ...rest } = dt;
         return (
           resultData = [
             ...resultData,
             {
               nameSubject: Subjects[0].name,
+              levelNumber: Levels[0].levelNumber,
               ...rest,
             },
           ]
         );
       });
 
-
+      refLengthTable.current = lengthTable
+      setSubjects(subjects);
+      setLevels(levels);
       setQuestions(resultData);
     }
   };
 
   useEffect(() => {
-    getQuestions(setQuestions);
+    getQuestions(limit.current, page.current);
     refName.current.focus();
   }, []);
 
@@ -61,10 +73,7 @@ export default function FormAddRoom(props) {
       NotificationManager.warning(" enter Name Room ", "warning", 3000);
     } else {
       if (questionsSelected.length < refLimitQuestions) {
-        console.log(
-          "🚀 ~ file: FormAddRoom.js ~ line 47 ~ ConfirmAdd ~ refLimitQuestions",
-          refLimitQuestions
-        );
+
         NotificationManager.warning(
           " Please select the questions, you still need to selected = " +
           (refLimitQuestions - questionsSelected.length),
@@ -140,8 +149,13 @@ export default function FormAddRoom(props) {
           questions={questions}
           setQuestions={setQuestions}
           getselectedQuestions={(event) => getQuestionsSelected(event)}
-
+          subjects={subjects}
+          levels={levels}
           selected={true}
+          getQuestions={getQuestions}
+          lengthTable={refLengthTable.current}
+          limit={limit}
+          page={page}
         />
       </div>
 

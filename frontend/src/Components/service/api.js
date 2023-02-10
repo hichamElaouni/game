@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { Axios } from "axios";
 
 const { REACT_APP_BACKEND_URL, REACT_APP_BACKEND_PORT, REACT_APP_IMAGE_URL } =
   process.env || {};
@@ -27,8 +27,8 @@ const updateGame = async (id, questionData) => {
 const getQuestionById = async (id) =>
   await axios.get(`http://${fullUrl}/db/question/${id}`);
 
-const getAllQUestions = async (limit = 100, page = 1) =>
-  await axios.get(`http://${fullUrl}/db/questions?limit=${limit}&page=${page}`);
+const getAllQUestions = async (limit = 100, page = 1, idSubject = 0, idLevel = 0) =>
+  await axios.get(`http://${fullUrl}/db/questions?limit=${limit}&page=${page}&idSubject=${idSubject}&idLevel=${idLevel}`);
 
 const addQuestion = async (data) => {
   await axios.post(`http://${fullUrl}/db/question`, data);
@@ -74,6 +74,17 @@ const getQuestionByRoom = async (data) =>
 
 /**Rooms */
 
+const getUserByEmail = async (email) => {
+  try {
+    return await axios.post(`http://${fullUrl}/db/userByEmail`, email);
+
+
+  } catch (error) {
+    return error?.response || error.message;
+  }
+  // await axios.post(`http://${fullUrl}/db/userByEmail`, data);
+};
+
 const getStudentByEmail = async (email, password) => {
   try {
     return await axios.post(`http://${fullUrl}/db/studentByEmail`, {
@@ -85,30 +96,29 @@ const getStudentByEmail = async (email, password) => {
   }
   // await axios.post(`http://${fullUrl}/db/studentByEmail`, data);
 };
+/**Users */
+const getUserById = async (id) =>
+  await axios.get(`http://${fullUrl}/db/user/${id}`);
 
-/**Students */
-const getStudentById = async (id) =>
-  await axios.get(`http://${fullUrl}/db/student/${id}`);
-
-const getAllStudents = async (page) =>
-  await axios.get(`http://${fullUrl}/db/students?page=${page}`);
+const getAllUsers = async (limit, page) =>
+  await axios.get(`http://${fullUrl}/db/users?limit=${limit}&page=${page}`);
 
 
-const addStudent = async (data) => {
+const addUser = async (data) => {
   try {
-    return await axios.post(`http://${fullUrl}/db/student`, data);
+    return await axios.post(`http://${fullUrl}/db/user`, data);
   } catch (error) {
     return error?.response || error.message;
   }
 };
 
-const deleteStudent = async (id) =>
-  await axios.delete(`http://${fullUrl}/db/student/${id}`);
+const deleteUser = async (id) =>
+  await axios.delete(`http://${fullUrl}/db/user/${id}`);
 
-const updateStudent = async (id, studentData) =>
-  await axios.put(`http://${fullUrl}/db/student`, { id, studentData });
+const updateUser = async (id, userData) =>
+  await axios.put(`http://${fullUrl}/db/user`, { id, userData });
 
-/***Students */
+/***Users */
 
 /***   History ********/
 const addRoomHistory = async (data) => {
@@ -123,17 +133,27 @@ const updateRoomHistory = async (idHistoryRoom, roomHistory) =>
     roomHistory,
   });
 
-const getRoomsHistory = async (idStudent, page) =>
+const getRoomsHistory = async (idUser, limit, page) =>
   await axios.post(`http://${fullUrl}/db/roomsHistory`, {
-    idStudent,
+    idUser,
+    limit,
     page,
   });
 
-const getAllHistoryQuestions = async (idRoomHistory, idStudent) =>
+const getAllHistoryQuestions = async (idRoomHistory, idUser) =>
   await axios.post(`http://${fullUrl}/db/questionsHistory`, {
     idRoomHistory,
-    idStudent,
+    idUser,
   });
+
+const login = async (email, password) => {
+
+  console.log("🚀 ~ file: api.js:140 ~ login ~ email, password", email, password)
+  await axios.post(`http://${fullUrl}/login`, {
+    email,
+    password,
+  });
+}
 
 
 export {
@@ -153,6 +173,7 @@ export {
   deleteGame,
   updateGame,
   /**Games */
+  getStudentByEmail,
 
   /**Rooms */
   getAllRooms,
@@ -165,14 +186,15 @@ export {
   /**Rooms */
   getQuestionByRoom,
 
-  /**Students */
-  getAllStudents,
-  getStudentById,
-  addStudent,
-  deleteStudent,
-  updateStudent,
-  getStudentByEmail,
-  /**Students */
+  /**Users */
+  getAllUsers,
+  getUserById,
+  addUser,
+  deleteUser,
+  updateUser,
+  getUserByEmail,
+  login,
+  /**Users */
   addRoomHistory,
   addQuestionHistory,
   updateRoomHistory,

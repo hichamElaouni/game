@@ -22,7 +22,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import PersonIcon from "@mui/icons-material/Person";
 import KeyIcon from "@mui/icons-material/Key";
 
-import { setAuthJwt, hasLoggedIn } from "../../service/auth";
+import { setAuthJwt, hasLoggedIn } from "../service/auth";
 
 export default function BasicCard({ setAlert }) {
   const [values, setValues] = React.useState({ showPassword: false });
@@ -31,25 +31,29 @@ export default function BasicCard({ setAlert }) {
   let navigate = useNavigate();
 
   const handleSubmit = async () => {
-    // const credentials = { username, password };
-    // const {
-    //   REACT_APP_BACKEND_URL = "localhost",
-    //   REACT_APP_BACKEND_PORT = 3000,
-    // } = process.env || {};
-    // const fullUrl = `${REACT_APP_BACKEND_URL}:${REACT_APP_BACKEND_PORT}`;
-    // const { status, data } =
-    //   (await axios
-    //     .post(`http://${fullUrl}/login`, credentials)
-    //     .catch((error) => {
-    //       console.log("");
-    //     })) || {};
-    // if (status === 200) {
-    //   setAuthJwt(data);
-    //   setAlert(false);
-    //   navigate("/");
-    // } else {
-    //   setAlert(true);
-    // }
+    const credentials = { username, password };
+    const {
+      REACT_APP_BACKEND_URL = "localhost",
+      REACT_APP_BACKEND_PORT = 3000,
+    } = process.env || {};
+
+    const fullUrl = `${REACT_APP_BACKEND_URL}:${REACT_APP_BACKEND_PORT}`;
+
+    console.log("🚀 ~ file: LoginForm.js:42 ~ handleSubmit ~ fullUrl", fullUrl)
+    const { status, data } =
+      (await axios
+        .post(`http://${fullUrl}/login`, credentials)
+        .catch((error) => {
+          console.log("");
+        })) || {};
+
+    if (status === 200) {
+      setAuthJwt(data);
+      setAlert(false);
+      navigate("/");
+    } else {
+      setAlert(true);
+    }
   };
 
   const handleChange = (type) => (event) => {

@@ -8,6 +8,7 @@ import apiRoutes from "./modules";
 import http from "http";
 import passport from "passport";
 import jwt from "jsonwebtoken";
+import { authLocal } from "./modules/services/auth";
 import { Server } from "socket.io";
 
 export const app = express();
@@ -115,6 +116,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     try {
+
       const roomIndex = RoomsArray.findIndex((room) => room.roomId === Token);
 
       const room = RoomsArray[roomIndex]?.studentId;
@@ -125,7 +127,7 @@ io.on("connection", (socket) => {
       delete EmailsArray[socket.id];
       socket.leave(Token);
     } catch (error) {
-      console.log("🚀 ~ file: index.js ~ line 120 ~ socket.on ~ error", error);
+
     }
   });
 });
@@ -155,6 +157,12 @@ app.use(passport.initialize());
 apiRoutes(app);
 
 const { PORT, JWT_SECRET } = process.env || 3000;
+
+app.post("/login", authLocal, async (req, res, next) => {
+  const token = await jwt.sign(req.user, JWT_SECRET);
+  res.status(200).send(token);
+  return next();
+});
 
 app.get("/", (req, res) => {
   console.log("Hello World");

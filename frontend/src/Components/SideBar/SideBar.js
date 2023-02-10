@@ -1,12 +1,13 @@
 import { NavLink } from "react-router-dom";
-import { FaBars, FaHome, FaLock, FaMoneyBill, FaUser } from "react-icons/fa";
+import { FaBars, FaGamepad, FaHome, FaLock, FaMoneyBill, FaUser, FaRegQuestionCircle } from "react-icons/fa";
 import { MdMessage, MdDeck } from "react-icons/md";
-import { BiAnalyse, BiSearch } from "react-icons/bi";
+import { BiSearch } from "react-icons/bi";
 import { BiCog } from "react-icons/bi";
 import { AiFillHeart } from "react-icons/ai";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SidebarMenu from "./SidebarMenu";
+import { hasLoggedOut, getUser } from "../service/auth"
 
 const routes = [
   {
@@ -15,8 +16,8 @@ const routes = [
     icon: <FaHome />,
   },
   {
-    path: "/ListStudents",
-    name: "Students",
+    path: "/ListUsers",
+    name: "Users",
     icon: <FaUser />,
   },
   {
@@ -27,7 +28,7 @@ const routes = [
   {
     path: "/Questions",
     name: "Questions",
-    icon: <BiAnalyse />,
+    icon: <FaRegQuestionCircle />,
   },
 
   {
@@ -39,34 +40,38 @@ const routes = [
     path: "/settings",
     name: "Settings",
     icon: <BiCog />,
-    exact: true,
-    subRoutes: [
-      {
-        path: "/settings/profile",
-        name: "Profile ",
-        icon: <FaUser />,
-      },
-      {
-        path: "/settings/2fa",
-        name: "2FA",
-        icon: <FaLock />,
-      },
-      {
-        path: "/settings/billing",
-        name: "Billing",
-        icon: <FaMoneyBill />,
-      },
-    ],
+    // exact: true,
+    // subRoutes: [
+    //   {
+    //     path: "/settings/game",
+    //     name: "Game",
+    //     icon: <FaGamepad />,
+    //   },
+    //   {
+    //     path: "/settings/Question",
+    //     name: "",
+    //     icon: <FaLock />,
+    //   },
+    //   {
+    //     path: "/settings/billing",
+    //     name: "Billing",
+    //     icon: <FaMoneyBill />,
+    //   },
+    // ],
   },
-  {
-    path: "/",
-    name: "",
-    icon: <AiFillHeart />,
-  },
+  // {
+  //   path: "/",
+  //   name: "Login",
+  //   icon: <AiFillHeart />,
+  // },
 ];
-const nameTeacher = "Name Teacher";
-const SideBar = ({ children }) => {
+
+//getUser
+
+const SideBar = (props) => {
+  const { children } = props;
   const [isOpen, setIsOpen] = useState(false);
+  const { username } = getUser()
   const toggle = () => setIsOpen(!isOpen);
   const inputAnimation = {
     hidden: {
@@ -102,9 +107,13 @@ const SideBar = ({ children }) => {
     },
   };
 
+
+
   return (
     <>
+
       <div className="main-container">
+
         <motion.div
           animate={{
             width: isOpen ? "200px" : "30px",
@@ -127,6 +136,10 @@ const SideBar = ({ children }) => {
                   animate="show"
                   exit="hidden"
                   className="logo"
+                  style={{ cursor: "pointer" }}
+                  title="Log Out"
+                  onClick={hasLoggedOut}
+
                 >
                   {/* <Avatar
                     sx={{
@@ -141,7 +154,9 @@ const SideBar = ({ children }) => {
                   >
                     .
                   </Avatar>{" "} */}
-                  {nameTeacher}
+                  {username}
+
+
                 </motion.h1>
               )}
             </AnimatePresence>
@@ -211,6 +226,7 @@ const SideBar = ({ children }) => {
 
         <main>{children}</main>
       </div>
+
     </>
   );
 };

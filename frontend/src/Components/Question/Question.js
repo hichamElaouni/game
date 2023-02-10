@@ -12,7 +12,7 @@ const NextQuestion = async (
   point,
   idQuestion,
   answerSelected,
-  idStudent,
+  idUser,
   idHistoryRoom,
   addQuestionHistory,
   scores
@@ -22,7 +22,7 @@ const NextQuestion = async (
 
   const questionshistory = {
     idQuestion: idQuestion,
-    idStudent: idStudent,
+    idUser: idUser,
     selectedAnswer: !answerSelected ? 0 : answerSelected,
     idRoomHistory: idHistoryRoom,
   };
@@ -49,7 +49,7 @@ export default function Question(props) {
     setlastId,
     setPauseGame,
     count,
-    student,
+    user,
     idHistoryRoom,
     addQuestionHistory,
     scores,
@@ -73,7 +73,7 @@ export default function Question(props) {
 
   return (
     <div className="players ">
-      <h1>{student.current.fullName}</h1>
+      <h1>{user.current.fullName}</h1>
       <div className="boardquetion">
         <CountDown
           setPauseGame={setPauseGame}
@@ -84,7 +84,7 @@ export default function Question(props) {
           point={point}
           setlastId={setlastId}
           count={count}
-          idStudent={student.current.id}
+          idUser={user.current.id}
           answerSelected={answerSelected}
           addQuestionHistory={addQuestionHistory}
           idHistoryRoom={idHistoryRoom}
@@ -110,7 +110,7 @@ export default function Question(props) {
               point,
               idQuestion,
               answerSelected,
-              student.current.id,
+              user.current.id,
               idHistoryRoom,
               addQuestionHistory,
               scores

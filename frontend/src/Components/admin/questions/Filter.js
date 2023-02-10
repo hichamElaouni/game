@@ -8,10 +8,10 @@ export default function Filter(props) {
         <div className="Filter">
             {dataFilter.map((data, key) => {
                 return (
-                    <Choices key={key} type="checkbox" data={data.name} value={data.id} onClick={onClick} />
+                    <Choices key={key} type="radio" data={data.name ? data.name : data.levelNumber} value={data.id} onclick={onClick} />
                 )
             })}
-            <button onClick={() => console.log("firlter")}>Filter</button>
+
         </div>
     )
 }

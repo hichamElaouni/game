@@ -1,42 +1,37 @@
-"use strict";
+'use strict';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    return await queryInterface.createTable("Games", {
+  async up(queryInterface, Sequelize) {
+    return await queryInterface.createTable("Levels", {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
+        autoIncrement: true,
         type: Sequelize.INTEGER(11),
       },
-      nameGame: {
+      levelNumber: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true
 
-      },
-      typeGame: {
-        type: Sequelize.INTEGER(11),
-        defaultValue: 2,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: Sequelize.DATE
       },
     });
   },
 
   async down(queryInterface, Sequelize) {
-
-
     /**
      * Add reverting commands here.
      *
      * Example:
      * await queryInterface.dropTable('users');
      */
-  },
+  }
 };

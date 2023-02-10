@@ -18,17 +18,18 @@ export default function CustomBtns(props) {
     readAdd,
     edit,
     stateBts,
-    singleStudent,
-    setCompAddStudent,
+    singleUser,
+    setCompAddUser,
     saveData,
     deleteData,
     updateData,
     cancelData,
   } = props;
 
+
   return (
     <div className="btnRoom">
-      {singleStudent ? (
+      {singleUser ? (
         readAdd & edit ? (
           <IconButton
             aria-label="Add"
@@ -38,7 +39,7 @@ export default function CustomBtns(props) {
               height: "100%",
             }}
             onClick={() => {
-              setCompAddStudent();
+              setCompAddUser();
             }}
           >
             <Add />
@@ -82,11 +83,12 @@ export default function CustomBtns(props) {
               background: "#e5d0d0ab",
               height: "100%",
             }}
+            id={id}
             onClick={(event) => {
               deleteData(event);
             }}
           >
-            <Delete id={id} />
+            <Delete />
           </IconButton>
           <IconButton
             aria-label="updete"

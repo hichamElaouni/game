@@ -6,6 +6,7 @@ const EditableRow = ({
   handleEditFormChange,
   handleCancelClick,
   subjects,
+  levels,
   selected,
 }) => {
   return (
@@ -17,6 +18,23 @@ const EditableRow = ({
       ) : (
         ""
       )} */}
+
+      <td style={{ width: "14%" }}>
+        <select
+          name="idLevel"
+          required="required"
+          onChange={handleEditFormChange}
+          defaultValue={editFormData.levelNumber}
+        >
+          {
+            levels.map((level, key) => (
+              <option key={key} value={level.id} > {level.levelNumber}</option>
+
+            )
+            )}
+        </select>
+      </td>
+
       <td style={{ width: "14%" }}>
         <select
           name="idSubject"
@@ -31,7 +49,9 @@ const EditableRow = ({
             )
             )}
         </select>
-      </td><td>
+      </td>
+
+      <td>
         <input
           type="text"
           required="required"

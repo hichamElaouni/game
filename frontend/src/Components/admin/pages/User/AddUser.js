@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-export default function AddStudent(props) {
-  const { getInfoStudent, studentSelected } = props;
+export default function AddUser(props) {
+  const { getInfoUser, userSelected } = props;
   const [typeInputPassword, setTypeInputPassword] = useState(false);
   return (
     <>
@@ -15,9 +15,9 @@ export default function AddStudent(props) {
             type="text"
             name="fullName"
             placeholder="Full Name"
-            defaultValue={studentSelected.fullName}
+            defaultValue={userSelected.fullName}
             onChange={(event) => {
-              getInfoStudent(event);
+              getInfoUser(event);
             }}
           ></input>
         </div>
@@ -27,9 +27,9 @@ export default function AddStudent(props) {
             type="email"
             name="email"
             placeholder="Email"
-            defaultValue={studentSelected.email}
+            defaultValue={userSelected.email}
             onChange={(event) => {
-              getInfoStudent(event);
+              getInfoUser(event);
             }}
           />
         </div>
@@ -42,9 +42,9 @@ export default function AddStudent(props) {
             type={typeInputPassword ? "text" : "password"}
             name="password"
             placeholder="Password"
-            defaultValue={studentSelected.password}
+            defaultValue={userSelected.password}
             onChange={(event) => {
-              getInfoStudent(event);
+              getInfoUser(event);
             }}
           />
           {typeInputPassword ? (
@@ -67,9 +67,9 @@ export default function AddStudent(props) {
             type="text"
             name="adress"
             placeholder="Adress"
-            defaultValue={studentSelected.adress}
+            defaultValue={userSelected.adress}
             onChange={(event) => {
-              getInfoStudent(event);
+              getInfoUser(event);
             }}
           />
         </div>
@@ -79,9 +79,9 @@ export default function AddStudent(props) {
             type="text"
             name="telephone"
             placeholder="Telephone"
-            defaultValue={studentSelected.telephone}
+            defaultValue={userSelected.telephone}
             onChange={(event) => {
-              getInfoStudent(event);
+              getInfoUser(event);
             }}
           />
         </div>
@@ -91,9 +91,9 @@ export default function AddStudent(props) {
             type="Date"
             name="dateBorn"
             placeholder="Date  Born"
-            defaultValue={studentSelected.dateBorn}
+            defaultValue={userSelected.dateBorn}
             onChange={(event) => {
-              getInfoStudent(event);
+              getInfoUser(event);
             }}
           />
         </div>
@@ -101,11 +101,11 @@ export default function AddStudent(props) {
           <h2>Class</h2>
           <input
             type="text"
-            name="classStudent"
+            name="classUser"
             placeholder="Class"
-            defaultValue={studentSelected.classStudent}
+            defaultValue={userSelected.classUser}
             onChange={(event) => {
-              getInfoStudent(event);
+              getInfoUser(event);
             }}
           />
         </div>

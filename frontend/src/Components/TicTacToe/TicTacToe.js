@@ -40,15 +40,14 @@ const TicTacToe = (props) => {
   const [countDown, setCountDown] = useState(count);
 
   useEffect(() => {
-    console.log(countDown);
 
     if (countDown === parseInt(count / 2, 10)) {
       const NotifTime = parseInt(count / 6, 10) * 1000;
-      console.log(NotifTime, "*************", typeof NotifTime);
+
       NotificationManager.warning(
         "Half the time allotted to play has passed. left for you  " +
-          countDown +
-          " S ",
+        countDown +
+        " S ",
         "Warning ",
         NotifTime + 1
       );
@@ -59,8 +58,8 @@ const TicTacToe = (props) => {
 
       NotificationManager.error(
         "If you don't play within " +
-          countDown +
-          " S , you will be considered forfeited",
+        countDown +
+        " S , you will be considered forfeited",
         "Warning ",
         5000 + 1
       );
@@ -79,9 +78,6 @@ const TicTacToe = (props) => {
     }
   }, [pauseGame, countDown]);
 
-  // const halfTime=()=>{
-
-  // }
 
   useEffect(() => {
     socket.on("getxScore", (xScore, xGameScore) => {
@@ -167,7 +163,7 @@ const TicTacToe = (props) => {
 
     socket.emit("switch_turn", { turn, updatedBoard });
 
-    if (index.current === 4) {
+    if (index.current === 5) {
       scores.current.oScore += pointGame / 2;
       scores.current.xScore += pointGame / 2;
 

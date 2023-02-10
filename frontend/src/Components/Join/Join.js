@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { getRoomByToken, getStudentByEmail } from "../service/api";
+import { getRoomByToken, getUserByEmail } from "../service/api";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
@@ -13,7 +13,7 @@ import { socket } from "../service/socket";
 import "./join.css";
 import { BsInfoCircle } from "react-icons/bs";
 
-export default function WaitingJoin() {
+export default function Join() {
   let navigate = useNavigate();
   const [typeInputPassword, setTypeInputPassword] = useState(false);
   const [alert, setAlert] = useState({ state: false, message: "" });
@@ -58,52 +58,52 @@ export default function WaitingJoin() {
     navigate("/" + page);
   });
 
-  socket.on("Startplaying", (indexPlayer, student) => {
+  socket.on("Startplaying", (indexPlayer, user) => {
     localStorage.setItem(
-      "dataStudent",
-      JSON.stringify({ indexPlayer, student, room })
+      "dataUser",
+      JSON.stringify({ indexPlayer, user, room })
     );
     navigate("/game?&token=" + tokenParams);
   });
 
   const Join_room = async () => {
     if (email.current.value !== "") {
-      // if (email.current.value.match("[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$")) {
-      //   if (
-      //     password.current.value.match(
-      //       "(?=^.{8,}$)((?=.*[0-9])|(?=.*/W+))(?![./n])(?=.*[A-Z])(?=.*[a-z]).*$"
-      //     )
-      //   ) {
-      const {
-        data: { data, success, message },
-      } = await getStudentByEmail(email.current.value, password.current.value);
-      if (!success) {
-        setAlert({ state: true, message: message });
+      if (email.current.value.match("[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$")) {
+        if (
+          password.current.value.match(
+            "(?=^.{8,}$)((?=.*[0-9])|(?=.*/W+))(?![./n])(?=.*[A-Z])(?=.*[a-z]).*$"
+          )
+        ) {
+          const {
+            data: { data, success, message },
+          } = await getUserByEmail(email.current.value, password.current.value);
+          if (!success) {
+            setAlert({ state: true, message: message });
+          } else {
+            const user = data;
+            socket.emit("joinRoom", tokenParams, user);
+          }
+        } else {
+          NotificationManager.warning(
+            "Warning message",
+            "Password Not Correct",
+            2000
+          );
+        }
       } else {
-        const student = data;
-        socket.emit("joinRoom", tokenParams, student);
+        NotificationManager.warning(
+          "Warning message",
+          "Email Not Correct",
+          2000
+        );
       }
     } else {
       NotificationManager.warning(
         "Warning message",
-        "Password Not Correct",
+        "enter your Email firse",
         2000
       );
     }
-    // } else {
-    //   NotificationManager.warning(
-    //     "Warning message",
-    //     "Email Not Correct",
-    //     2000
-    //   );
-    // }
-    // } else {
-    //   NotificationManager.warning(
-    //     "Warning message",
-    //     "enter your Email firse",
-    //     2000
-    //   );
-    // }
   };
 
   return (
@@ -169,7 +169,7 @@ export default function WaitingJoin() {
       <div className="circle1"></div>
       <div className="circle2"></div>
 
-      <NotificationContainer />
+
     </>
   );
 }

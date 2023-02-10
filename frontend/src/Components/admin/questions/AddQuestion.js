@@ -5,7 +5,7 @@ import "react-notifications/lib/notifications.css";
 import { addQuestion } from "../../service/api";
 
 export default function AddQuestion(props) {
-  const { questions, setQuestions, subjects } = props;
+  const { questions, setQuestions, subjects, levels } = props;
 
   // const [addFormData, setAddFormData] = useState({
   //   id: "",
@@ -33,21 +33,22 @@ export default function AddQuestion(props) {
   const addNewQuestion = async (event) => {
     event.preventDefault();
 
-
-
-    const choices = event.target[2].value;
+    const choices = event.target[3].value;
     const NbChoices = choices.split(";").length;
-    const answer = event.target[3].value;
+    const answer = event.target[4].value;
 
-    if (parseInt(event.target[0].value) !== 0) {
+    if (parseInt(event.target[0].value) !== 0 || parseInt(event.target[1].value) !== 0) {
       if (answer <= NbChoices) {
         const newQuestion = {
-          idSubject: event.target[0].value,
-          title: event.target[1].value,
+          idSubject: event.target[1].value,
+          idLevel: event.target[0].value,
+          title: event.target[2].value,
           choices,
           answer,
-          point: event.target[4].value,
-          nameSubject: subjects[subjects.findIndex((subject) => subject.id === parseInt(event.target[0].value))].name,
+          point: event.target[5].value,
+          nameSubject: subjects[subjects.findIndex((subject) => subject.id === parseInt(event.target[1].value))].name,
+          levelNumber: levels[levels.findIndex((level) => level.id === parseInt(event.target[0].value))].levelNumber,
+
         };
 
         NotificationManager.success("succufully added", newQuestion.title, 3000, await addQuestion(newQuestion));
@@ -58,10 +59,11 @@ export default function AddQuestion(props) {
         setQuestions(newQuestions);
 
         event.target[0].value = 0;
-        event.target[1].value = "";
+        event.target[1].value = 0;
         event.target[2].value = "";
         event.target[3].value = "";
         event.target[4].value = "";
+        event.target[5].value = "";
 
 
         setAnswerNumber(false);
@@ -76,7 +78,7 @@ export default function AddQuestion(props) {
       }
     } else {
       NotificationManager.error(
-        "select Subject first",
+        "select Subject & Class",
         "error",
         3000,
 
@@ -88,10 +90,19 @@ export default function AddQuestion(props) {
   return (
     <form className="formAddQuestion" onSubmit={addNewQuestion}>
       <select
+        name="idLevel"
+        defaultValue={0}
+      >
+        <option value="0" disabled >Select  Level</option>
+        {
+          levels.map((level, key) => (
+            <option key={key} value={level.id} required>{level.levelNumber}</option>
+          )
+          )}
+      </select>
+      <select
         name="subject"
         defaultValue={0}
-
-      // onChange={handleAddFormChange}
       >
         <option value="0" disabled >Select  Subject</option>
         {

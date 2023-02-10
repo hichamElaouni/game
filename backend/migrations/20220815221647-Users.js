@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return await queryInterface.createTable("Students", {
+    return await queryInterface.createTable("Users", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      classStudent: {
+      classUser: {
         type: Sequelize.STRING,
       },
       telephone: {
@@ -30,20 +30,30 @@ module.exports = {
         type: Sequelize.STRING,
       },
       point: {
-        allowNull: false,
         type: Sequelize.INTEGER(11),
+        defaultValue: 0,
       },
       victories: {
-        allowNull: false,
         type: Sequelize.INTEGER(11),
+        defaultValue: 0,
       },
       losses: {
-        allowNull: false,
         type: Sequelize.INTEGER(11),
+        defaultValue: 0,
       },
       adress: {
         allowNull: false,
         type: Sequelize.STRING,
+      },
+      image: {
+
+        type: Sequelize.STRING,
+        defaultValue: "https://manager.almadarisp.com/user/img/user.png"
+      },
+      roles: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        defaultValue: "student"
       },
       createdAt: {
         allowNull: false,

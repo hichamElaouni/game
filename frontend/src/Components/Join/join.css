@@ -147,8 +147,12 @@
   box-shadow: 0px 0px 2px 2px #93ecf2;
   border-radius: 50%;
 }
-@media (max-width: 970px) {
+@media (max-width: 450px) {
   .glass {
-    background-color: aqua;
+    width: 75%;
+  }
+  .glass > h1 {
+    margin-left: 3%;
+    font-size: 2em;
   }
 }

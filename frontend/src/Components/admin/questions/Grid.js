@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useRef } from "react";
 import ReadOnlyRow from "./ReadOnlyRow";
 import EditableRow from "./EditableRow";
 import { deleteQuestion, updateQuestion } from "../../service/api";
@@ -6,11 +6,11 @@ import { deleteQuestion, updateQuestion } from "../../service/api";
 import { NotificationManager } from "react-notifications";
 import "react-notifications/lib/notifications.css";
 import Filter from "./Filter";
+import Pagination from "../../Setings/Pagination";
 
 const Grid = (props) => {
 
-
-  const { questions, setQuestions, getselectedQuestions, selected, subjects } = props;
+  const { questions, setQuestions, getselectedQuestions, selected, subjects, levels, getQuestions, lengthTable, page, limit } = props;
 
   const [editFormData, setEditFormData] = useState({
     title: "",
@@ -22,6 +22,27 @@ const Grid = (props) => {
   });
 
   const [editQuestionid, seteditQuestionid] = useState(null);
+  const [activeFilterSubject, setActiveFilterSubject] = useState(false);
+  const [activeFilterLevel, setActiveFilterLevel] = useState(false);
+
+  const idLevel = useRef(0);
+  const idSubject = useRef(0);
+
+
+
+  const nextData = async (event) => {
+    page.current = event.target.textContent;
+
+    await getQuestions(limit.current, page.current, idSubject.current, idLevel.current)
+  }
+
+
+  const limitData = async (event) => {
+
+    limit.current = event.target.value;
+    await getQuestions(limit.current, page.current, idSubject.current, idLevel.current)
+  }
+
 
   const handleEditFormChange = (event) => {
     event.preventDefault();
@@ -34,6 +55,11 @@ const Grid = (props) => {
     if (fieldName.toString() === "idSubject") {
       const nameSubject = subjects[subjects.findIndex((subject) => subject.id === parseInt(fieldValue))].name;
       newFormData["nameSubject"] = nameSubject;
+    }
+
+    if (fieldName.toString() === "idLevel") {
+      const levelNumber = subjects[levels.findIndex((level) => level.id === parseInt(fieldValue))].name;
+      newFormData["levelNumber"] = levelNumber;
     }
 
     setEditFormData(newFormData);
@@ -50,17 +76,17 @@ const Grid = (props) => {
       point: editFormData.point,
       idSubject: editFormData.idSubject,
       nameSubject: editFormData.nameSubject,
+      idLevel: editFormData.idLevel,
+      levelNumber: editFormData.levelNumber,
+
     };
+    // return Id new question
 
     const newQuestions = [...questions];
-
     const index = questions.findIndex(
       (question) => question.id === editQuestionid
     );
-
     newQuestions[index] = editQuestion;
-
-
     NotificationManager.success(
       "succufully Editing",
       "Question updated ",
@@ -80,9 +106,13 @@ const Grid = (props) => {
     seteditQuestionid(question.id);
     const nameSubject = subjects[subjects.findIndex((subject) => subject.id === parseInt(question.idSubject))].name;
 
+    const levelNumber = levels[levels.findIndex((level) => level.id === parseInt(question.idLevel))].levelNumber;
+
     const formValues = {
       idSubject: question.idSubject,
       nameSubject: nameSubject,
+      idLevel: question.idLevel,
+      levelNumber: levelNumber,
       title: question.title,
       choices: question.choices,
       answer: question.answer,
@@ -107,26 +137,63 @@ const Grid = (props) => {
     setQuestions(newQuestions);
   };
 
-  const filterData = () => {
-    console.log("ok");
-    // const filtr = questions.filter((question) => question.idSubject === 1 || question.idSubject === 3);
-    // console.log("🚀 ~ file: Grid.js:111 ~ filtrData ~ filtr", filtr)
+
+
+  const filterSubject = async (event) => {
+    if (activeFilterSubject) {
+      idSubject.current = parseInt((event.target.value));
+      await getQuestions(limit, page, idSubject.current, idLevel.current)
+      setActiveFilterSubject(false);
+    }
   }
+
+  const filterLevel = async (event) => {
+    if (activeFilterLevel) {
+      idLevel.current = parseInt((event.target.value));
+      await getQuestions(limit, page, idSubject.current, idLevel.current)
+      setActiveFilterLevel(false);
+    }
+  }
+
+  const ActiveFilterLevel = () => {
+    if (!activeFilterLevel) { setActiveFilterLevel(true); setActiveFilterSubject(false) }
+  }
+  const ActiveFilterSubject = () => {
+    if (!activeFilterSubject) { setActiveFilterSubject(true); setActiveFilterLevel(false); }
+  }
+
+  const escPress = (event) => {
+    if (event.keyCode === 27) {
+      setActiveFilterLevel(false);
+      setActiveFilterSubject(false)
+    }
+  };
+
 
   return (
     <>
-      <div className="viewgrid">
+      <div className="viewgrid" tabIndex={0}
+        onKeyDown={(event) => {
+          escPress(event);
+        }}>
         <form onSubmit={handleEditFormSubmit}>
           <table>
             <thead>
               <tr>
+                {/* //simple more.... */}
                 {selected && (
                   <th style={{ width: "7%" }}>Selection Questions</th>
                 )}
-                <th className="thSubjects" onClick={filterData}>Subject
-                  <div className="container">
-                    <Filter dataFilter={subjects} onClick={filterData} />
-                  </div>
+                <th className="thSubjects" onClick={ActiveFilterLevel}>Classes
+                  {activeFilterLevel && <div className="container">
+                    <Filter dataFilter={levels} onClick={(event) => filterLevel(event)} />
+                  </div>}
+                </th>
+
+                <th className="thSubjects" onClick={ActiveFilterSubject}>Subject
+                  {activeFilterSubject && <div className="container">
+                    <Filter dataFilter={subjects} onClick={(event) => filterSubject(event)} />
+                  </div>}
 
                 </th>
                 <th>Question</th>
@@ -138,7 +205,7 @@ const Grid = (props) => {
 
               </tr>
             </thead>
-            <tbody className="classFilter" style={{ position: "relative" }}>
+            <tbody className={`${(activeFilterSubject || activeFilterLevel) && "classFilter"}`} style={{ position: "relative" }}>
 
               {questions.map((question, key) => (
                 <Fragment key={key}>
@@ -148,6 +215,7 @@ const Grid = (props) => {
                       handleEditFormChange={handleEditFormChange}
                       handleCancelClick={handleCancelClick}
                       subjects={subjects}
+                      levels={levels}
                       selected={selected}
                     />
                   ) : (
@@ -165,10 +233,12 @@ const Grid = (props) => {
           </table>
         </form>
       </div>
+      <div className="PaginationQuestion" >
 
-
+        <Pagination lengthPages={lengthTable / limit.current} onclick={nextData} onchange={limitData} />
+      </div>
     </>
   );
 };
-const subjectss = [{ id: 1, name: "hi" }, { id: 2, name: "hello" }, { id: 3, name: "hey" }]
+
 export default Grid;

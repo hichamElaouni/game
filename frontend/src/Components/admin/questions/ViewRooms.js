@@ -1,5 +1,4 @@
 import React, { useState, Fragment, useEffect } from "react";
-
 import { getAllRooms, getQuestionByRoom } from "../../service/api";
 
 const getRooms = async (setRooms) => {
@@ -11,12 +10,12 @@ const getRooms = async (setRooms) => {
 };
 
 export default function ViewRooms(props) {
-  const { setQuestions } = props;
+  const { setQuestions, refLengthTable } = props;
   const [rooms, setRooms] = useState([]);
 
   const getQuestionsRoom = async (idRoom, setQuestions) => {
     const {
-      data: { data, success },
+      data: { data, success, lengthTable },
     } = await getQuestionByRoom({ idRoom });
     if (!success) console.log("error data");
     else {
@@ -25,19 +24,20 @@ export default function ViewRooms(props) {
       let resultData = []
 
       result.map((dt) => {
-        const { Subjects, ...rest } = dt;
+        const { Subjects, Levels, ...rest } = dt;
         return (
           resultData = [
             ...resultData,
             {
               nameSubject: Subjects[0].name,
+              levelNumber: Levels[0].levelNumber,
               ...rest,
             },
           ]
         );
       });
 
-
+      refLengthTable.current = lengthTable;
       setQuestions(resultData);
     }
   };

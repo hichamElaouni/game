@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Pagination from '../../../Setings/Pagination'
 import Filter from '../../questions/Filter';
+import Login from '../Auth/Login';
 // import { getLengthTable } from '../../../service/api'
 
 
@@ -19,6 +20,8 @@ export default function Messages() {
   return (
     <>
       <h1>Messages</h1>
+      {/* <Login /> */}
+
       {/* <div className="container ">
 
         <Filter dataFilter={subjects} />

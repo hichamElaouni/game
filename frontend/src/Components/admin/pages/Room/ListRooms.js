@@ -17,6 +17,7 @@ export default function ListRooms() {
   const [titlePage, setTitlePage] = useState("Rooms");
   const [token, setToken] = useState("");
 
+
   const getRooms = async (setRooms) => {
     const {
       data: { data, success },
@@ -29,6 +30,7 @@ export default function ListRooms() {
 
   const deleted_Room = async (event) => {
     const RoomId = event.currentTarget.id;
+
     NotificationManager.success(
       " succufully  deleted ",
       "info",
@@ -72,9 +74,7 @@ export default function ListRooms() {
       <div className="listRooms">
         <h1 style={{ fontSize: "2.4em" }}>{titlePage}</h1>
         <div className="filterRooms ">
-          <CustumCombobox title="Games" data={games} />
-          <CustumCombobox title="Points" data={Points} />
-          <CustumCombobox title="Search" data={room} />
+
         </div>
         <div className="ListRooms">
           {rooms.map((room, index) => (
@@ -103,7 +103,7 @@ export default function ListRooms() {
           </IconButton>
         </div>
       </div>
-      <NotificationContainer />
+
 
       {adding && (
         <div
@@ -127,6 +127,5 @@ export default function ListRooms() {
   );
 }
 
-const Points = [{ id: 1, name: 2 }];
-const room = [{ id: 5, name: "All" }];
+
 let games = [{ id: 1, name: "Tic tac toe" }];

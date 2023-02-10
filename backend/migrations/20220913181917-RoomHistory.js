@@ -10,8 +10,8 @@ module.exports = {
         type: Sequelize.INTEGER(11),
       },
       idRoom: {
-        allowNull: false,
         type: Sequelize.INTEGER(11),
+        allowNull: false,
         references: {
           model: {
             tableName: "Rooms",
@@ -21,24 +21,24 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
-      idStudent_1: {
-        allowNull: false,
+      iduser_1: {
         type: Sequelize.INTEGER(11),
+        allowNull: false,
         references: {
           model: {
-            tableName: "Students",
+            tableName: "users",
           },
           key: "id",
         },
         onDelete: "cascade",
         onUpdate: "cascade",
       },
-      idStudent_2: {
-        allowNull: false,
+      iduser_2: {
         type: Sequelize.INTEGER(11),
+        allowNull: false,
         references: {
           model: {
-            tableName: "Students",
+            tableName: "users",
           },
           key: "id",
         },
@@ -47,12 +47,15 @@ module.exports = {
       },
       victories: {
         type: Sequelize.INTEGER(11),
+        defaultValue: 0
       },
       losses: {
         type: Sequelize.INTEGER(11),
+        defaultValue: 0
       },
       roundPlay: {
         type: Sequelize.INTEGER(11),
+        defaultValue: 0
       },
       createdAt: {
         allowNull: false,

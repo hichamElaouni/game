@@ -21,7 +21,7 @@ main {
   background: rgb(25, 74, 93);
   color: white;
   height: 100vh;
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
 
 .top_section {

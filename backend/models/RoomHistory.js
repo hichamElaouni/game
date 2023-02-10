@@ -5,8 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     "RoomHistory",
     {
       idRoom: DataTypes.INTEGER(11),
-      idStudent_1: DataTypes.INTEGER(11),
-      idStudent_2: DataTypes.INTEGER(11),
+      idUser_1: DataTypes.INTEGER(11),
+      idUser_2: DataTypes.INTEGER(11),
       victories: DataTypes.INTEGER(11),
       losses: DataTypes.INTEGER(11),
       roundPlay: DataTypes.INTEGER(11),

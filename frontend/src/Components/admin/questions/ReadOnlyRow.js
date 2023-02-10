@@ -22,6 +22,7 @@ const ReadOnlyRow = ({
           />
         </td>
       )}
+      <td>{question.levelNumber}</td>
       <td>{question.nameSubject}</td>
       <td>{question.title}</td>
       <td>{question.choices}</td>
