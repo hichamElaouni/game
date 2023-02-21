@@ -20,11 +20,11 @@ const routes = [
     name: "Users",
     icon: <FaUser />,
   },
-  {
-    path: "/messages",
-    name: "Messages",
-    icon: <MdMessage />,
-  },
+  // {
+  //   path: "/messages",
+  //   name: "Messages",
+  //   icon: <MdMessage />,
+  // },
   {
     path: "/Questions",
     name: "Questions",
@@ -36,29 +36,29 @@ const routes = [
     name: "Rooms",
     icon: <MdDeck />,
   },
-  {
-    path: "/settings",
-    name: "Settings",
-    icon: <BiCog />,
-    // exact: true,
-    // subRoutes: [
-    //   {
-    //     path: "/settings/game",
-    //     name: "Game",
-    //     icon: <FaGamepad />,
-    //   },
-    //   {
-    //     path: "/settings/Question",
-    //     name: "",
-    //     icon: <FaLock />,
-    //   },
-    //   {
-    //     path: "/settings/billing",
-    //     name: "Billing",
-    //     icon: <FaMoneyBill />,
-    //   },
-    // ],
-  },
+  // {
+  //   path: "/settings",
+  //   name: "Settings",
+  //   icon: <BiCog />,
+  // exact: true,
+  // subRoutes: [
+  //   {
+  //     path: "/settings/game",
+  //     name: "Game",
+  //     icon: <FaGamepad />,
+  //   },
+  //   {
+  //     path: "/settings/Question",
+  //     name: "",
+  //     icon: <FaLock />,
+  //   },
+  //   {
+  //     path: "/settings/billing",
+  //     name: "Billing",
+  //     icon: <FaMoneyBill />,
+  //   },
+  // ],
+  // },
   // {
   //   path: "/",
   //   name: "Login",

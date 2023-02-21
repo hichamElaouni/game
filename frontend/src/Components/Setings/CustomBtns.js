@@ -24,6 +24,7 @@ export default function CustomBtns(props) {
     deleteData,
     updateData,
     cancelData,
+    dashboard
   } = props;
 
 
@@ -75,35 +76,40 @@ export default function CustomBtns(props) {
           </Fragment>
         )
       ) : (
+
         <Fragment>
-          <IconButton
-            aria-label="delete"
-            style={{
-              color: "rgb(224, 93, 69)",
-              background: "#e5d0d0ab",
-              height: "100%",
-            }}
-            id={id}
-            onClick={(event) => {
-              deleteData(event);
-            }}
-          >
-            <Delete />
-          </IconButton>
-          <IconButton
-            aria-label="updete"
-            style={{
-              color: "whitesmoke",
-              background: "#4fcd3596",
-              height: "100%",
-            }}
-            id={id}
-            onClick={(event) => {
-              updateData(event);
-            }}
-          >
-            <Update />
-          </IconButton>
+          {!dashboard &&
+            <>
+              <IconButton
+                aria-label="delete"
+                style={{
+                  color: "rgb(224, 93, 69)",
+                  background: "#e5d0d0ab",
+                  height: "100%",
+                }}
+                id={id}
+                onClick={(event) => {
+                  deleteData(event);
+                }}
+              >
+                <Delete />
+              </IconButton>
+              <IconButton
+                aria-label="updete"
+                style={{
+                  color: "whitesmoke",
+                  background: "#4fcd3596",
+                  height: "100%",
+                }}
+                id={id}
+                onClick={(event) => {
+                  updateData(event);
+                }}
+              >
+                <Update />
+              </IconButton>
+            </>
+          }
         </Fragment>
       )}
 

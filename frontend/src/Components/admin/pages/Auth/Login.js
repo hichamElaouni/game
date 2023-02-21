@@ -104,7 +104,7 @@ export default function Login(props) {
     };
 
     return (
-        <>
+        <div className='formSing'>
             <div className='loginForm'>
                 <div className='logoSing'></div>
                 <div className='containerSing'>
@@ -116,12 +116,12 @@ export default function Login(props) {
                         </div>
                         <FildPassword refPassword={refPassword} />
                     </div>
-                    <div className='divChck'>
+                    {/* <div className='divChck'>
                         <div style={{ display: "flex" }}>
                             <input type="checkbox" style={{ width: "24px", height: "24px", marginRight: "3px" }} />Remember Me
                         </div>
                         <a href="http://forgotPassword">forgotPassword</a>
-                    </div>
+                    </div> */}
                     <div className="divBtns">
                         <Button onClick={SingIn}>Login</Button>
                         {/* <Button>Regester</Button> */}
@@ -129,6 +129,6 @@ export default function Login(props) {
                 </div>
 
             </div>
-        </>
+        </div>
     )
 }

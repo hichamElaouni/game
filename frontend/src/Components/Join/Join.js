@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { getRoomByToken, getUserByEmail } from "../service/api";
+import { getRoomByToken, getStudentByEmail } from "../service/api";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
@@ -74,9 +74,11 @@ export default function Join() {
             "(?=^.{8,}$)((?=.*[0-9])|(?=.*/W+))(?![./n])(?=.*[A-Z])(?=.*[a-z]).*$"
           )
         ) {
+
+          console.log("vbn,;");
           const {
             data: { data, success, message },
-          } = await getUserByEmail(email.current.value, password.current.value);
+          } = await getStudentByEmail(email.current.value, password.current.value);
           if (!success) {
             setAlert({ state: true, message: message });
           } else {

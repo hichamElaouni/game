@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import "./style.css";
 import "./Components/SideBar/SideBar.css";
 
 import Games from "./Components/Games";
-import Dashboard from "./Components/admin/pages/Dashboard";
+import Dashboard from "./Components/admin/pages/Dashboard/Dashboard";
 import ListUsers from "./Components/admin/pages/User/ListUsers";
 import Messages from "./Components/admin/pages/Messages/Messages";
 import Questions from "./Components/admin/questions/Questions";

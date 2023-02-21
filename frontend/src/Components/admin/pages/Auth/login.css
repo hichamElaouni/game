@@ -1,3 +1,11 @@
+.formSing {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+}
 .loginForm {
   display: flex;
   text-align: center;
@@ -10,18 +18,19 @@
 .logoSing {
   width: 90px;
   height: 90px;
-  background: #c48d44;
+  background: #9de873;
   border-radius: 50%;
   position: absolute;
   z-index: 1;
-  border: 3px solid gray;
+  border: 3px solid #346653;
+  background-image: url("../../../../image/login.png");
 }
 .containerSing {
   display: flex;
   flex-direction: column;
   top: 40px;
   position: absolute;
-  border: 3px solid gray;
+  border: 3px solid #346653;
   border-radius: 15px;
   padding: 7px;
   width: 100%;
@@ -96,6 +105,10 @@
   height: 100vh;
   justify-content: center;
   align-items: center;
+}
+
+.filds > input:focus {
+  border: none;
 }
 
 @media (max-width: 450px) {

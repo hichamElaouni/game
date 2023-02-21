@@ -27,15 +27,15 @@ const io = new Server(server, {
 let Token = "";
 let RoomsArray = [];
 let EmailsArray = {};
-let studentsPlaySameRoom = "";
+let UsersPlaySameRoom = "";
 
 io.on("connection", (socket) => {
-  socket.on("joinRoom", (token, student) => {
+  socket.on("joinRoom", (token, User) => {
     socket.join(token);
 
-    EmailsArray[socket.id] = student;
+    EmailsArray[socket.id] = User;
 
-    studentsPlaySameRoom = { roomId: token, studentId: [student.email] };
+    UsersPlaySameRoom = { roomId: token, UserId: [User.email] };
 
     let roomlengthMembers = io.sockets.adapter.rooms.get(token) || 0;
 
@@ -48,22 +48,22 @@ io.on("connection", (socket) => {
       console.log("************", EmailsArray);
 
       if (roomIndex !== -1) {
-        const studentId = RoomsArray[roomIndex].studentId;
+        const UserId = RoomsArray[roomIndex].UserId;
 
-        if (!studentId.includes(student.email)) {
-          studentId.push(student.email);
+        if (!UserId.includes(User.email)) {
+          UserId.push(User.email);
         } else {
-          // studentId.splice(studentId.indexOf(student.email), 1);
+          // UserId.splice(UserId.indexOf(User.email), 1);
           delete EmailsArray[socket.id];
           socket.leave(token, socket.id);
           socket.emit("RoomNotAvailable", "ErorrSingIn");
           return;
         }
       } else {
-        RoomsArray.push(studentsPlaySameRoom);
+        RoomsArray.push(UsersPlaySameRoom);
       }
 
-      socket.emit("Startplaying", roomlengthMembers.size, student);
+      socket.emit("Startplaying", roomlengthMembers.size, User);
       Token = token;
     }
   });
@@ -88,15 +88,15 @@ io.on("connection", (socket) => {
     socket.to(Token).emit("getwin", winMessage);
   });
 
-  socket.on("setStateRoom", ({ indexPlayer, idStudent, fullName }) => {
-    socket.to(Token).emit("getStateRoom", { indexPlayer, idStudent, fullName });
+  socket.on("setStateRoom", ({ indexPlayer, idUser, fullName }) => {
+    socket.to(Token).emit("getStateRoom", { indexPlayer, idUser, fullName });
   });
 
   socket.on(
-    "setStudents",
-    ({ idStudent, fullName, point, victories, losses, idHistoryRoom }) => {
-      socket.to(Token).emit("getStudents", {
-        idStudent,
+    "setUsers",
+    ({ idUser, fullName, point, victories, losses, idHistoryRoom }) => {
+      socket.to(Token).emit("getUsers", {
+        idUser,
         fullName,
         point,
         victories,
@@ -119,7 +119,7 @@ io.on("connection", (socket) => {
 
       const roomIndex = RoomsArray.findIndex((room) => room.roomId === Token);
 
-      const room = RoomsArray[roomIndex]?.studentId;
+      const room = RoomsArray[roomIndex]?.UserId;
 
       room.splice(room.indexOf(EmailsArray[socket.id].email), 1);
       socket.to(Token).emit("disconnected", EmailsArray[socket.id]);

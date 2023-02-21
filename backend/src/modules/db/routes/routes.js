@@ -29,7 +29,7 @@ route.get("/roomgames", ctrl.getRoomGame);
 
 route.post("/questionByRoom", ctrl.getQuestionByRoom);
 route.post("/userByEmail", ctrl.getUserByEmail);
-route.post("/studentByEmail", ctrl.getUserByEmail);
+route.post("/studentByEmail", ctrl.getStudentByEmail);
 
 
 /****** History ***** */
@@ -40,5 +40,5 @@ route.put("/roomHistory", ctrl.updateRoomHistory);
 route.post("/roomsHistory", ctrl.getRoomsHistory);
 route.post("/questionsHistory", ctrl.getAllHistoryQuestions);
 
-
+route.post("/countRooms", ctrl.getCountRooms);
 export default route;

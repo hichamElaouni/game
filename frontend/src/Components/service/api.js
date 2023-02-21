@@ -87,6 +87,7 @@ const getUserByEmail = async (email) => {
 
 const getStudentByEmail = async (email, password) => {
   try {
+    console.log("fghf");
     return await axios.post(`http://${fullUrl}/db/studentByEmail`, {
       email,
       password,
@@ -147,13 +148,15 @@ const getAllHistoryQuestions = async (idRoomHistory, idUser) =>
   });
 
 const login = async (email, password) => {
-
-  console.log("🚀 ~ file: api.js:140 ~ login ~ email, password", email, password)
   await axios.post(`http://${fullUrl}/login`, {
     email,
     password,
   });
 }
+
+
+const getCountRooms = async (TopRooms) =>
+  await axios.post(`http://${fullUrl}/db/countrooms`, { TopRooms });
 
 
 export {
@@ -200,6 +203,6 @@ export {
   updateRoomHistory,
   getRoomsHistory,
   getAllHistoryQuestions,
-
-
+  /**Dashboard */
+  getCountRooms
 };

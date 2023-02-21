@@ -493,7 +493,8 @@ const getStudentByEmail = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const data = await db.Students.findOne({
+
+    const data = await db.Users.findOne({
       where: { email: email },
     });
     if (data) {
@@ -652,8 +653,38 @@ const getAllHistoryQuestions = async (req, res) => {
   }
 };
 
+const getCountRooms = async (req, res) => {
 
+
+  const { TopRooms } = req.body;
+  console.log("🚀 ~ file: controller.js:660 ~ getCountRooms ~ topN", TopRooms)
+  try {
+
+    db.RoomHistory.belongsTo(db.Rooms, { foreignKey: 'idRoom' });
+    db.RoomHistory.belongsTo(db.Users, { foreignKey: 'idUser_1' });
+
+    const countRoom = await db.RoomHistory.findAll({
+
+      limit: parseInt(TopRooms),
+      order: [['createdAt', 'DESC']],
+
+      include: [{ model: db.Rooms }],
+      attributes: ['idUser_1', 'idUser_2', 'victories', 'losses', 'roundPlay', 'createdAt', 'updatedAt', [db.sequelize.fn('COUNT', db.sequelize.col('idRoom')), 'countRoom']],
+      group: ['idRoom']
+    })
+
+    res.status(200).json({ success: true, data: countRoom });
+
+
+
+  } catch (error) {
+    console.log(error);
+  }
+}
 module.exports = {
+
+  getCountRooms,
+
   getAllQUestions,
   getQuestionById,
 

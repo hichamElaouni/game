@@ -4,10 +4,7 @@ import CustumCombobox from "../../../Setings/CustumCombobox";
 import { getAllRooms, deleteRoom, updateRoom } from "../../../service/api";
 import IconButton from "@material-ui/core/IconButton";
 import Add from "@material-ui/icons/Add";
-import {
-  NotificationContainer,
-  NotificationManager,
-} from "react-notifications";
+import { NotificationManager } from "react-notifications";
 import FormAddRoom from "./FormAddRoom";
 import md5 from "md5";
 
@@ -78,17 +75,18 @@ export default function ListRooms() {
         </div>
         <div className="ListRooms">
           {rooms.map((room, index) => (
-            <Fragment key={index}>
-              <div className="Room">
-                <h2 className="nameRoom">{room.nameRoom}</h2>
-                <Room
-                  room={room}
-                  deleted_Room={deleted_Room}
-                  updateToken={updateToken}
-                  NotificationManager={NotificationManager}
-                />
-              </div>
-            </Fragment>
+
+            <div className="Room" key={index}>
+              <h2 className="nameRoom">{room.nameRoom}</h2>
+              <Room
+                room={room}
+                deleted_Room={deleted_Room}
+                updateToken={updateToken}
+                NotificationManager={NotificationManager}
+                link={"JoinRoom?token=" + room.token}
+              />
+            </div>
+
           ))}
         </div>
         <div className="btnAdd" onClick={add_Room}>
