@@ -20,7 +20,7 @@ export default function User(props) {
       >
         <h2 className="nameUsers">{dataUser.firt_name} {dataUser.last_name}</h2>
 
-        <img style={{ width: "100%", height: "100%" }} src={dataUser.image} />
+        <img style={{ width: "100%", height: "100%" }} />
         <div className="infoUsers">
           Total Point is : {dataUser.point} <br />
           Class is : {dataUser.classUser}

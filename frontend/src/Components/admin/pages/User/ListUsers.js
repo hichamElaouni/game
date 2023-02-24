@@ -183,7 +183,9 @@ export default function ListUsers() {
     <>
       <div className="boxs">
         <div className="Boxuser">
-          <img className="imgsingel" src={userSelected.image} />
+          {/* <img className="imgsingel" src={userSelected.image} /> */}
+          <div className="imgsingel" ></div>
+
           {readAdd & edit ? (
             <UserReadOnly
               userSelected={userSelected}

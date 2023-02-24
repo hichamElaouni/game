@@ -105,7 +105,7 @@ module.exports = {
       },
       image: {
         type: Sequelize.STRING,
-        defaultValue: "https://manager.almadarisp.com/user/img/user.png"
+
       },
       skills: {
         type: Sequelize.STRING,
