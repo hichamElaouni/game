@@ -103,29 +103,9 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      classUser: {
-        type: Sequelize.STRING,
-      },
-      point: {
-        type: Sequelize.INTEGER(11),
-        defaultValue: 0,
-      },
-      victories: {
-        type: Sequelize.INTEGER(11),
-        defaultValue: 0,
-      },
-      losses: {
-        type: Sequelize.INTEGER(11),
-        defaultValue: 0,
-      },
       image: {
         type: Sequelize.STRING,
         defaultValue: "https://manager.almadarisp.com/user/img/user.png"
-      },
-      roles: {
-        allowNull: false,
-        type: Sequelize.STRING,
-        defaultValue: "student"
       },
       skills: {
         type: Sequelize.STRING,
@@ -183,10 +163,6 @@ module.exports = {
 
 
 
-
-
-
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -196,7 +172,10 @@ module.exports = {
         type: Sequelize.DATE,
       },
     });
+
+
   },
+
 
   down: async (queryInterface, Sequelize) => {
     /**

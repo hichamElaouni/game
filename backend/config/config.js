@@ -7,7 +7,7 @@ const { DB_SERVER, DB_PORT, DB_DATABASE, DB_USER, DB_PASSWORD } =
 module.exports = {
   development: {
     username: "root",
-    database: "yah_new",
+    database: "Games",
     host: "localhost",
     port: 3306,
     dialect: "mariadb",

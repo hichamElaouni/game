@@ -7,7 +7,6 @@ export default function UserReadOnly(props) {
 
   const generateField = (options) => {
     const { title = "text", data = null, refPassword } = options;
-    console.log("🚀 ~ file: UserReadOnly.js:9 ~ generateField ~ options", typeof (undefined), typeof (data))
 
     if (data == undefined || data === "") return (<></>)
     const hasPassword = refPassword ?
