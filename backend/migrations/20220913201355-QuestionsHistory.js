@@ -21,7 +21,7 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade",
       },
-      idStudent: {
+      idUser: {
         allowNull: false,
         type: Sequelize.INTEGER(11),
         references: {

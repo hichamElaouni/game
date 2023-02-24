@@ -33,7 +33,8 @@ export default function History(props) {
                     ...RoomsHistory.current,
                     {
                         idUser: User.id,
-                        nameUser: User.fullName,
+                        last_name: User.last_name,
+                        first_name: User.first_name,
                         nameRoom: Rooms.nameRoom,
                         ...rest,
                     },
@@ -124,7 +125,7 @@ export default function History(props) {
                 </div>
             </div>
             <div className="line-3"></div>
-            <h3 style={Style}>User {user.fullName}  played {RoomsHistory.current.length} with :</h3>
+            <h3 style={Style}>User {user.first_name} {user.last_name}  played {RoomsHistory.current.length} with :</h3>
             <div className="historyRounds">
                 {RoomsHistory.current.map((rooms, key) => (
                     <Rounds

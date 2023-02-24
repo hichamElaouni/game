@@ -14,7 +14,6 @@ import { ScoreBoard } from "./Score/ScoreBoard";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { socket } from "./service/socket";
 import {
-  NotificationContainer,
   NotificationManager,
 } from "react-notifications";
 import "react-notifications/lib/notifications.css";
@@ -91,14 +90,14 @@ function App() {
   const { Question: questions } = roomQuestions[0] || {};
 
   useEffect(() => {
-    if (indexPlayer * 1 === 1) {
+    if (parseInt(indexPlayer) === 1) {
       setTurn(true);
       xPlaying.current = true;
       setStateRoom(true);
       setVisible(false);
     }
 
-    if (indexPlayer * 1 === 2) {
+    if (parseInt(indexPlayer) === 2) {
       setTurn(false);
       xPlaying.current = false;
       setStateRoom(false);
@@ -107,7 +106,8 @@ function App() {
         idUser: user.current.id,
         point: user.current.point,
         victories: user.current.victories,
-        fullName: user.current.fullName,
+        first_name: user.current.first_name,
+        last_name: user.current.last_name,
       });
     }
   }, []);
@@ -184,11 +184,11 @@ function App() {
 
         MsgOver =
           "Game over, " +
-          usersPlay.current[0].fullName +
+          usersPlay.current[0].first_name + "  " + usersPlay.current[0].last_name +
           " 'X'  win the Game with Total Points =  " +
           scores.current.xScore +
           " Vs " +
-          usersPlay.current[1].fullName +
+          usersPlay.current[1].first_name + " " + usersPlay.current[1].last_name +
           " 'O' Points = " +
           scores.current.oScore;
 
@@ -219,11 +219,11 @@ function App() {
 
         MsgOver =
           "Game over, " +
-          usersPlay.current[1].fullName +
+          usersPlay.current[1].first_name + "  " + usersPlay.current[1].last_name +
           " 'O' win the Game with Total Points =  " +
           scores.current.oScore +
           " Vs " +
-          usersPlay.current[0].fullName +
+          usersPlay.current[0].first_name + " " + usersPlay.current[0].last_name +
           " 'X' Points =  " +
           scores.current.xScore;
 
@@ -275,16 +275,18 @@ function App() {
     }
   };
 
+  console.log("🚀 ~ file: Games.js:293 ~ user", user)
   useEffect(() => {
     socket.on(
       "getStateRoom",
-      async ({ idUser, point, victories, losses, fullName }) => {
+      async ({ idUser, point, victories, losses, first_name, last_name }) => {
         if (Room.id !== undefined) {
           if (refRoom.current) {
             usersPlay.current = [
               {
                 idUser: user.current.id,
-                fullName: user.current.fullName,
+                first_name: user.current.first_name,
+                last_name: user.current.last_name,
                 point: user.current.point,
                 victories: user.current.victories,
                 losses: user.current.losses,
@@ -292,12 +294,14 @@ function App() {
               {
                 indexPlayer,
                 idUser,
-                fullName,
+                first_name,
+                last_name,
                 point,
                 victories,
                 losses,
               },
             ];
+
 
             const { data } = await addRoomHistory({
               idUser_1: user.current.id,
@@ -314,7 +318,9 @@ function App() {
 
             socket.emit("setUsers", {
               idUser: user.current.id,
-              fullName: user.current.fullName,
+              first_name: user.current.first_name,
+              last_name: user.current.last_name,
+
               point: user.current.point,
               victories: user.current.victories,
               losses: user.current.losses,
@@ -328,13 +334,15 @@ function App() {
 
     socket.on(
       "getUsers",
-      ({ idUser, fullName, point, victories, losses, idHistoryRoom }) => {
+      ({ idUser, first_name, last_name, point, victories, losses, idHistoryRoom }) => {
         if (refRoom.current) {
           usersPlay.current = [
-            { idUser, fullName, point, victories, losses },
+            { idUser, first_name, last_name, point, victories, losses },
             {
               idUser: user.current.id,
-              fullName: user.current.fullName,
+              first_name: user.current.first_name,
+              last_name: user.current.last_name,
+
               point: user.current.point,
               victories: user.current.victories,
               losses: user.current.losses,
@@ -365,7 +373,7 @@ function App() {
     socket.on("disconnected", (User) => {
       if (!refRoom.current) {
         NotificationManager.info(
-          "Player " + User.fullName + " disconnected you Win.",
+          "Player " + User.first_name + "  " + User.last_name + " disconnected you Win.",
           "Information",
           3000
         );
@@ -379,7 +387,7 @@ function App() {
       refRoom.current = true;
     };
   }, []);
-
+  console.log("🚀 ~ file: Games.js:286 ~ usersPlay.current", usersPlay.current)
   return (
     <>
       <div className={`PartGames `}>
@@ -391,7 +399,6 @@ function App() {
               setPauseGame={setPauseGame}
               scores={scores}
               count={Room.TimeTurn * 3 || 15}
-
               setlastId={setlastId}
               lastId={lastId}
               indexPlayer={indexPlayer}
@@ -400,7 +407,7 @@ function App() {
               addQuestionHistory={addQuestionHistory}
             />
           ) : (
-            <Waiting namePlayer={user.current.fullName} />
+            <Waiting namePlayer={user.current.first_name + " " + user.current.last_name} />
           )}
         </section>
         <div className="flex-score-game">
@@ -436,7 +443,7 @@ function App() {
       </div>
       <div className={`div-wait ${stateRoom ? "start-Playing" : ""} `}>
         <Waiting
-          namePlayer={user.current.fullName}
+          namePlayer={user.current.first_name + "  " + user.current.last_name}
           Message={waitState.current.message}
           State={waitState.current.state}
           quitGame={() => {

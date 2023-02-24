@@ -87,7 +87,6 @@ const getUserByEmail = async (email) => {
 
 const getStudentByEmail = async (email, password) => {
   try {
-    console.log("fghf");
     return await axios.post(`http://${fullUrl}/db/studentByEmail`, {
       email,
       password,

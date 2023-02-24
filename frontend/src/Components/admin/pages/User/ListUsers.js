@@ -42,7 +42,8 @@ export default function ListUsers() {
 
 
   const initialStateUser = {
-    fullName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
     telephone: "",

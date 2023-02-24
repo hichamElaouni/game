@@ -18,7 +18,7 @@ export default function User(props) {
           readAdd && setUserSelected(dataUser);
         }}
       >
-        <h2 className="nameUsers">{dataUser.fullName}</h2>
+        <h2 className="nameUsers">{dataUser.firt_name} {dataUser.last_name}</h2>
 
         <img style={{ width: "100%", height: "100%" }} src={dataUser.image} />
         <div className="infoUsers">

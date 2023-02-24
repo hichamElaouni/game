@@ -73,7 +73,7 @@ export default function Question(props) {
 
   return (
     <div className="players ">
-      <h1>{user.current.fullName}</h1>
+      <h1>{user.current.first_name + " " + user.current.last_name}</h1>
       <div className="boardquetion">
         <CountDown
           setPauseGame={setPauseGame}

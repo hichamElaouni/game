@@ -9,18 +9,33 @@ export default function AddUser(props) {
     <>
       <div className="textBox" style={{ width: "60%" }}>
         <div className="titlebox" style={{ width: "70%" }}>
-          <h2>Full Name </h2>
+          <h2>Last Name </h2>
 
           <input
             type="text"
-            name="fullName"
-            placeholder="Full Name"
-            defaultValue={userSelected.fullName}
+            name="last_name"
+            placeholder="Last Name"
+            defaultValue={userSelected.last_name}
             onChange={(event) => {
               getInfoUser(event);
             }}
           ></input>
         </div>
+
+        <div className="titlebox" style={{ width: "70%" }}>
+          <h2>First Name </h2>
+
+          <input
+            type="text"
+            name="first_name"
+            placeholder="First Name"
+            defaultValue={userSelected.first_name}
+            onChange={(event) => {
+              getInfoUser(event);
+            }}
+          ></input>
+        </div>
+
         <div className="titlebox" style={{ width: "70%" }}>
           <h2>Email</h2>
           <input

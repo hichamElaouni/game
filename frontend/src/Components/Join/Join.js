@@ -74,8 +74,6 @@ export default function Join() {
             "(?=^.{8,}$)((?=.*[0-9])|(?=.*/W+))(?![./n])(?=.*[A-Z])(?=.*[a-z]).*$"
           )
         ) {
-
-          console.log("vbn,;");
           const {
             data: { data, success, message },
           } = await getStudentByEmail(email.current.value, password.current.value);

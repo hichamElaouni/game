@@ -88,16 +88,16 @@ io.on("connection", (socket) => {
     socket.to(Token).emit("getwin", winMessage);
   });
 
-  socket.on("setStateRoom", ({ indexPlayer, idUser, fullName }) => {
-    socket.to(Token).emit("getStateRoom", { indexPlayer, idUser, fullName });
+  socket.on("setStateRoom", ({ indexPlayer, idUser, first_name, last_name }) => {
+    socket.to(Token).emit("getStateRoom", { indexPlayer, idUser, first_name, last_name });
   });
 
   socket.on(
     "setUsers",
-    ({ idUser, fullName, point, victories, losses, idHistoryRoom }) => {
+    ({ idUser, first_name, last_name, point, victories, losses, idHistoryRoom }) => {
       socket.to(Token).emit("getUsers", {
         idUser,
-        fullName,
+        first_name, last_name,
         point,
         victories,
         losses,

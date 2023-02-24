@@ -5,9 +5,11 @@ export default function UserReadOnly(props) {
   const { userSelected, showHistory } = props;
   const refPassword = useRef();
 
-  const generateField = (options = {}) => {
+  const generateField = (options) => {
     const { title = "text", data = null, refPassword } = options;
-    if (!data || data === "") return (<></>)
+    console.log("🚀 ~ file: UserReadOnly.js:9 ~ generateField ~ options", typeof (undefined), typeof (data))
+
+    if (data == undefined || data === "") return (<></>)
     const hasPassword = refPassword ?
       <FildPassword refPassword={refPassword} title={data} />
       : <h3>{data}</h3>
@@ -77,7 +79,7 @@ export default function UserReadOnly(props) {
           onClick={(event) => showHistory(event)}
         >
           <h2>Full Name</h2>
-          <h3>{userSelected.fullName}</h3>
+          <h3>{userSelected.first_name} {userSelected.last_name}</h3>
         </div>
         {fields.map((field) => generateField(field))}
 

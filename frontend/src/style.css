@@ -392,11 +392,11 @@ form {
   display: flex;
   justify-content: space-around;
   align-items: stretch;
-  /* flex-flow: row wrap; */
   flex-direction: row;
   flex-wrap: wrap;
   align-content: stretch;
   gap: 5px;
+  margin-top: 4%;
 }
 
 .flex-score-game {
@@ -434,7 +434,7 @@ form {
   cursor: wait;
 }
 
-@media (max-width: 450px) {
+@media (max-width: 550px) {
   :root {
     --cell-size: 20vw;
   }
@@ -445,6 +445,7 @@ form {
     height: 100vh;
     position: relative;
     justify-content: center;
+    margin-top: 0;
   }
 
   .SectionP1 {
