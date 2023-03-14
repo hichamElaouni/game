@@ -1,8 +1,9 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState } from 'react'
 
 import Person from "@mui/icons-material/Person";
 import { login } from "../../../service/api"
 import { NotificationManager } from "react-notifications";
+import { passwordCheck, emailCheck } from "../../../Setings/Verification"
 
 import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
@@ -42,11 +43,9 @@ export default function Login(props) {
 
         if (refEmail.current.value !== "") {
 
-            if (refEmail.current.value.match("[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$")) {
+            if (emailCheck(refEmail.current.value)) {
                 if (
-                    refPassword.current.value.match(
-                        "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$"
-                    )
+                    passwordCheck(refPassword.current.value)
                 ) {
 
                     const credentials = { username: refEmail.current.value, password: refPassword.current.value };
@@ -56,28 +55,31 @@ export default function Login(props) {
                     } = process.env || {};
 
                     const fullUrl = `${REACT_APP_BACKEND_URL}:${REACT_APP_BACKEND_PORT}`;
+                    let auth = true;
                     const { status, data } =
                         (await axios
                             .post(`http://${fullUrl}/login`, credentials)
                             .catch((error) => {
 
+                                auth = false;
                             })) || {};
+                    if (auth) {
 
-                    if (status === 200) {
-                        setAuthJwt(data);
-                        setAlert({ state: false, message: "Sing in" });
-                        navigate("/");
+
+                        if (status === 200) {
+                            setAuthJwt(data);
+                            setAlert({ state: false, message: "Sing in" });
+                            navigate("/");
+                        }
+                        else {
+
+                            setAlert({ state: true, message: "Email or password incorrect!" });
+                        }
+
                     } else {
-                        setAlert({ state: true, message: "Email or password incorrect!" });
-                    }
+                        setAlert({ state: true, message: "User not authenticated " });
 
-                    // if (status === 200) {
-                    //     console.log("sdfs", data);
-                    //     setAuthJwt(data);
-                    //     setUser(data);
-                    //     navigate("/");
-                    // } else {
-                    //     setAlert({ state: true, message: "message" });
+                    }
 
                     // }
                 } else {

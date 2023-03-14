@@ -12,6 +12,10 @@ import Questions from "./Components/admin/questions/Questions";
 import Rooms from "./Components/admin/pages/Room/ListRooms";
 import Setting from "./Components/admin/pages/Setting";
 import Join from "./Components/Join/Join";
+import Subjects from "./Components/Subjects/ListSubjects";
+import Levels from "./Components/Levels/ListLevels";
+
+
 
 import SignIn from "./Components/Auth/Signin";
 
@@ -87,7 +91,22 @@ const App = () => {
             <Join />
           }
         />
+        <Route
 
+          path="/subjects"
+          element={
+            <ProtectedRoute>
+              <Subjects />
+            </ProtectedRoute>
+          }
+        /><Route
+          path="/levels"
+          element={
+            <ProtectedRoute>
+              <Levels />
+            </ProtectedRoute>
+          }
+        />
         <Route exact path="/login" element={<Login />} />
 
 

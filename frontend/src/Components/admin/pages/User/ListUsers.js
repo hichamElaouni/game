@@ -46,13 +46,11 @@ export default function ListUsers() {
     last_name: "",
     email: "",
     password: "",
-    telephone: "",
-    adress: "",
-    dateBorn: "",
     classUser: "",
     losses: 0,
     victories: 0,
     point: 0,
+    payment_keys: '{"paypal":{"production_client_id":"","production_secret_key":""},"stripe":{"public_live_key":"","secret_live_key":""},"razorpay":{"key_id":"","secret_key":""}}',
   };
   const [newDataUser, setNewDataUser] = useState(initialStateUser);
   const [userSelected, setUserSelected] = useState(initialStateUser);
@@ -73,7 +71,6 @@ export default function ListUsers() {
 
     const newFormData = { ...newDataUser };
     newFormData[fieldName] = fieldValue;
-
     setNewDataUser(newFormData);
   };
 
@@ -89,6 +86,7 @@ export default function ListUsers() {
           "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$"
         )
       ) {
+
         const { data } = await addUser(newDataUser);
         if (data.success) {
           NotificationManager.success(

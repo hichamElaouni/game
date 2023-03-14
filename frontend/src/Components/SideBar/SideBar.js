@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
-import { FaBars, FaGamepad, FaHome, FaLock, FaMoneyBill, FaUser, FaRegQuestionCircle } from "react-icons/fa";
-import { MdMessage, MdDeck } from "react-icons/md";
+import { FaBars, FaGamepad, FaHome, FaLock, FaMoneyBill, FaUser, FaRegQuestionCircle, FaLaravel } from "react-icons/fa";
+import { MdMessage, MdDeck, MdSubject } from "react-icons/md";
 import { BiSearch } from "react-icons/bi";
 import { BiCog } from "react-icons/bi";
 import { AiFillHeart } from "react-icons/ai";
@@ -35,6 +35,16 @@ const routes = [
     path: "/rooms",
     name: "Rooms",
     icon: <MdDeck />,
+  },
+
+  {
+    path: "/subjects",
+    name: "Subjucts",
+    icon: <MdSubject />,
+  }, {
+    path: "/levels",
+    name: "Levels",
+    icon: <FaLaravel />,
   },
   // {
   //   path: "/settings",

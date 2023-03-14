@@ -8,6 +8,7 @@ import apiRoutes from "./modules";
 import http from "http";
 import passport from "passport";
 import jwt from "jsonwebtoken";
+import jwt_decode from "jwt-decode";
 import { authLocal } from "./modules/services/auth";
 import { Server } from "socket.io";
 
@@ -160,7 +161,14 @@ const { PORT, JWT_SECRET } = process.env || 3000;
 
 app.post("/login", authLocal, async (req, res, next) => {
   const token = await jwt.sign(req.user, JWT_SECRET);
-  res.status(200).send(token);
+  const { role } = jwt_decode(token) || {};
+
+  if (role !== 1) {
+
+    res.status(401).send({ status: 401, message: "User not authenticated" })
+  } else {
+    res.status(200).send(token);
+  }
   return next();
 });
 

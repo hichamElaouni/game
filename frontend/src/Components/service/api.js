@@ -27,8 +27,15 @@ const updateGame = async (id, questionData) => {
 const getQuestionById = async (id) =>
   await axios.get(`http://${fullUrl}/db/question/${id}`);
 
-const getAllQUestions = async (limit = 100, page = 1, idSubject = 0, idLevel = 0) =>
-  await axios.get(`http://${fullUrl}/db/questions?limit=${limit}&page=${page}&idSubject=${idSubject}&idLevel=${idLevel}`);
+const getAllQUestions = async (
+  limit = 100,
+  page = 1,
+  idSubject = 0,
+  idLevel = 0
+) =>
+  await axios.get(
+    `http://${fullUrl}/db/questions?limit=${limit}&page=${page}&idSubject=${idSubject}&idLevel=${idLevel}`
+  );
 
 const addQuestion = async (data) => {
   await axios.post(`http://${fullUrl}/db/question`, data);
@@ -77,8 +84,6 @@ const getQuestionByRoom = async (data) =>
 const getUserByEmail = async (email) => {
   try {
     return await axios.post(`http://${fullUrl}/db/userByEmail`, email);
-
-
   } catch (error) {
     return error?.response || error.message;
   }
@@ -102,7 +107,6 @@ const getUserById = async (id) =>
 
 const getAllUsers = async (limit, page) =>
   await axios.get(`http://${fullUrl}/db/users?limit=${limit}&page=${page}`);
-
 
 const addUser = async (data) => {
   try {
@@ -151,12 +155,31 @@ const login = async (email, password) => {
     email,
     password,
   });
-}
-
+};
 
 const getCountRooms = async (TopRooms) =>
   await axios.post(`http://${fullUrl}/db/countrooms`, { TopRooms });
 
+const getLevels = async () => await axios.get(`http://${fullUrl}/db/levels`);
+const addLevel = async (level) =>
+  await axios.post(`http://${fullUrl}/db/level`, level);
+const updateLevel = async () => await axios.put(`http://${fullUrl}/db/level`);
+const deleteLevel = async () =>
+  await axios.delete(`http://${fullUrl}/db/level`);
+
+const getSubjects = async () =>
+  await axios.get(`http://${fullUrl}/db/subjects`);
+
+const addSubject = async (name) => {
+  await axios.post(`http://${fullUrl}/db/subject`, { name });
+};
+
+
+const updateSubject = async () =>
+  await axios.put(`http://${fullUrl}/db/subject`);
+
+const deleteSubject = async (id) =>
+  await axios.delete(`http://${fullUrl}/db/subject/${id}`);
 
 export {
   /**Questions */
@@ -203,5 +226,13 @@ export {
   getRoomsHistory,
   getAllHistoryQuestions,
   /**Dashboard */
-  getCountRooms
+  getCountRooms,
+  getSubjects,
+  addSubject,
+  deleteSubject,
+  updateSubject,
+  getLevels,
+  addLevel,
+  deleteLevel,
+  updateLevel,
 };

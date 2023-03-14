@@ -465,3 +465,14 @@ form {
     padding: 8px 0px;
   }
 }
+
+.start-Playing > h3 {
+  position: absolute;
+  bottom: 20rem;
+  color: blue;
+  font-size: 1.8rem;
+  text-shadow: white 0px 0 3px;
+  line-height: 1px;
+  font-style: oblique;
+  font-family: initial;
+}

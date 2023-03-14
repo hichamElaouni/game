@@ -13,3 +13,23 @@
 .MuiPagination-ul :last-child {
   font-size: 1.2rem;
 }
+
+.list {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  text-align: center;
+  align-items: center;
+  padding: 0px 11px;
+}
+.list > h3 {
+  font-style: oblique;
+  font-family: initial;
+  text-shadow: #fff8dd 1px 0 10px;
+  font-size: 1.7em;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+}

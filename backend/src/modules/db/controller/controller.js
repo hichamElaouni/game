@@ -1,6 +1,7 @@
 import * as db from "../../../../models";
 import bcrypt from "bcrypt";
-const { Op, LOCK, json } = require("sequelize");
+const { Op, } = require("sequelize");
+const crypto = require('crypto');
 /**
  *
  * @param {number} limit
@@ -188,6 +189,7 @@ const getUserById = async (req, res) => {
 const addUser = async (req, res) => {
   try {
     const { id, ...rest } = req.body;
+    console.log("🚀 ~ file: controller.js:192 ~ addUser ~ rest:", rest)
     const data = Object(
       await db.Users.findOne({
         where: {
@@ -197,7 +199,7 @@ const addUser = async (req, res) => {
     );
     if (!data.email) {
       const { password, ...restData } = rest;
-      const hashedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+      const hashedPassword = crypto.createHash('sha1').update(password).digest('hex');
       const user = { ...restData, password: hashedPassword };
       const result = await db.Users.create(user);
 
@@ -498,7 +500,13 @@ const getStudentByEmail = async (req, res) => {
       where: { email: email },
     });
     if (data) {
-      const checkPassword = bcrypt.compareSync(password, data.password)
+
+
+      // const checkPassword = bcrypt.compareSync(password, data.password)
+
+      const sha1Hash = crypto.createHash('sha1').update(password).digest('hex');
+      const checkPassword = sha1Hash === data.password
+
 
       if (checkPassword) {
         res.status(200).json({ success: true, data: data });
@@ -657,19 +665,19 @@ const getCountRooms = async (req, res) => {
 
 
   const { TopRooms } = req.body;
-  console.log("🚀 ~ file: controller.js:660 ~ getCountRooms ~ topN", TopRooms)
+
   try {
 
     db.RoomHistory.belongsTo(db.Rooms, { foreignKey: 'idRoom' });
     db.RoomHistory.belongsTo(db.Users, { foreignKey: 'idUser_1' });
-
+    const count = db.sequelize.fn('COUNT', db.sequelize.col('idRoom'));
     const countRoom = await db.RoomHistory.findAll({
 
       limit: parseInt(TopRooms),
-      order: [['createdAt', 'DESC']],
+      order: [[count, 'DESC']],
 
       include: [{ model: db.Rooms }],
-      attributes: ['idUser_1', 'idUser_2', 'victories', 'losses', 'roundPlay', 'createdAt', 'updatedAt', [db.sequelize.fn('COUNT', db.sequelize.col('idRoom')), 'countRoom']],
+      attributes: ['idUser_1', 'idUser_2', 'victories', 'losses', 'roundPlay', 'createdAt', 'updatedAt', [count, 'countRoom']],
       group: ['idRoom']
     })
 
@@ -680,7 +688,104 @@ const getCountRooms = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+
 }
+
+const getSubjects = async (req, res) => {
+  try {
+
+    const subjects = await db.Subjects.findAll({
+
+    });
+    res
+      .status(200)
+      .json({ success: true, data: subjects });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+const addSubject = async (req, res) => {
+  try {
+
+
+    const result = await db.Subjects.create(req.body);
+
+    res.status(201).json({ success: true, result });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+const deleteSubject = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("🚀 ~ file: controller.js:717 ~ deleteSubject ~ id:", id)
+    const result = await db.Subjects.destroy({
+      where: { id: id },
+    });
+    res.status(204).json({ success: true, result });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+const updateSubject = async (req, res) => {
+  try {
+    const { id, subject } = req.body;
+
+    const result = await db.Subjects.update(subject, {
+      where: { id: id },
+    });
+    res.status(200).json({ success: true, result });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+const getLevels = async (req, res) => {
+  try {
+    const levels = await db.Levels.findAll({});
+    res
+      .status(200)
+      .json({ success: true, data: levels });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+const addLevel = async (req, res) => {
+  try {
+    const level = req.body;
+    const result = await db.Levels.create(level);
+
+    res.status(201).json({ success: true, result });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+const deleteLevel = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await db.Subjects.destroy({
+      where: { id: id },
+    });
+    res.status(204).json({ success: true, result });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+const updateLevel = async (req, res) => {
+  try {
+    const { id, level } = req.body;
+
+    const result = await db.Levels.update(level, {
+      where: { id: id },
+    });
+    res.status(200).json({ success: true, result });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
 module.exports = {
 
   getCountRooms,
@@ -722,6 +827,16 @@ module.exports = {
   updateRoomHistory,
   getRoomsHistory,
   getAllHistoryQuestions,
-  getStudentByEmail
+  getStudentByEmail,
+
+  getSubjects,
+  addSubject,
+  deleteSubject,
+  updateSubject,
+
+  getLevels,
+  addLevel,
+  deleteLevel,
+  updateLevel,
 
 };

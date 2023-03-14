@@ -18,6 +18,9 @@ import {
 } from "react-notifications";
 import "react-notifications/lib/notifications.css";
 
+const { REACT_APP_BACKEND_URL, REACT_APP_FORNTEND_PORT } = process.env || {};
+const fullUrl = `${REACT_APP_BACKEND_URL}:${REACT_APP_FORNTEND_PORT}`;
+
 function App() {
   const [visible, setVisible] = useState(true);
   const [turn, setTurn] = useState(true);
@@ -40,6 +43,19 @@ function App() {
   const usersPlay = useRef([{}, {}]);
 
   const [idHistoryRoom, setIdHistoryRoom] = useState(0);
+
+  const [timerWating, setTimerWating] = useState(10);
+  useEffect(() => {
+    if (timerWating > 0) {
+      console.log("🚀 ~ file: Games.js:48 ~ App ~ timerWating:", timerWating)
+
+      const interval = setInterval(() => {
+        setTimerWating((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+
+  }, [timerWating])
 
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
@@ -450,6 +466,7 @@ function App() {
             quitGame();
           }}
         />
+        {timerWating === 0 && <h3>{fullUrl + "/JoinRoom?token=" + token}</h3>}
       </div>
     </>
   );

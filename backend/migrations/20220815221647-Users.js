@@ -109,6 +109,7 @@ module.exports = {
       },
       skills: {
         type: Sequelize.STRING,
+
       },
       social_links: {
         type: Sequelize.STRING,
@@ -117,7 +118,17 @@ module.exports = {
         type: Sequelize.STRING,
       },
       role_id: {
+        allowNull: false,
         type: Sequelize.INTEGER(11),
+        defaultValue: 1,
+        references: {
+          model: {
+            tableName: "Rooms",
+          },
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
       },
       date_added: {
         type: Sequelize.INTEGER(11),
@@ -161,16 +172,6 @@ module.exports = {
 
 
 
-
-
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
     });
 
 

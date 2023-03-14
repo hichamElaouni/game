@@ -22,8 +22,10 @@ export default function FormAddRoom(props) {
 
   const [questionsSelected, setQuestionsSelected] = useState([]);
 
-  const refPoint = useRef(2);
-  const refTimeRoom = useRef(15);
+  const [timeRoom, setTimeRoom] = useState(15);
+  const [point, setPoint] = useState(2);
+  const [coin, setCoin] = useState(0);
+
   const refName = useRef();
   const refLimitQuestions = 4;
   const page = useRef(1);
@@ -84,10 +86,13 @@ export default function FormAddRoom(props) {
         let Room = {
           nameRoom: refName.current.value,
           token: token,
-          point: refPoint.current.value,
-          TimeTurn: refTimeRoom.current.value,
+          point: point,
+          coin: coin,
+          TimeTurn: timeRoom,
           idGame: 1,
         };
+        console.log("🚀 ~ file: FormAddRoom.js:94 ~ ConfirmAdd ~ Room:", Room)
+
 
         NotificationManager.success(
           " succufully  Adding ",
@@ -133,11 +138,16 @@ export default function FormAddRoom(props) {
         </div>
         <div className="contant-add">
           <label>Time</label>
-          <NumberPicker defaultValue={10} step={10} ref={refTimeRoom} />
+          <NumberPicker defaultValue={10} step={10} onChange={(event) => setTimeRoom(event)} />
         </div>
+
         <div className="contant-add">
           <label>Point</label>
-          <NumberPicker defaultValue={2} step={1} ref={refPoint} />
+          <NumberPicker defaultValue={2} step={1} onChange={(event) => setPoint(event)} />
+        </div>
+        <div className="contant-add">
+          <label>Coin</label>
+          <NumberPicker defaultValue={0} step={1} onChange={(event) => setCoin(event)} />
         </div>
         <div className="contant-add">
           <label>Game</label>

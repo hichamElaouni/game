@@ -1,8 +1,10 @@
 import passport from "passport";
 import LocalStrategy from "passport-local";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
 import { getUserByEmail } from '../db/controller/controller';
+
+const crypto = require('crypto');
 const { JWT_SECRET } = process.env;
 
 // --- Local Strategy ---
@@ -12,11 +14,11 @@ const localVerify = async (username, password, done) => {
   // const checkU = await checkUser(username, password);
   const { data, status } = await getUserByEmail(username);
 
-  const checkPassword = bcrypt.compareSync(password, data.password)
+  const sha1Hash = crypto.createHash('sha1').update(password).digest('hex');
+  const checkPassword = sha1Hash === data.password
 
   if (status === 200 && checkPassword) {
-
-    done(null, { username, fullname: "Administrator" });
+    done(null, { username, role: data.role_id });
     return;
 
   } else {

@@ -39,6 +39,18 @@ route.post("/questionHistory", ctrl.addQuestionHistory);
 route.put("/roomHistory", ctrl.updateRoomHistory);
 route.post("/roomsHistory", ctrl.getRoomsHistory);
 route.post("/questionsHistory", ctrl.getAllHistoryQuestions);
-
 route.post("/countRooms", ctrl.getCountRooms);
+
+route.get("/subjects", ctrl.getSubjects);
+route.post("/subject", ctrl.addSubject);
+route.put("/subject", ctrl.updateSubject);
+route.delete("/subject/:id", ctrl.deleteSubject);
+
+route.get("/levels", ctrl.getLevels);
+route.get("/level", ctrl.addLevel);
+route.put("/level", ctrl.updateLevel);
+route.delete("/level", ctrl.deleteLevel);
+
+
+
 export default route;

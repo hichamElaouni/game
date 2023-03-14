@@ -77,7 +77,7 @@ export default function ListRooms() {
           {rooms.map((room, index) => (
 
             <div className="Room" key={index}>
-              <h2 className="nameRoom">{room.nameRoom}</h2>
+              <h2 className="nameRoom">{room.nameRoom} with {room.coin} Coins</h2>
               <Room
                 room={room}
                 deleted_Room={deleted_Room}

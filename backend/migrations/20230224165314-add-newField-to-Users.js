@@ -9,10 +9,15 @@ module.exports = {
       type: Sequelize.STRING,
       defaultValue: 0
     });
+    await queryInterface.addColumn('Users', 'coins', {
+      type: Sequelize.STRING,
+      defaultValue: 0
+    });
     await queryInterface.addColumn('Users', 'victories', {
       type: Sequelize.STRING,
       defaultValue: 0
     });
+
     await queryInterface.addColumn('Users', 'losses', {
       type: Sequelize.STRING,
       defaultValue: 0
@@ -26,11 +31,30 @@ module.exports = {
       defaultValue: 0
     });
 
+
+    await queryInterface.changeColumn('users', 'skills', {
+      type: Sequelize.STRING,
+      allowNull: false,
+      defaultValue: ''
+    });
+
+
+    await queryInterface.changeColumn('users', 'sessions', {
+      type: Sequelize.STRING,
+      allowNull: false,
+      defaultValue: ''
+    });
+
+
   },
+
+
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.removeColumn('Users', 'classUser');
     await queryInterface.removeColumn('Users', 'point');
+    await queryInterface.removeColumn('Users', 'coins');
+
     await queryInterface.removeColumn('Users', 'victories');
     await queryInterface.removeColumn('Users', 'losses');
     await queryInterface.removeColumn('Users', 'createdAt');

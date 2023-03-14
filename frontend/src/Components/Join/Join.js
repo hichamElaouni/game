@@ -4,10 +4,10 @@ import { getRoomByToken, getStudentByEmail } from "../service/api";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
-  NotificationContainer,
   NotificationManager,
 } from "react-notifications";
 import "react-notifications/lib/notifications.css";
+import { passwordCheck, emailCheck } from "../Setings/Verification"
 
 import { socket } from "../service/socket";
 import "./join.css";
@@ -68,11 +68,9 @@ export default function Join() {
 
   const Join_room = async () => {
     if (email.current.value !== "") {
-      if (email.current.value.match("[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$")) {
+      if (emailCheck(email.current.value)) {
         if (
-          password.current.value.match(
-            "(?=^.{8,}$)((?=.*[0-9])|(?=.*/W+))(?![./n])(?=.*[A-Z])(?=.*[a-z]).*$"
-          )
+          passwordCheck(password.current.value)
         ) {
           const {
             data: { data, success, message },

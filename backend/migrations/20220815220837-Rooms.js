@@ -21,6 +21,11 @@ module.exports = {
         type: Sequelize.INTEGER(11),
         defaultValue: 2,
       },
+      coin: {
+        type: Sequelize.INTEGER(11),
+        allowNull: false,
+        defaultValue: 0,
+      },
       TimeTurn: {
         type: Sequelize.INTEGER(11),
         defaultValue: 15,
