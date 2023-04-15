@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       losses: DataTypes.INTEGER(11),
       victories: DataTypes.INTEGER(11),
       point: DataTypes.INTEGER(11),
-      role_id: DataTypes.STRING,
+      role_id: DataTypes.INTEGER(11),
+      coins: DataTypes.INTEGER(11),
       image: DataTypes.STRING,
     },
     {

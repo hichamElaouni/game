@@ -128,9 +128,14 @@ const App = memo(() => {
     let pointPlayer = usersPlay.current[index].point + point;
     let victoriesPlayer =
       usersPlay.current[index].victories + victories / Room.point;
+
     let lossesPlayer = usersPlay.current[index].losses + losses / Room.point;
+
+    let coinRoom = usersPlay.current[index].coins + Room.coin;
+
     const userData = {
       point: pointPlayer,
+      coins: coinRoom,
       victories: victoriesPlayer,
       losses: lossesPlayer,
     };
@@ -139,12 +144,18 @@ const App = memo(() => {
   };
 
   const roundGameOver = async (disconnectedPlayer) => {
-    console.log(disconnectedPlayer);
-    if (getOver.current && (disconnectedPlayer || indexPlayer * 1 === 2)) {
+    console.log("first");
+    if (getOver.current && (disconnectedPlayer || parseInt(indexPlayer) === 2)) {
+      console.log("second");
       let MsgOver = "aze";
       let roomHistory = {};
+
       if (disconnectedPlayer) {
-        if (disconnectedPlayer.id == usersPlay.current[0].idUser) {
+
+
+
+        if (disconnectedPlayer.id === usersPlay.current[0].idUser) {
+
           MsgOver = "You Win with Srore = " + scores.current.oScore;
           updatePoint(
             1,
@@ -180,7 +191,7 @@ const App = memo(() => {
           };
         }
 
-        return;
+
       }
 
       if (scores.current.oScore < scores.current.xScore) {
@@ -280,7 +291,9 @@ const App = memo(() => {
         );
       }
       setVisible(false);
-      console.log("🚀 ~ file: Games.js:288 ~ roundGameOver ~ roomHistory:", roomHistory)
+
+      console.log("🚀 ~ file: Games.js:296 ~ roundGameOver ~ idHistoryRoom, roomHistory:", idHistoryRoom, roomHistory)
+
       await updateRoomHistory(idHistoryRoom, roomHistory);
 
       socket.emit("setGameOver", MsgOver);
@@ -307,7 +320,7 @@ const App = memo(() => {
   useEffect(() => {
     socket.on(
       "getStateRoom",
-      async ({ idUser, point, victories, losses, first_name, last_name }) => {
+      async ({ idUser, point, coins, victories, losses, first_name, last_name }) => {
         if (Room.id !== undefined) {
           if (refRoom.current) {
             usersPlay.current = [
@@ -316,6 +329,7 @@ const App = memo(() => {
                 first_name: user.current.first_name,
                 last_name: user.current.last_name,
                 point: user.current.point,
+                coins: user.current.coins,
                 victories: user.current.victories,
                 losses: user.current.losses,
               },
@@ -325,6 +339,7 @@ const App = memo(() => {
                 first_name,
                 last_name,
                 point,
+                coins,
                 victories,
                 losses,
               },
@@ -336,6 +351,7 @@ const App = memo(() => {
 
             setStateRoom(false);
             setVisible(true);
+
 
 
             setIdHistoryRoom(data.idHistoryRoom);
@@ -358,16 +374,20 @@ const App = memo(() => {
 
     socket.on(
       "getUsers",
-      ({ idUser, first_name, last_name, point, victories, losses, idHistoryRoom }) => {
+      ({ idUser, first_name, last_name, point, coins, victories, losses, idHistoryRoom }) => {
+        console.log("🚀 ~ file: Games.js:410 ~ useEffect ~ idHistoryRoom:", refRoom.current, "//", idHistoryRoom)
+
+
         if (refRoom.current) {
           usersPlay.current = [
-            { idUser, first_name, last_name, point, victories, losses },
+            { idUser, first_name, last_name, point, coins, victories, losses },
             {
               idUser: user.current.id,
               first_name: user.current.first_name,
               last_name: user.current.last_name,
 
               point: user.current.point,
+              coins: user.current.coins,
               victories: user.current.victories,
               losses: user.current.losses,
             },
@@ -392,6 +412,7 @@ const App = memo(() => {
   }, []);
 
   useEffect(() => {
+
     window.onbeforeunload = function () {
       localStorage.clear();
     };
@@ -413,7 +434,7 @@ const App = memo(() => {
       refRoom.current = true;
     };
   }, []);
-
+  console.log(idHistoryRoom);
   return (
     <>
       <div className={`PartGames `}>
@@ -424,7 +445,7 @@ const App = memo(() => {
               setVisible={setVisible}
               setPauseGame={setPauseGame}
               scores={scores}
-              count={Room.TimeTurn * 3 || 15}
+              count={Room.TimeTurn || 15}
               setlastId={setlastId}
               lastId={lastId}
               indexPlayer={indexPlayer}
@@ -456,7 +477,7 @@ const App = memo(() => {
               roundGameOver={roundGameOver}
               flagGame={flagGame}
 
-              count={Room.TimeTurn * 3 || 15}
+              count={Room.TimeTurn * 2 || 15}
               NotificationManager={NotificationManager}
               quitGame={() => {
                 quitGame();

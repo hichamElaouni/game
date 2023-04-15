@@ -95,11 +95,12 @@ io.on("connection", (socket) => {
 
   socket.on(
     "setUsers",
-    ({ idUser, first_name, last_name, point, victories, losses, idHistoryRoom }) => {
+    ({ idUser, first_name, last_name, point, coins, victories, losses, idHistoryRoom }) => {
       socket.to(Token).emit("getUsers", {
         idUser,
         first_name, last_name,
         point,
+        coins,
         victories,
         losses,
         idHistoryRoom,
