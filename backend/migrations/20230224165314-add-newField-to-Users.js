@@ -3,6 +3,7 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.addColumn('Users', 'classUser', {
       type: Sequelize.STRING,
+      defaultValue: "1",
     });
 
     await queryInterface.addColumn('Users', 'point', {

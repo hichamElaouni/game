@@ -1,5 +1,5 @@
 //multi rander ;multi insert ;update room hisroty; type var
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, memo, useCallback } from "react";
 import {
   getQuestionByRoom,
   addRoomHistory,
@@ -21,34 +21,38 @@ import "react-notifications/lib/notifications.css";
 const { REACT_APP_BACKEND_URL, REACT_APP_FORNTEND_PORT } = process.env || {};
 const fullUrl = `${REACT_APP_BACKEND_URL}:${REACT_APP_FORNTEND_PORT}`;
 
-function App() {
+const App = memo(() => {
   const [visible, setVisible] = useState(true);
   const [turn, setTurn] = useState(true);
   const [pauseGame, setPauseGame] = useState(true);
+  const [idHistoryRoom, setIdHistoryRoom] = useState(0);
+  const [timerWating, setTimerWating] = useState(30);
+  const [stateRoom, setStateRoom] = useState(false);
+  const [lastId, setlastId] = useState(0);
+  const [roomQuestions, setRoomQuestions] = useState([]);
 
   const getOver = useRef(false);
-
-  const [stateRoom, setStateRoom] = useState(false);
-
   const waitState = useRef({
     state: false,
     message: "Wait to anothor Player to Join",
   });
-
   const scores = useRef({ xScore: 0, oScore: 0, xGameScore: 0, oGameScore: 0 });
-
-  const [lastId, setlastId] = useState(0);
-  const [roomQuestions, setRoomQuestions] = useState([]);
-
   const usersPlay = useRef([{}, {}]);
 
-  const [idHistoryRoom, setIdHistoryRoom] = useState(0);
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
 
-  const [timerWating, setTimerWating] = useState(10);
+  let indexPlayer = 0;
+  let Room = useRef({});
+  let user = useRef({});
+  let navigate = useNavigate();
+
+  const xPlaying = useRef();
+  const flagGame = useRef(true);
+  const refRoom = useRef(false);
+
   useEffect(() => {
-    if (timerWating > 0) {
-      console.log("🚀 ~ file: Games.js:48 ~ App ~ timerWating:", timerWating)
-
+    if (timerWating > 0 && parseInt(indexPlayer) === 1) {
       const interval = setInterval(() => {
         setTimerWating((prev) => prev - 1);
       }, 1000);
@@ -57,16 +61,6 @@ function App() {
 
   }, [timerWating])
 
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
-
-  let navigate = useNavigate();
-  const flagGame = useRef(true);
-  let indexPlayer = 0;
-  let user = useRef({});
-  let Room = {};
-  const xPlaying = useRef();
-  const refRoom = useRef(false);
 
   const quitGame = () => {
     localStorage.clear();
@@ -85,6 +79,7 @@ function App() {
     user.current = data;
     Room = room;
   }
+
   useEffect(() => {
     const getQuestion = async (token, id, setRoomQuestions) => {
       const {
@@ -126,6 +121,7 @@ function App() {
         last_name: user.current.last_name,
       });
     }
+
   }, []);
 
   const updatePoint = async (index, point, victories, losses) => {
@@ -143,6 +139,7 @@ function App() {
   };
 
   const roundGameOver = async (disconnectedPlayer) => {
+    console.log(disconnectedPlayer);
     if (getOver.current && (disconnectedPlayer || indexPlayer * 1 === 2)) {
       let MsgOver = "aze";
       let roomHistory = {};
@@ -283,15 +280,30 @@ function App() {
         );
       }
       setVisible(false);
+      console.log("🚀 ~ file: Games.js:288 ~ roundGameOver ~ roomHistory:", roomHistory)
       await updateRoomHistory(idHistoryRoom, roomHistory);
 
       socket.emit("setGameOver", MsgOver);
-      //for stop call .. to avoid multi rander
+
       getOver.current = false;
     }
   };
 
-  console.log("🚀 ~ file: Games.js:293 ~ user", user)
+  const AddRoomHistory = async (idUser) => {
+
+    const { data } = await addRoomHistory({
+      idUser_1: user.current.id,
+      idUser_2: idUser,
+      idRoom: Room.id,
+      victories: 0,
+      losses: 0,
+      roundPlay: 0,
+    });
+
+    return data;
+
+  };
+
   useEffect(() => {
     socket.on(
       "getStateRoom",
@@ -319,17 +331,13 @@ function App() {
             ];
 
 
-            const { data } = await addRoomHistory({
-              idUser_1: user.current.id,
-              idUser_2: idUser,
-              idRoom: Room.id,
-              victories: 0,
-              losses: 0,
-              roundPlay: 0,
-            });
+            const data = await AddRoomHistory(idUser);
+
 
             setStateRoom(false);
             setVisible(true);
+
+
             setIdHistoryRoom(data.idHistoryRoom);
 
             socket.emit("setUsers", {
@@ -377,10 +385,12 @@ function App() {
       waitState.current = { state: true, message: MsgOver };
     });
 
+
     return () => {
       refRoom.current = true;
     };
   }, []);
+
   useEffect(() => {
     window.onbeforeunload = function () {
       localStorage.clear();
@@ -403,7 +413,7 @@ function App() {
       refRoom.current = true;
     };
   }, []);
-  console.log("🚀 ~ file: Games.js:286 ~ usersPlay.current", usersPlay.current)
+
   return (
     <>
       <div className={`PartGames `}>
@@ -446,7 +456,6 @@ function App() {
               roundGameOver={roundGameOver}
               flagGame={flagGame}
 
-
               count={Room.TimeTurn * 3 || 15}
               NotificationManager={NotificationManager}
               quitGame={() => {
@@ -470,6 +479,6 @@ function App() {
       </div>
     </>
   );
-}
+})
 
 export default App;

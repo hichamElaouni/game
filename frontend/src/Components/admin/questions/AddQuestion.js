@@ -58,12 +58,12 @@ export default function AddQuestion(props) {
 
         setQuestions(newQuestions);
 
-        event.target[0].value = 0;
-        event.target[1].value = 0;
-        event.target[2].value = "";
-        event.target[3].value = "";
-        event.target[4].value = "";
-        event.target[5].value = "";
+        // event.target[0].value = 0;
+        // event.target[1].value = 0;
+        // event.target[2].value = "";
+        // event.target[3].value = "";
+        // event.target[4].value = "";
+        // event.target[5].value = "";
 
 
         setAnswerNumber(false);
