@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
     } else {
       const roomIndex = RoomsArray.findIndex((room) => room.roomId === token);
 
-      console.log("************", EmailsArray);
+
 
       if (roomIndex !== -1) {
         const UserId = RoomsArray[roomIndex].UserId;
@@ -89,8 +89,8 @@ io.on("connection", (socket) => {
     socket.to(Token).emit("getwin", winMessage);
   });
 
-  socket.on("setStateRoom", ({ indexPlayer, idUser, first_name, last_name }) => {
-    socket.to(Token).emit("getStateRoom", { indexPlayer, idUser, first_name, last_name });
+  socket.on("setStateRoom", ({ idUser, point, coins, victories, losses, first_name, last_name }) => {
+    socket.to(Token).emit("getStateRoom", { idUser, point, coins, victories, losses, first_name, last_name });
   });
 
   socket.on(
@@ -116,6 +116,10 @@ io.on("connection", (socket) => {
     socket.to(Token).emit("getResetGame");
   });
 
+  socket.on("setIdHestoryRoom", (idHistoryRoom) => {
+    socket.to(Token).emit("getIdHestoryRoom", idHistoryRoom);
+  })
+
   socket.on("disconnect", () => {
     try {
 
@@ -133,7 +137,7 @@ io.on("connection", (socket) => {
     }
   });
 });
-//  >>>>>>>>> ENG Sockits <<<<<<<<<<<<
+//  >>>>>>>>> END Sockits <<<<<<<<<<<<
 
 dotenv.config();
 moment.suppressDeprecationWarnings = true;

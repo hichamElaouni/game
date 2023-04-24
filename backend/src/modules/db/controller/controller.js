@@ -587,6 +587,7 @@ const addQuestionHistory = async (req, res) => {
 const updateRoomHistory = async (req, res) => {
   try {
     const { idHistoryRoom, roomHistory } = req.body;
+    console.log("🚀 ~ file: controller.js:590 ~ updateRoomHistory ~ idHistoryRoom, roomHistory:", idHistoryRoom, roomHistory)
 
     const result = await db.RoomHistory.update(roomHistory, {
       where: { id: idHistoryRoom },

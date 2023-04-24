@@ -7,20 +7,20 @@ module.exports = {
     });
 
     await queryInterface.addColumn('Users', 'point', {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER(11),
       defaultValue: 0
     });
     await queryInterface.addColumn('Users', 'coins', {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER(11),
       defaultValue: 0
     });
     await queryInterface.addColumn('Users', 'victories', {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER(11),
       defaultValue: 0
     });
 
     await queryInterface.addColumn('Users', 'losses', {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER(11),
       defaultValue: 0
     });
     await queryInterface.addColumn('Users', 'createdAt', {

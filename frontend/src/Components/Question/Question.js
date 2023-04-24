@@ -6,6 +6,7 @@ import { socket } from "../service/socket";
 const NextQuestion = async (
   setVisible,
   setlastId,
+  lastId,
   setPauseGame,
   checkAnswer,
   indexPlayer,
@@ -13,19 +14,23 @@ const NextQuestion = async (
   idQuestion,
   answerSelected,
   idUser,
-  idHistoryRoom,
   addQuestionHistory,
-  scores
+  scores,
+  idHistoryRoom,
+  AddRoomHistory
 ) => {
-  setPauseGame(false);
-  setVisible(false);
+
+
+  const data = await AddRoomHistory(idUser, lastId)
+
 
   const questionshistory = {
     idQuestion: idQuestion,
     idUser: idUser,
     selectedAnswer: !answerSelected ? 0 : answerSelected,
-    idRoomHistory: idHistoryRoom,
+    idRoomHistory: idHistoryRoom === 0 ? data.idHistoryRoom : idHistoryRoom,
   };
+
   await addQuestionHistory(questionshistory);
 
   if (checkAnswer) {
@@ -38,6 +43,9 @@ const NextQuestion = async (
     }
   }
 
+
+  setPauseGame(false);
+  setVisible(false);
   setlastId(idQuestion);
 };
 
@@ -47,18 +55,21 @@ export default function Question(props) {
     questions = {},
     setVisible,
     setlastId,
+    lastId,
     setPauseGame,
     count,
     user,
     idHistoryRoom,
     addQuestionHistory,
     scores,
+    AddRoomHistory,
   } = props;
 
   const [checkAnswer, setChaeckAnswer] = useState(false);
   const [answerSelected, setAnswerSelected] = useState();
 
   let idQuestion = questions.id;
+
 
   const onclick = (event) => {
     setAnswerSelected(event?.target?.value);
@@ -104,6 +115,7 @@ export default function Question(props) {
             NextQuestion(
               setVisible,
               setlastId,
+              lastId,
               setPauseGame,
               checkAnswer,
               indexPlayer,
@@ -111,9 +123,10 @@ export default function Question(props) {
               idQuestion,
               answerSelected,
               user.current.id,
-              idHistoryRoom,
               addQuestionHistory,
-              scores
+              scores,
+              idHistoryRoom,
+              AddRoomHistory
             )
           }
         ></input>
