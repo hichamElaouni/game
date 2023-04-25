@@ -35,7 +35,6 @@ const TicTacToe = (props) => {
   const [roundOver, setRoundOver] = useState(false);
   const [winningShow, setWinningShow] = useState(false);
   const [messageWin, setMessageWin] = useState();
-  const index = useRef(0);
 
   const [countDown, setCountDown] = useState(count);
 
@@ -123,7 +122,6 @@ const TicTacToe = (props) => {
       return value;
     });
     setCountDown(count);
-    index.current += 1;
     setBoard(updatedBoard);
     setPauseGame(true);
     setVisible((prevCheck) => !prevCheck);
@@ -161,9 +159,12 @@ const TicTacToe = (props) => {
     }
     setTurn(!turn);
 
+
+    const even = elm => elm === null;
+
     socket.emit("switch_turn", { turn, updatedBoard });
 
-    if (index.current === 5) {
+    if (!updatedBoard.some(even)) {
       scores.current.oScore += pointGame / 2;
       scores.current.xScore += pointGame / 2;
 
@@ -171,7 +172,7 @@ const TicTacToe = (props) => {
       socket.emit("setxScore", scores.current.xGameScore);
 
       socket.emit("setResetGame");
-      resetBoard();
+
     }
 
     // Round over
@@ -198,7 +199,6 @@ const TicTacToe = (props) => {
     setRoundOver(false);
     setBoard(Array(9).fill(null));
     setWinningShow(false);
-    index.current = 0;
   };
   return (
     <>

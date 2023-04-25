@@ -66,7 +66,7 @@ const App = memo(() => {
 
 
   useEffect(() => {
-    if (false && timerWating > 0 && parseInt(indexPlayer) === 1 && stateRoom) {
+    if (timerWating > 0 && parseInt(indexPlayer) === 1 && stateRoom) {
       const interval = setInterval(() => {
         setTimerWating((prev) => prev - 1);
       }, 1000);
@@ -77,6 +77,7 @@ const App = memo(() => {
 
   const quitGame = () => {
     localStorage.clear();
+    socket.on('disconnect');
     navigate(`/JoinRoom/?token=${token}`);
   };
 
@@ -173,7 +174,6 @@ const App = memo(() => {
 
     playerWin = { point, coins, losses, victories };
 
-    console.log("🚀 111", playerWin)
     if (victories === null)
       await updateUser(usersPlay.current[index].idUser, playerWin);
 
@@ -192,10 +192,8 @@ const App = memo(() => {
     playerloses = { point, coins, losses, victories };
 
 
-    console.log("🚀 22222", disconnectPlayer.id, playerloses)
     await updateUser(disconnectPlayer.id, playerloses);
 
-    console.log("🚀33333", idHistoryRoom.current, roomHistory)
 
     await updateRoomHistory(idHistoryRoom.current, roomHistory);
 
@@ -205,86 +203,87 @@ const App = memo(() => {
   }
 
   const roundGameOver = async () => {
+    if (parseInt(indexPlayer) === 2) {
 
-    //?  player 2 (O) Win
-    let User = usersPlay.current[0]
-    let index = 1;
-    let gameScoreLosses = scores.current.xGameScore;
-    let scoreLosses = scores.current.xScore;
-    let gameScoreWin = scores.current.oGameScore;
-    let scoreWin = scores.current.oScore;
+      //?  player 2 (O) Win
+      let User = usersPlay.current[0]
+      let index = 1;
+      let gameScoreLosses = scores.current.xGameScore;
+      let scoreLosses = scores.current.xScore;
+      let gameScoreWin = scores.current.oGameScore;
+      let scoreWin = scores.current.oScore;
 
-    let message = "Game over, " +
-      usersPlay.current[1].first_name + "  " + usersPlay.current[1].last_name +
-      " 'O' win the Game with Total Points =  " +
-      scores.current.oScore +
-      " Vs " +
-      usersPlay.current[0].first_name + " " + usersPlay.current[0].last_name +
-      " 'X' Points =  " +
-      scores.current.xScore;
-
-
-
-
-    if (scores.current.xScore > scores.current.oScore) {
-      //x>o
-
-      //?  Player 1 (X) Win
+      let message = "Game over, " +
+        usersPlay.current[1].first_name + "  " + usersPlay.current[1].last_name +
+        " 'O' win this Game with Total Points =  " +
+        scores.current.oScore +
+        " Vs Player " +
+        usersPlay.current[0].first_name + " " + usersPlay.current[0].last_name +
+        "with  'X' Points =  " +
+        scores.current.xScore;
 
 
-      index = 0;
-      gameScoreLosses = scores.current.oGameScore;
-      scoreLosses = scores.current.oScore;
-      gameScoreWin = scores.current.xGameScore;
-      scoreWin = scores.current.xScore;
 
-      message = "Game over, " +
-        usersPlay.current[0].first_name + "  " + usersPlay.current[0].last_name +
-        " 'X'  win the Game with Total Points =  " +
-        scores.current.xScore +
-        " Vs " +
-        usersPlay.current[1].first_name + " " + usersPlay.current[1].last_name +
-        " 'O' Points = " +
-        scores.current.oScore;
+
+      if (scores.current.xScore > scores.current.oScore) {
+        //x>o
+
+        //?  Player 1 (X) Win
+
+
+        index = 0;
+        gameScoreLosses = scores.current.oGameScore;
+        scoreLosses = scores.current.oScore;
+        gameScoreWin = scores.current.xGameScore;
+        scoreWin = scores.current.xScore;
+
+        message = "Game over, Player " +
+          usersPlay.current[0].first_name + "  " + usersPlay.current[0].last_name +
+          " 'X'  win this Game with Total Points =  " +
+          scores.current.xScore +
+          " Vs Player " +
+          usersPlay.current[1].first_name + " " + usersPlay.current[1].last_name +
+          " 'O' Points = " +
+          scores.current.oScore;
+
+      }
+      else {
+        //x===o
+
+        await updateUser(usersPlay.current[0].idUser, {
+          point: usersPlay.current[0].point + scores.current.xScore / 2,
+          coins: usersPlay.current[0].coins + Room.coin / 2,
+          losses: usersPlay.current[0].losses + ((scores.current.oGameScore + scores.current.xGameScore) / 2),
+          victories: usersPlay.current[0].victories + ((scores.current.oGameScore + scores.current.xGameScore) / 2)
+        });
+
+        await updateUser(usersPlay.current[1].idUser, {
+          point: usersPlay.current[1].point + scores.current.xScore / 2,
+          coins: usersPlay.current[1].coins + Room.coin / 2,
+          losses: usersPlay.current[1].losses + ((scores.current.oGameScore + scores.current.xGameScore) / 2),
+          victories: usersPlay.current[1].victories + ((scores.current.oGameScore + scores.current.xGameScore) / 2)
+        });
+
+
+        await updateRoomHistory(idHistoryRoom, {
+          victories: ((scores.current.oGameScore + scores.current.xGameScore) / 2),
+          losses: ((scores.current.oGameScore + scores.current.xGameScore) / 2),
+          roundPlay: ((scores.current.oGameScore + scores.current.xGameScore))
+        })
+
+
+        socket.emit("setGameOver", "Game Is Over No One Wins, Score Players = " + scores.current.oScore);
+
+        return;
+      }
+
+      const result = { id: User.idUser, ...User }
+      updateData(result, index, gameScoreWin, scoreWin, gameScoreLosses, scoreLosses, message);
+
+      //All cases update room & student
 
     }
-    else {
-      //x===o
-
-      await updateUser(usersPlay.current[0].id, {
-        point: usersPlay.current[0].point + scores.current.xScore / 2,
-        coins: usersPlay.current[0].coins + Room.coin / 2,
-        losses: usersPlay.current[0].losses + ((scores.current.oGameScore + scores.current.xGameScore) / 2),
-        victories: usersPlay.current[0].victories + ((scores.current.oGameScore + scores.current.xGameScore) / 2)
-      });
-
-      await updateUser(usersPlay.current[1].id, {
-        point: usersPlay.current[1].point + scores.current.xScore / 2,
-        coins: usersPlay.current[1].coins + Room.coin / 2,
-        losses: usersPlay.current[1].losses + ((scores.current.oGameScore + scores.current.xGameScore) / 2),
-        victories: usersPlay.current[1].victories + ((scores.current.oGameScore + scores.current.xGameScore) / 2)
-      });
-
-
-      await updateRoomHistory(idHistoryRoom, {
-        victories: ((scores.current.oGameScore + scores.current.xGameScore) / 2),
-        losses: ((scores.current.oGameScore + scores.current.xGameScore) / 2),
-        roundPlay: ((scores.current.oGameScore + scores.current.xGameScore))
-      })
-
-      setVisible(false);
-      socket.emit("setGameOver", "Game Is Over No One Wins, Score Players = " + scores.current.oScore);
-
-      return;
-    }
-
-    updateData(User, index, gameScoreWin, scoreWin, gameScoreLosses, scoreLosses, message);
-
-    //All cases update room & student
-
   }
-
-
 
 
 
@@ -298,7 +297,7 @@ const App = memo(() => {
   //     if (disconnectedPlayer) {
 
 
-  //       if (disconnectedPlayer.id === usersPlay.current[0].idUser) {
+  //       if (disconnectedPlayer.id === usersPlay.current[0].idUserUser) {
 
   //         MsgOver = "You Win with Srore = " + scores.current.oScore;
   //         console.log(1);
@@ -310,8 +309,8 @@ const App = memo(() => {
   //         // );
 
   //         roomHistory = {
-  //           idUser_1: usersPlay.current[0].idUser,
-  //           idUser_2: usersPlay.current[1].idUser,
+  //           idUser_1: usersPlay.current[0].idUserUser,
+  //           idUser_2: usersPlay.current[1].idUserUser,
   //           IdRoom: Room.id,
   //           victories: scores.current.oGameScore / Room.point,
   //           losses: 0,
@@ -331,8 +330,8 @@ const App = memo(() => {
   //         // );
 
   //         roomHistory = {
-  //           idUser_1: usersPlay.current[1].idUser,
-  //           idUser_2: usersPlay.current[0].idUser,
+  //           idUser_1: usersPlay.current[1].idUserUser,
+  //           idUser_2: usersPlay.current[0].idUserUser,
   //           IdRoom: Room.id,
   //           victories: scores.current.xGameScore / Room.point,
   //           losses: 0,
@@ -350,8 +349,8 @@ const App = memo(() => {
 
   //       console.log("o < x");
   //       roomHistory = {
-  //         idUser_1: usersPlay.current[0].idUser,
-  //         idUser_2: usersPlay.current[1].idUser,
+  //         idUser_1: usersPlay.current[0].idUserUser,
+  //         idUser_2: usersPlay.current[1].idUserUser,
   //         idRoom: Room.id,
   //         victories: scores.current.xGameScore / Room.point,
   //         losses: scores.current.oGameScore / Room.point,
@@ -385,8 +384,8 @@ const App = memo(() => {
   //       // );
   //     } else if (scores.current.oScore > scores.current.xScore) {
   //       roomHistory = {
-  //         idUser_1: usersPlay.current[1].idUser,
-  //         idUser_2: usersPlay.current[0].idUser,
+  //         idUser_1: usersPlay.current[1].idUserUser,
+  //         idUser_2: usersPlay.current[0].idUserUser,
   //         IdRoom: Room.id,
   //         victories: scores.current.oGameScore / Room.point,
   //         losses: scores.current.xGameScore / Room.point,
@@ -421,8 +420,8 @@ const App = memo(() => {
 
   //     } else {
   //       roomHistory = {
-  //         idUser_1: usersPlay.current[0].idUser,
-  //         idUser_2: usersPlay.current[1].idUser,
+  //         idUser_1: usersPlay.current[0].idUserUser,
+  //         idUser_2: usersPlay.current[1].idUserUser,
   //         IdRoom: Room.id,
   //         victories: scores.current.oGameScore / Room.point,
   //         losses: scores.current.xGameScore / Room.point,
@@ -584,7 +583,7 @@ const App = memo(() => {
 
       // xGameScore==gameScoreLosses xScore==scoreLosses oGameScore== gameScoreWin oScore == scoreWin
 
-      if (User.id !== usersPlay.current[0].id) {
+      if (User.id !== usersPlay.current[0].idUser) {
         //? player 2 (O) disconnected
         index = 1;
         gameScoreLosses = scores.current.oGameScore;
