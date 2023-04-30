@@ -1,7 +1,9 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, Fragment } from "react"
 import React from 'react'
-import { addSubject, deleteSubject, addLevel, getSubjects, getLevels } from "../service/api"
+import { addSubject, deleteSubject, addLevel, getSubjects, getLevels, deleteLevel, updateSubject, updateLevel } from "../service/api"
 import List from "../Setings/List";
+import Edit from "./Edit";
+
 import IconButton from "@material-ui/core/IconButton";
 
 import Add from "@material-ui/icons/Add";
@@ -13,30 +15,39 @@ import Cancel from "@material-ui/icons/Cancel";
 import {
     NotificationManager,
 } from "react-notifications";
-import "react-notifications/lib/notifications.css";
+
 import "./subject.css"
-export default function Subjects() {
-    const [subjects, setSubjects] = useState([]);
-    const [levels, setLevels] = useState();
+export default function Subjects(props) {
+    const { flag } = props;
+    const [data, setData] = useState([]);
+    const [editId, setEditId] = useState(null);
     const [state, setState] = useState(true);
     const [stateAdd, setStateAdd] = useState(true);
     const [stateDelete, setStateDelete] = useState({ id: 0, state: false });
 
-    const subject = useRef();
 
-    const Subjects = async () => {
+
+    const refData = useRef();
+
+
+    const getData = async () => {
+        console.log("getData");
         const {
             data: { data, success },
-        } = await getSubjects();
+        } = flag ? await getSubjects() : await getLevels();
         if (!success) {
             console.log("error data");
         } else {
-            setSubjects(data);
+            setData(data);
         }
     }
+
     useEffect(() => {
-        Subjects()
-    }, [stateAdd, stateDelete, state]);
+        getData();
+    }, [stateAdd, stateDelete, state, flag]);
+
+
+
 
     const deleteData = async () => {
 
@@ -44,43 +55,76 @@ export default function Subjects() {
             " succufully  Deleted ",
             "info",
             3000,
-            await deleteSubject(stateDelete.id)
+            await flag ? deleteSubject(stateDelete.id) : deleteLevel(stateDelete.id)
         );
 
         setStateDelete(false);
     };
 
-    const updateData = async () => {
+
+
+    const updateData = async (id) => {
+        setEditId(id);
+
         setState(false);
     };
 
     const saveData = async () => {
+
+        flag ? await updateSubject(editId, refData) : await updateLevel(editId, refData)
+
+        setEditId(null)
         setState(true);
 
     };
+
+
     const cancelData = async () => {
+        setEditId(null)
         setState(true);
     };
-    const AddSubject = async () => {
-        if (subject.current.value !== "")
+
+    const AddData = async () => {
+        if (refData.current !== "")
             NotificationManager.success(
                 " succufully  Adding ",
                 "info",
                 3000,
-                await addSubject(subject.current.value)
             );
+        flag ? await addSubject(refData.current.value) : addLevel(refData.current.value)
 
         setStateAdd(true);
     }
 
     return (
-        <>
-            <h1> Subjects </h1>
+        <div id="Subjects">
+            <h1 style={{ cursor: "pointer" }}>{flag ? "Subjects" : "Levels"}</h1>
             <div className="listSubject">
                 {
-                    subjects.map((subject, key) => (
-                        <List key={key} title={subject.name} id={subject.id} setStateDelete={setStateDelete} updateData={updateData} state={state} cancelData={cancelData} saveData={saveData} />
+
+
+
+                    data.map((result, key) => (
+                        <Fragment key={key}>
+
+                            {editId == result.id ?
+                                <Edit refData={refData}
+                                    title={flag ? result.name : result.levelNumber}
+                                    cancelData={cancelData}
+                                    saveData={saveData} />
+                                :
+                                <List
+                                    id={result.id}
+                                    refData={refData}
+                                    title={flag ? result.name : result.levelNumber}
+                                    setStateDelete={setStateDelete}
+                                    updateData={updateData}
+
+
+                                />}
+                        </Fragment>
                     ))
+
                 }
                 <div className="btnadd">
 
@@ -99,14 +143,14 @@ export default function Subjects() {
                         </IconButton>
                         :
                         <>
-                            <input type="text " ref={subject} placeholder="enter name subject" style={{ paddingLeft: "3px" }} />
+                            <input type="text " ref={refData} placeholder={flag ? "enter name the Subject" : "enter the Level "} style={{ paddingLeft: "3px" }} />
                             <IconButton
                                 aria-label="Save"
                                 style={{
                                     color: "whitesmoke",
                                     background: "#4fcd3596",
                                 }}
-                                onClick={AddSubject}
+                                onClick={AddData}
                             >
                                 <Save />
                             </IconButton>
@@ -149,6 +193,6 @@ export default function Subjects() {
                         </div>
                     </div> : null}
             </div>
-        </>
+        </div>
     )
 }

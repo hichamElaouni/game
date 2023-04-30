@@ -721,7 +721,6 @@ const addSubject = async (req, res) => {
 const deleteSubject = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("🚀 ~ file: controller.js:717 ~ deleteSubject ~ id:", id)
     const result = await db.Subjects.destroy({
       where: { id: id },
     });
@@ -732,9 +731,10 @@ const deleteSubject = async (req, res) => {
 };
 const updateSubject = async (req, res) => {
   try {
-    const { id, subject } = req.body;
+    const { id, name } = req.body;
+    console.log("🚀 ~ file: controller.js:735 ~ updateSubject ~ id, name:", id, name)
 
-    const result = await db.Subjects.update(subject, {
+    const result = await db.Subjects.update(name, {
       where: { id: id },
     });
     res.status(200).json({ success: true, result });
@@ -756,8 +756,9 @@ const getLevels = async (req, res) => {
 };
 const addLevel = async (req, res) => {
   try {
-    const level = req.body;
-    const result = await db.Levels.create(level);
+
+
+    const result = await db.Levels.create(req.body);
 
     res.status(201).json({ success: true, result });
   } catch (error) {
@@ -767,7 +768,7 @@ const addLevel = async (req, res) => {
 const deleteLevel = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await db.Subjects.destroy({
+    const result = await db.Levels.destroy({
       where: { id: id },
     });
     res.status(204).json({ success: true, result });

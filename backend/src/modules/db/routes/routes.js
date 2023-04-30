@@ -47,9 +47,10 @@ route.put("/subject", ctrl.updateSubject);
 route.delete("/subject/:id", ctrl.deleteSubject);
 
 route.get("/levels", ctrl.getLevels);
-route.get("/level", ctrl.addLevel);
+route.post("/level", ctrl.addLevel);
 route.put("/level", ctrl.updateLevel);
-route.delete("/level", ctrl.deleteLevel);
+
+route.delete("/level/:id", ctrl.deleteLevel);
 
 
 

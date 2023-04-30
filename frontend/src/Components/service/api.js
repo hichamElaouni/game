@@ -161,11 +161,17 @@ const getCountRooms = async (TopRooms) =>
   await axios.post(`http://${fullUrl}/db/countrooms`, { TopRooms });
 
 const getLevels = async () => await axios.get(`http://${fullUrl}/db/levels`);
-const addLevel = async (level) =>
-  await axios.post(`http://${fullUrl}/db/level`, level);
+
+const addLevel = async (levelNumber) => {
+  await axios.post(`http://${fullUrl}/db/level`, { levelNumber });
+}
+
 const updateLevel = async () => await axios.put(`http://${fullUrl}/db/level`);
-const deleteLevel = async () =>
-  await axios.delete(`http://${fullUrl}/db/level`);
+
+const deleteLevel = async (id) => {
+
+  await axios.delete(`http://${fullUrl}/db/level/${id}`);
+}
 
 const getSubjects = async () =>
   await axios.get(`http://${fullUrl}/db/subjects`);
@@ -175,8 +181,8 @@ const addSubject = async (name) => {
 };
 
 
-const updateSubject = async () =>
-  await axios.put(`http://${fullUrl}/db/subject`);
+const updateSubject = async (id, name) =>
+  await axios.put(`http://${fullUrl}/db/subject`, { id, name });
 
 const deleteSubject = async (id) =>
   await axios.delete(`http://${fullUrl}/db/subject/${id}`);

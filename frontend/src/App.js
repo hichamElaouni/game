@@ -96,14 +96,14 @@ const App = () => {
           path="/subjects"
           element={
             <ProtectedRoute>
-              <Subjects />
+              <Subjects flag={true} />
             </ProtectedRoute>
           }
         /><Route
           path="/levels"
           element={
             <ProtectedRoute>
-              <Levels />
+              <Subjects flag={false} />
             </ProtectedRoute>
           }
         />
