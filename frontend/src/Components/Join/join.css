@@ -1,7 +1,6 @@
 .join {
   font-family: "Poppins", sans-serif;
-  min-height: 100vh;
-  width: 100vw;
+  height: 100vh;
   background: linear-gradient(to right top, #65dfc9, #6cdbeb);
   display: flex;
   align-items: center;
@@ -58,77 +57,48 @@
   left: 24%;
 }
 
-.div-inputs-join {
-  width: 100%;
+.divJoin {
   display: flex;
   flex-direction: column;
   height: 70%;
   position: absolute;
   bottom: 0;
-  padding-top: 4%;
   align-items: center;
-  gap: 10%;
+  gap: 6%;
 }
-.FildEmail,
-.FildPassword {
-  width: 95%;
-  display: flex;
-  text-align: center;
-  align-items: center;
-  gap: 8px;
 
-  flex-wrap: wrap;
-}
-.inputs-join,
 .btn-join {
   background: linear-gradient(
     to right bottom,
-    rgba(255, 255, 255, 0.7),
-    rgba(255, 255, 255, 0.3)
+    rgba(180, 242, 249, 0.88),
+    rgba(204, 255, 175, 0.65)
   );
   border: none;
-  width: 100%;
-  padding: 0.5rem;
-  border-radius: 2rem;
-}
-
-.typeInputpassword {
-  width: 100%;
-  position: relative;
-}
-.typeInputpassword > input {
-  width: 100%;
-}
-
-.typeInputpassword > svg {
-  position: absolute;
-  right: 1%;
-  margin-top: 4px;
-}
-.div-inputs-join .btn-join {
-  cursor: pointer;
+  padding: 5px;
+  border-radius: 25px;
+  font-size: 2rem;
   width: 70%;
-  height: 10%;
-  font-size: 1.2em;
+  box-shadow: 0px 0px 1px 1px #108888;
+  transition: background-color 5s;
+  color: #355e88;
 }
 
-.inputs-join,
-.btn-join:hover:focus {
+.btn-join:hover {
   background: linear-gradient(
-    to right bottom,
-    rgba(255, 255, 255, 0.7),
-    rgba(191, 240, 240, 0.3)
+    to left bottom,
+    rgba(180, 242, 249, 0.88),
+    rgba(204, 255, 175, 0.65)
   );
 
   border: 1px solid white;
   box-shadow: 0px 0px 4px 0px #234e50db;
 }
 
-.div-inputs-join .btn-join:active {
+.btn-join:active {
   background: linear-gradient(
-    to right bottom,
-    rgba(255, 255, 255, 0.7),
-    rgba(124, 235, 165, 0.3)
+    to left bottom,
+    rgb(180, 242, 249),
+    rgb(135, 253, 67)
   );
 }
 
@@ -147,6 +117,25 @@
   box-shadow: 0px 0px 2px 2px #93ecf2;
   border-radius: 50%;
 }
+
+.divJoin > .filds > input:focus {
+  border: 1px solid #66ff9b;
+  box-shadow: 0 0 2px 0.5px #43ff3c;
+}
+
+.login-join {
+  width: 95%;
+  height: 92%;
+  display: flex;
+  position: absolute;
+  top: 2rem;
+  background: aqua;
+  z-index: 10;
+
+  right: 50%;
+  transform: translate(50%, -1rem);
+}
+
 @media (max-width: 450px) {
   .glass {
     width: 75%;

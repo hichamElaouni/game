@@ -1,47 +1,88 @@
-import React from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import "./style.css";
 import "./Components/SideBar/SideBar.css";
 
 import Games from "./Components/Games";
-import Dashboard from "./Components/admin/pages/Dashboard/Dashboard";
-import ListUsers from "./Components/admin/pages/User/ListUsers";
-import Messages from "./Components/admin/pages/Messages/Messages";
+import Dashboard from "./Components/admin/Dashboard/Dashboard";
+import ListUsers from "./Components/admin/User/ListUsers";
+import Messages from "./Components/admin/Messages/Messages";
 import Questions from "./Components/admin/questions/Questions";
-import Rooms from "./Components/admin/pages/Room/ListRooms";
-import Setting from "./Components/admin/pages/Setting";
+import Rooms from "./Components/admin/Room/ListRooms";
+import Setting from "./Components/admin/Setting";
 import Join from "./Components/Join/Join";
 import Subjects from "./Components/Subjects/ListSubjects";
-import Levels from "./Components/Levels/ListLevels";
+import SetingsCusm from "./Components/Setings/SetingsCusm";
 
 
-
-import SignIn from "./Components/Auth/Signin";
 
 import ProtectedRoute from "./ProtectedRoute";
 
 import { NotificationContainer } from "react-notifications";
 import "react-notifications/lib/notifications.css";
-import Login from "./Components/admin/pages/Auth/Login";
+import Login from "./Components/admin/Auth/Login";
+
+
+import ResponsiveAppBar from './Components/NavBar/NavBar';
+import profileImage from "./Components/Image/Admin.png";
+
+import { hasLoggedOut, hasLoggedIn, getUser } from "./Components/service/auth";
+import Profile from "./Components/admin/User/Profile";
 
 const App = () => {
+
+  const [connectionState, setConnectionState] = useState(hasLoggedIn());
+  const { user } = getUser() || {};
+
+  const pages = ['Home', 'Products', 'Pricing', 'Blog', 'About', 'Contact'];
+  const [profiles, setProfiles] = useState(connectionState ? [user.first_name + " " + user.last_name, "Logout"] : ['Profile', "Login"]);
+
+
+
+  useEffect(() => {
+
+    setProfiles(connectionState ? [user.first_name + " " + user.last_name, "Logout"] : ['Profile', "Login"])
+
+  }, [connectionState])
+
   return (
     <Router>
+
+      {useMemo(() => {
+        return <ResponsiveAppBar pages={pages} profiles={profiles} profileImage={profileImage} state={connectionState} hasLoggedOut={hasLoggedOut} Messages={5} Notifications={7} />
+
+      }, [profiles])}
+
+
       <Routes>
+        <Route exact path="/login" element={<Login setConnectionState={setConnectionState} />} />
+
         <Route
           path="/game"
           element={
-
             <Games />
 
           }
         />
+
+        <Route path="/SetingsCusm" element={<SetingsCusm />} />
+
+
         <Route
           path="/"
-          element={
+          element={connectionState ?
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute> :
+            <Dashboard />
+          }
+        />
+        <Route
+          path="/Profile"
+          element={
+            <ProtectedRoute>
+              <Profile user={user} />
             </ProtectedRoute>
           }
         />
@@ -49,7 +90,7 @@ const App = () => {
           path="/ListUsers"
           element={
             <ProtectedRoute>
-              <ListUsers />
+              <ListUsers role={user?.role_id} />
             </ProtectedRoute>
           }
         />
@@ -107,7 +148,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route exact path="/login" element={<Login />} />
 
 
         <Route path="/RoomNotAvailable" element={<>Room Not Available</>} />
@@ -119,5 +159,6 @@ const App = () => {
     </Router>
   );
 };
+
 
 export default App;

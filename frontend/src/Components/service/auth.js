@@ -15,6 +15,8 @@ const hasLoggedOut = () => {
   window.location.reload();
 };
 
+
+
 const getUser = () => {
   const authJwt = getAuthJwt();
   if (authJwt === null) return null;

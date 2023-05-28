@@ -2,8 +2,10 @@ import { useState } from "react";
 import ListChoices from "../Choice/ListChoices";
 import CountDown from "../Timer/CountDown";
 import { socket } from "../service/socket";
+import { NextQuestion } from "../Setings/Controllers";
 
-const NextQuestion = async (
+
+const NextQuestions = async (
   setVisible,
   setlastId,
   lastId,
@@ -21,7 +23,7 @@ const NextQuestion = async (
 ) => {
 
 
-  const data = await AddRoomHistory(idUser, lastId)
+  const data = lastId === 0 && parseInt(indexPlayer) === 1 ? await AddRoomHistory(idUser, lastId) : idHistoryRoom;
 
 
   const questionshistory = {
@@ -34,10 +36,10 @@ const NextQuestion = async (
   await addQuestionHistory(questionshistory);
 
   if (checkAnswer) {
-    if (indexPlayer * 1 === 1) {
+    if (parseInt(indexPlayer) === 1) {
       scores.current.xScore += point;
       socket.emit("setxScore", scores.current.xScore);
-    } else if (indexPlayer * 1 === 2) {
+    } else if (parseInt(indexPlayer) === 2) {
       scores.current.oScore += point;
       socket.emit("setoScore", scores.current.oScore);
     }
@@ -60,7 +62,6 @@ export default function Question(props) {
     count,
     user,
     idHistoryRoom,
-    addQuestionHistory,
     scores,
     AddRoomHistory,
   } = props;
@@ -73,7 +74,7 @@ export default function Question(props) {
 
   const onclick = (event) => {
     setAnswerSelected(event?.target?.value);
-    setChaeckAnswer(questions?.answer === event?.target?.value * 1);
+    setChaeckAnswer(questions?.answer === parseInt(event?.target?.value));
   };
   let Choices = ";";
 
@@ -87,19 +88,20 @@ export default function Question(props) {
       <h1>{user.current.first_name + " " + user.current.last_name}</h1>
       <div className="boardquetion">
         <CountDown
-          setPauseGame={setPauseGame}
-          idQuestion={idQuestion}
           setVisible={setVisible}
+          setlastId={setlastId}
+          lastId={lastId}
+          setPauseGame={setPauseGame}
           checkAnswer={checkAnswer}
           indexPlayer={indexPlayer}
           point={point}
-          setlastId={setlastId}
-          count={count}
-          idUser={user.current.id}
+          idQuestion={idQuestion}
           answerSelected={answerSelected}
-          addQuestionHistory={addQuestionHistory}
-          idHistoryRoom={idHistoryRoom}
+          idUser={user.current.id}
           scores={scores}
+          idHistoryRoom={idHistoryRoom}
+          AddRoomHistory={AddRoomHistory}
+          count={count}
         />
         <h2 className="TitleQuestion">{questions?.title}</h2>
 
@@ -126,7 +128,8 @@ export default function Question(props) {
               addQuestionHistory,
               scores,
               idHistoryRoom,
-              AddRoomHistory
+              AddRoomHistory,
+
             )
           }
         ></input>

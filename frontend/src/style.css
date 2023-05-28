@@ -8,6 +8,11 @@
   --cell-size: 10vw;
   --mark-size: calc(var(--cell-size) * 0.9);
   --Cpadding: 5px;
+  --defultFont: 3rem;
+  --custmHeight-4: 4rem;
+  --custmHeight-6: 6rem;
+
+  --custmWidth: 2rem;
 }
 
 body {
@@ -42,15 +47,7 @@ li {
 a {
   text-decoration: none;
 }
-.btnAdd {
-  position: absolute;
-  justify-content: flex-end;
-  display: flex;
-  bottom: 7%;
-  padding-right: 26px;
-  right: 5%;
-  z-index: 3;
-}
+
 /*====================end nav========================*/
 
 /*===================players=========================*/
@@ -190,7 +187,7 @@ form {
   z-index: 5;
 }
 
-.winning-message button {
+.winning-message > button {
   font-size: 3rem;
   background-color: white;
   border: 1px solid black;
@@ -201,7 +198,7 @@ form {
   border-radius: 5px;
 }
 
-.winning-message button:hover {
+.winning-message > button:hover {
   background-color: black;
   color: white;
   border-color: white;

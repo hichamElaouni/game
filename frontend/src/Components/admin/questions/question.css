@@ -7,7 +7,7 @@
 .gridRooms {
   display: flex;
   flex-direction: row;
-  height: 88vh;
+  height: calc(100% - var(--custmHeight-6));
 }
 
 .grid {
@@ -80,9 +80,9 @@ tr {
   min-width: 100px;
   padding: 5px;
 }
-.css-zw3mfo-MuiModal-root-MuiDialog-root {
+/* .css-zw3mfo-MuiModal-root-MuiDialog-root {
   opacity: 0.3;
-}
+} */
 .viewgrid {
   width: 100%;
   height: auto;
@@ -106,8 +106,8 @@ tr {
 }
 
 .addquestion {
-  height: 12vh;
-  width: 100%;
+  height: calc(var(--custmHeight-6));
+  width: -moz-available;
   display: flex;
   justify-content: space-around;
   flex-flow: column wrap;
@@ -115,6 +115,8 @@ tr {
   flex-wrap: nowrap;
   align-content: center;
   text-align: center;
+  position: absolute;
+  bottom: 0;
 }
 
 td input,

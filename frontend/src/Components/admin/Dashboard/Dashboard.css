@@ -1,0 +1,36 @@
+.dashboard {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 3px;
+
+  flex-direction: column;
+  align-items: center;
+}
+
+.dashboard > h1 > .selectPagination {
+  z-index: 1;
+  height: auto;
+  background: #49a5ca75;
+  font-size: 1.5rem;
+  bottom: auto;
+  left: auto;
+}
+
+.dashboard > h1 > .selectPagination > option {
+  background: #0c445a5b;
+  font-size: 1.1rem;
+}
+
+.sliders {
+  display: flex;
+  justify-content: center;
+  height: 30rem;
+  width: 100%;
+}
+
+.sliders > img {
+  width: 98%;
+}

@@ -1,86 +1,9 @@
-// "use strict";
-// module.exports = {
-//   up: async (queryInterface, Sequelize) => {
-//     return await queryInterface.createTable("Users", {
-//       id: {
-//         allowNull: false,
-//         autoIncrement: true,
-//         primaryKey: true,
-//         type: Sequelize.INTEGER(11),
-//       },
-//       fullName: {
-//         type: Sequelize.STRING,
-//         allowNull: false,
-//       },
-//       email: {
-//         type: Sequelize.STRING,
-//         allowNull: false,
-//       },
-//       password: {
-//         type: Sequelize.STRING,
-//         allowNull: false,
-//       },
-//       classUser: {
-//         type: Sequelize.STRING,
-//       },
-//       telephone: {
-//         type: Sequelize.STRING,
-//       },
-//       dateBorn: {
-//         type: Sequelize.STRING,
-//       },
-//       point: {
-//         type: Sequelize.INTEGER(11),
-//         defaultValue: 0,
-//       },
-//       victories: {
-//         type: Sequelize.INTEGER(11),
-//         defaultValue: 0,
-//       },
-//       losses: {
-//         type: Sequelize.INTEGER(11),
-//         defaultValue: 0,
-//       },
-//       adress: {
-//         allowNull: false,
-//         type: Sequelize.STRING,
-//       },
-//       image: {
-
-//         type: Sequelize.STRING,
-//         defaultValue: "https://manager.almadarisp.com/user/img/user.png"
-//       },
-//       roles: {
-//         allowNull: false,
-//         type: Sequelize.STRING,
-//         defaultValue: "student"
-//       },
-//       createdAt: {
-//         allowNull: false,
-//         type: Sequelize.DATE,
-//       },
-//       updatedAt: {
-//         allowNull: false,
-//         type: Sequelize.DATE,
-//       },
-//     });
-//   },
-
-//   down: async (queryInterface, Sequelize) => {
-//     /**
-//      * Add reverting commands here.
-//      *
-//      * Example:
-//      * await queryInterface.dropTable('users');
-//      */
-//   },
-// };
 
 
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return await queryInterface.createTable("Users", {
+    await queryInterface.createTable("Users", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -93,7 +16,6 @@ module.exports = {
       },
       last_name: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       email: {
         type: Sequelize.STRING,
@@ -105,75 +27,67 @@ module.exports = {
       },
       image: {
         type: Sequelize.STRING,
+        defaultValue: "https://manager.almadarisp.com/user/img/user.png",
+      },
 
-      },
-      skills: {
+      classUser: {
         type: Sequelize.STRING,
+        defaultValue: "1",
+      },
 
-      },
-      social_links: {
-        type: Sequelize.STRING,
-      },
-      biography: {
-        type: Sequelize.STRING,
-      },
-      role_id: {
-        allowNull: false,
+      point: {
         type: Sequelize.INTEGER(11),
-        defaultValue: 1,
+        defaultValue: 0
+      },
+      coins: {
+        type: Sequelize.INTEGER(11),
+        defaultValue: 0
+      },
+      victories: {
+        type: Sequelize.INTEGER(11),
+        defaultValue: 0
+      },
+
+      losses: {
+        type: Sequelize.INTEGER(11),
+        defaultValue: 0
+      },
+
+      role_id: {
+        type: Sequelize.INTEGER(11),
+        defaultValue: 3,
         references: {
           model: {
-            tableName: "Rooms",
+            tableName: "Roles",
           },
           key: "id",
         },
         onDelete: "cascade",
         onUpdate: "cascade",
       },
-      date_added: {
-        type: Sequelize.INTEGER(11),
-      },
-      last_modified: {
-        type: Sequelize.INTEGER(11),
-      },
-      wishlist: {
+
+      createdAt: {
         type: Sequelize.STRING,
+        defaultValue: 0
       },
-      title: {
+      updatedAt: {
         type: Sequelize.STRING,
-      },
-      payment_keys: {
-        type: Sequelize.STRING,
-      },
-      verification_code: {
-        type: Sequelize.STRING,
-      },
-      status: {
-        type: Sequelize.INTEGER(11),
-      },
-      is_instructor: {
-        type: Sequelize.INTEGER(11),
-      },
-      sessions: {
-        type: Sequelize.STRING,
-      },
-      subscriptions_date: {
-        type: Sequelize.STRING,
-      },
-      subscription_type: {
-        type: Sequelize.STRING,
-      },
-      special_instructor: {
-        type: Sequelize.STRING,
-      },
-      special_instructor_rate: {
-        type: Sequelize.INTEGER(11),
+        defaultValue: 0
       },
 
 
+    },
+    )
 
-    });
 
+    await queryInterface.bulkInsert('Users', [{
+      first_name: 'Admin',
+      last_name: 'Administrator',
+      role_id: '1',
+      email: 'supadmin@gmail.com',
+      password: '030a47c33ab9eedb11462abdcf35d770ec584522',
+      image: "https://cdn-icons-png.flaticon.com/512/4668/4668814.png"
+    }]);
 
   },
 

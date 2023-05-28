@@ -69,11 +69,11 @@ const routes = [
   //   },
   // ],
   // },
-  // {
-  //   path: "/",
-  //   name: "Login",
-  //   icon: <AiFillHeart />,
-  // },
+  {
+    path: "/SetingsCusm",
+    name: "SetingsCusm",
+    icon: <AiFillHeart />,
+  },
 ];
 
 //getUser
@@ -81,7 +81,7 @@ const routes = [
 const SideBar = (props) => {
   const { children } = props;
   const [isOpen, setIsOpen] = useState(false);
-  const { username } = getUser()
+  const { user } = getUser()
   const toggle = () => setIsOpen(!isOpen);
   const inputAnimation = {
     hidden: {
@@ -118,7 +118,6 @@ const SideBar = (props) => {
   };
 
 
-
   return (
     <>
 
@@ -126,9 +125,9 @@ const SideBar = (props) => {
 
         <motion.div
           animate={{
-            width: isOpen ? "200px" : "30px",
+            width: isOpen ? "12rem" : "2rem",
             zIndex: 10,
-            position: "unset",
+            position: "fixed",
             transition: {
               duration: 0.5,
               type: "spring",
@@ -164,7 +163,7 @@ const SideBar = (props) => {
                   >
                     .
                   </Avatar>{" "} */}
-                  {username}
+                  {user.first_name + " " + user.last_name}
 
 
                 </motion.h1>

@@ -109,6 +109,8 @@ const getAllUsers = async (limit, page) =>
   await axios.get(`http://${fullUrl}/db/users?limit=${limit}&page=${page}`);
 
 const addUser = async (data) => {
+  console.log("🚀 ~ file: api.js:112 ~ addUser ~ data:", data)
+
   try {
     return await axios.post(`http://${fullUrl}/db/user`, data);
   } catch (error) {
@@ -187,7 +189,20 @@ const updateSubject = async (id, name) =>
 const deleteSubject = async (id) =>
   await axios.delete(`http://${fullUrl}/db/subject/${id}`);
 
+
+const getLogin = async (credentials) => {
+  if (credentials.username === undefined && credentials.password === undefined) return;
+  try {
+    const { status, data } = await axios.post(`http://${fullUrl}/login`, credentials)
+    return { status, data };
+  } catch (error) {
+    const { status } = error.response;
+    return { status }
+  }
+}
+
 export {
+  getLogin,
   /**Questions */
   getAllQUestions,
   getQuestionById,

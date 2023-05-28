@@ -189,7 +189,7 @@ const getUserById = async (req, res) => {
 const addUser = async (req, res) => {
   try {
     const { id, ...rest } = req.body;
-    console.log("🚀 ~ file: controller.js:192 ~ addUser ~ rest:", rest)
+
     const data = Object(
       await db.Users.findOne({
         where: {
@@ -197,6 +197,8 @@ const addUser = async (req, res) => {
         },
       })
     );
+
+
     if (!data.email) {
       const { password, ...restData } = rest;
       const hashedPassword = crypto.createHash('sha1').update(password).digest('hex');

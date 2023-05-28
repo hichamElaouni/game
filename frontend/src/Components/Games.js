@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef, memo } from "react";
 import {
   getQuestionByRoom,
   addRoomHistory,
-  addQuestionHistory,
   updateRoomHistory,
   updateUser,
 } from "./service/api";
@@ -286,196 +285,22 @@ const App = memo(() => {
   }
 
 
-
-  // const roundGameOver = async (disconnectedPlayer) => {
-
-  //   if (getOver.current && (disconnectedPlayer || parseInt(indexPlayer) === 2)) {
-
-  //     let MsgOver = "aze";
-  //     let roomHistory = {};
-
-  //     if (disconnectedPlayer) {
+  const AddRoomHistory = async (idUser) => {
 
 
-  //       if (disconnectedPlayer.id === usersPlay.current[0].idUserUser) {
+    const { data } = await addRoomHistory({
+      idUser_1: user.current.id,
+      idUser_2: idUser,
+      idRoom: Room.id,
+      victories: 0,
+      losses: 0,
+      roundPlay: 0,
+    });
 
-  //         MsgOver = "You Win with Srore = " + scores.current.oScore;
-  //         console.log(1);
-  //         // updatePoint(
-  //         //   1,
-  //         //   scores.current.oScore,
-  //         //   scores.current.oGameScore,
-  //         //   scores.current.xGameScore
-  //         // );
+    idHistoryRoom.current = data.idHistoryRoom;
+    socket.emit("setIdHestoryRoom", data.idHistoryRoom)
+    return data;
 
-  //         roomHistory = {
-  //           idUser_1: usersPlay.current[0].idUserUser,
-  //           idUser_2: usersPlay.current[1].idUserUser,
-  //           IdRoom: Room.id,
-  //           victories: scores.current.oGameScore / Room.point,
-  //           losses: 0,
-  //           roundPlay: scores.current.xGameScore / Room.point,
-  //         };
-
-  //       } else {
-
-  //         MsgOver = "You Win with Srore = " + scores.current.xScore;
-  //         console.log(2);
-
-  //         // updatePoint(
-  //         //   0,
-  //         //   scores.current.oScore,
-  //         //   scores.current.xGameScore,
-  //         //   scores.current.oGameScore
-  //         // );
-
-  //         roomHistory = {
-  //           idUser_1: usersPlay.current[1].idUserUser,
-  //           idUser_2: usersPlay.current[0].idUserUser,
-  //           IdRoom: Room.id,
-  //           victories: scores.current.xGameScore / Room.point,
-  //           losses: 0,
-  //           roundPlay: scores.current.xGameScore / Room.point,
-  //         };
-  //       }
-
-
-  //     }
-
-
-
-  //     if (scores.current.oScore < scores.current.xScore) {
-
-
-  //       console.log("o < x");
-  //       roomHistory = {
-  //         idUser_1: usersPlay.current[0].idUserUser,
-  //         idUser_2: usersPlay.current[1].idUserUser,
-  //         idRoom: Room.id,
-  //         victories: scores.current.xGameScore / Room.point,
-  //         losses: scores.current.oGameScore / Room.point,
-  //         roundPlay:
-  //           (scores.current.oGameScore + scores.current.xGameScore) /
-  //           Room.point,
-  //       };
-
-  //       MsgOver =
-  //         "Game over, " +
-  //         usersPlay.current[0].first_name + "  " + usersPlay.current[0].last_name +
-  //         " 'X'  win the Game with Total Points =  " +
-  //         scores.current.xScore +
-  //         " Vs " +
-  //         usersPlay.current[1].first_name + " " + usersPlay.current[1].last_name +
-  //         " 'O' Points = " +
-  //         scores.current.oScore;
-
-  //       // updatePoint(
-  //       //   0,
-  //       //   scores.current.xScore,
-  //       //   scores.current.xGameScore,
-  //       //   scores.current.oGameScore
-  //       // );
-
-  //       // updatePoint(
-  //       //   1,
-  //       //   scores.current.oScore,
-  //       //   scores.current.oGameScore,
-  //       //   scores.current.xGameScore
-  //       // );
-  //     } else if (scores.current.oScore > scores.current.xScore) {
-  //       roomHistory = {
-  //         idUser_1: usersPlay.current[1].idUserUser,
-  //         idUser_2: usersPlay.current[0].idUserUser,
-  //         IdRoom: Room.id,
-  //         victories: scores.current.oGameScore / Room.point,
-  //         losses: scores.current.xGameScore / Room.point,
-  //         roundPlay:
-  //           (scores.current.oGameScore + scores.current.xGameScore) /
-  //           Room.point,
-  //       };
-
-  //       MsgOver =
-  //         "Game over, " +
-  //         usersPlay.current[1].first_name + "  " + usersPlay.current[1].last_name +
-  //         " 'O' win the Game with Total Points =  " +
-  //         scores.current.oScore +
-  //         " Vs " +
-  //         usersPlay.current[0].first_name + " " + usersPlay.current[0].last_name +
-  //         " 'X' Points =  " +
-  //         scores.current.xScore;
-
-  //       // updatePoint(
-  //       //   1,
-  //       //   scores.current.oScore,
-  //       //   scores.current.oGameScore,
-  //       //   scores.current.xGameScore
-  //       // );
-  //       // updatePoint(
-  //       //   0,
-  //       //   scores.current.xScore,
-  //       //   scores.current.xGameScore,
-  //       //   scores.current.oGameScore
-  //       // );
-  //       console.log("o > x");
-
-  //     } else {
-  //       roomHistory = {
-  //         idUser_1: usersPlay.current[0].idUserUser,
-  //         idUser_2: usersPlay.current[1].idUserUser,
-  //         IdRoom: Room.id,
-  //         victories: scores.current.oGameScore / Room.point,
-  //         losses: scores.current.xGameScore / Room.point,
-  //         roundPlay:
-  //           (scores.current.oGameScore + scores.current.xGameScore) /
-  //           Room.point,
-  //       };
-
-  //       MsgOver =
-  //         "Game Is Over No One Wins, Score Players = " + scores.current.oScore;
-  //       // updatePoint(
-  //       //   0,
-  //       //   scores.current.xScore / 2,
-  //       //   scores.current.xGameScore / 2,
-  //       //   scores.current.oGameScore / 2
-  //       // );
-  //       // updatePoint(
-  //       //   1,
-  //       //   scores.current.oScore / 2,
-  //       //   scores.current.oGameScore / 2,
-  //       //   scores.current.xGameScore / 2
-  //       // );
-
-  //       console.log("o == x");
-
-  //     }
-
-  //     setVisible(false);
-  //     socket.emit("setGameOver", MsgOver);
-
-  //     getOver.current = false;
-
-  //     await updateRoomHistory(idHistoryRoom.current, roomHistory);
-  //     console.log("o <=> x");
-
-  //   }
-  // };
-
-  const AddRoomHistory = async (idUser, lastId) => {
-
-    if (lastId === 0 && parseInt(indexPlayer) === 1) {
-      const { data } = await addRoomHistory({
-        idUser_1: user.current.id,
-        idUser_2: idUser,
-        idRoom: Room.id,
-        victories: 0,
-        losses: 0,
-        roundPlay: 0,
-      });
-
-      idHistoryRoom.current = data.idHistoryRoom;
-      socket.emit("setIdHestoryRoom", data.idHistoryRoom)
-      return data;
-    }
 
 
   };
@@ -617,7 +442,7 @@ const App = memo(() => {
               indexPlayer={indexPlayer}
               questions={questions}
               idHistoryRoom={idHistoryRoom.current}
-              addQuestionHistory={addQuestionHistory}
+
               AddRoomHistory={AddRoomHistory}
 
             />

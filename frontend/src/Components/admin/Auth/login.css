@@ -1,0 +1,119 @@
+.formSing {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  margin-top: calc(var(--custmHeight-4) + 0.5rem);
+}
+.loginForm {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  height: 80vh;
+  width: 50%;
+  position: relative;
+  gap: 5px;
+}
+.logoSing {
+  width: 90px;
+  height: 90px;
+  background: #edffff;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 1;
+  border: 2px solid #4d9c56;
+  background-image: url("../../../image/login.png");
+  background-size: cover;
+}
+.containerSing {
+  display: flex;
+  flex-direction: column;
+  top: 40px;
+  position: absolute;
+  border: 3px solid #000;
+  border-radius: 15px;
+  padding: 7px;
+  width: 100%;
+  height: 100%;
+  justify-content: space-around;
+  background: #155454;
+
+  box-shadow: inset 0px 0px 0px 2.5px #e1ffff;
+}
+.containerSing > label {
+  font-size: calc(var(--defultFont) * 0.8);
+  font-weight: 500;
+  color: white;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  top: 17%;
+  z-index: 3;
+  color: #ef9595;
+  text-shadow: 1px 1px 1px black;
+  width: 100%;
+}
+.divTxt {
+  display: flex;
+  flex-direction: column;
+  /* background: aliceblue; */
+
+  margin-bottom: 1%;
+  justify-content: center;
+  gap: calc(var(--defultFont) * 0.3);
+}
+
+.divChck {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0px 15px 0 15px;
+  font-size: 1.2em;
+}
+
+.divBtns {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  align-self: center;
+  gap: 10px;
+  justify-content: space-around;
+  position: absolute;
+  top: 15px;
+}
+.divBtns > button {
+  height: 50px;
+  font-size: 2em;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  color: #155454;
+  font-weight: 600;
+  width: 45%;
+}
+
+.divBtns > button:hover {
+  border: 0.5px solid;
+  background: #2f885e;
+  color: rgb(226, 224, 230);
+}
+
+.divBtns > button:active {
+  background-color: #147171;
+  color: white;
+  border: 1px solid;
+}
+
+.formLogin {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 450px) {
+  .loginForm {
+    height: 70%;
+    width: 90%;
+  }
+}

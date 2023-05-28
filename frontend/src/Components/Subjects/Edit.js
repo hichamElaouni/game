@@ -18,8 +18,8 @@ export default function Edit(props) {
                         color: "whitesmoke",
                         background: "#4fcd3596",
                     }}
-                    onClick={(event) => {
-                        saveData(event);
+                    onClick={() => {
+                        saveData();
                     }}
                 >
                     <Save />

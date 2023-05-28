@@ -1,48 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { socket } from "../service/socket";
+import { NextQuestion } from "../Setings/Controllers";
 
 export default function Timer(props) {
   const {
-    setPauseGame,
-    idQuestion,
     setVisible,
+    setlastId,
+    lastId,
+    setPauseGame,
+    checkAnswer,
     indexPlayer,
     point,
-    checkAnswer,
-    setlastId,
-    count,
-    idStudent,
+    idQuestion,
     answerSelected,
-    addQuestionHistory,
-    idHistoryRoom,
+    idUser,
     scores,
+    idHistoryRoom,
+    AddRoomHistory,
+    count,
   } = props;
 
   const [countDown, setCountDown] = useState(count);
 
   if (!countDown) {
-    setPauseGame(false);
-    setVisible(false);
 
-    let questionshistory = {
-      idQuestion: idQuestion,
-      idStudent: idStudent,
-      selectedAnswer: !answerSelected ? 0 : answerSelected,
-      idRoomHistory: idHistoryRoom,
-    };
 
-    addQuestionHistory(questionshistory);
+    NextQuestion(
+      setVisible,
+      setlastId,
+      lastId,
+      setPauseGame,
+      idQuestion,
+      indexPlayer,
+      point,
+      checkAnswer,
+      idUser,
+      answerSelected,
+      AddRoomHistory,
+      idHistoryRoom,
+      scores,
+    )
 
-    if (checkAnswer) {
-      if (indexPlayer * 1 === 1) {
-        scores.current.xScore += point;
-        socket.emit("setxScore", scores.current.xScore);
-      } else if (indexPlayer * 1 === 2) {
-        scores.current.oScore += point;
-        socket.emit("setoScore", scores.current.oScore);
-      }
-    }
-    setlastId(idQuestion);
   }
 
   useEffect(() => {

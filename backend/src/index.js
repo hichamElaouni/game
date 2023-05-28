@@ -168,7 +168,7 @@ app.post("/login", authLocal, async (req, res, next) => {
   const token = await jwt.sign(req.user, JWT_SECRET);
   const { role } = jwt_decode(token) || {};
 
-  if (role !== 1) {
+  if (!token) {
 
     res.status(401).send({ status: 401, message: "User not authenticated" })
   } else {

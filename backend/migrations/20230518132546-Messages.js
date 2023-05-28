@@ -2,21 +2,17 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("Games", {
+    await queryInterface.createTable("Messages", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER(11),
       },
-      nameGame: {
+      text: {
         type: Sequelize.STRING,
         allowNull: false,
 
-      },
-      typeGame: {
-        type: Sequelize.INTEGER(11),
-        defaultValue: 2,
       },
       createdAt: {
         allowNull: false,
@@ -28,11 +24,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
     });
-    await queryInterface.bulkInsert('Games', [{
-      nameGame: 'Tic Tac Toe',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }], {});
+
   },
 
 
