@@ -8,6 +8,8 @@ import apiRoutes from "./modules";
 import http from "http";
 import passport from "passport";
 import jwt from "jsonwebtoken";
+import jwt_decode from "jwt-decode";
+import { authLocal } from "./modules/services/auth";
 import { Server } from "socket.io";
 
 export const app = express();
@@ -21,159 +23,121 @@ const io = new Server(server, {
   },
 });
 
-let connectClient = 0;
-let roomNumber = 0;
-let player = "";
-let Turn = true;
-let id = 0;
-let Room = "";
+//  >>>>>>>>> Start Sockits <<<<<<<<<<<<
 
-// if (NumberPlayers <= 2) {
-//   RoomNumbers++;
-//   connectClient++;
-
-//   if (connectClient == 1) {
-//     console.log("First Client $$== ", connectClient);
-
-//     id = 1;
-//     Turn = true;
-//   } else {
-//     console.log("second Client $$== ", connectClient);
-
-//     id = 2;
-//     Turn = false;
-//   }
-
-//   socket.emit("connected", { namePlayer, id, Turn });
-// } else {
-//   socket.emit("RoomNotAvailable");
-//   socket.leave(token);
-// }
-// });
-
-// players[socket.id] = namePlayer;
-// socket.join(token);
-// RoomName = Array.from(socket.rooms)[1];
-// NumberPlayers = Object.keys(players).length;
-// TODO const checkRoomAvailablity = ()
-//USE ID_ROOM TO CHECK IF ROOM AVIABE OR NOT
-
-// socket.on("setplayer", (namePlayer) => {
-
-// socket.on("join_Room", (Room) => {
-
-//   socket.emit("getplayer", namePlayer);
-// });
-
-// var numClients = {};
-
-// socket.on("joinroom", function (room) {
-//   socket.join(room);
-//   socket.room = room;
-//   console.log(numClients[room]);
-//   if (numClients[room] == undefined) {
-//     numClients[room] = 1;
-//   } else {
-//     numClients[room]++;
-//   }
-// });
-
-// socket.on("disconnect", function () {
-//   numClients[socket.room]--;
-// });
-
-// console.log("Clients => ", numClients);
-
-// socket.on("send_message", (data) => {
-//   socket.to(data.roomId).emit("receive_message", data);
-//   console.log("room id == ", data.roomId);
-// });
-
-//   if (connectClient < 2) {
-//     Room = Room;
-//     connectClient++;
-//     if (connectClient == 1) {
-//       console.log("First Client $$== ", connectClient);
-//       player = "Hicham";
-//       id = 1;
-//       Turn = true;
-//     } else {
-//       console.log("second Client $$== ", connectClient);
-//       player = "Ayman";
-//       id = 2;
-//       Turn = false;
-//     }
-//     socket.join(Room);
-//     socket.emit("connected", { player, id, Turn });
-//   } else {
-//     console.log("room it not Avaliable for now");
-//   }
-// });
+let Token = "";
+let RoomsArray = [];
+let EmailsArray = {};
+let UsersPlaySameRoom = "";
 
 io.on("connection", (socket) => {
-  socket.on("joinRoom", ({ token }) => {
+  socket.on("joinRoom", (token, User) => {
     socket.join(token);
-    let roomMemeberNumber = io.sockets.adapter.rooms.get(token) || 0;
 
-    if (roomMemeberNumber && roomMemeberNumber.size > 2) {
-      socket.leave(token);
-      socket.emit("RoomNotAvailable");
+    EmailsArray[socket.id] = User;
+
+    UsersPlaySameRoom = { roomId: token, UserId: [User.email] };
+
+    let roomlengthMembers = io.sockets.adapter.rooms.get(token) || 0;
+
+    if (roomlengthMembers.size > 2) {
+      socket.leave(token, socket.id);
+      socket.emit("RoomNotAvailable", "OccupiedRoom");
     } else {
-      if (roomMemeberNumber.size === 1) {
-        id = 1;
-        Turn = true;
-      }
-      if (roomMemeberNumber.size === 2) {
-        id = 2;
-        Turn = false;
+      const roomIndex = RoomsArray.findIndex((room) => room.roomId === token);
+
+
+
+      if (roomIndex !== -1) {
+        const UserId = RoomsArray[roomIndex].UserId;
+
+        if (!UserId.includes(User.email)) {
+          UserId.push(User.email);
+        } else {
+          // UserId.splice(UserId.indexOf(User.email), 1);
+          delete EmailsArray[socket.id];
+          socket.leave(token, socket.id);
+          socket.emit("RoomNotAvailable", "ErorrSingIn");
+          return;
+        }
+      } else {
+        RoomsArray.push(UsersPlaySameRoom);
       }
 
-      socket.emit("playing", id);
-
-      Room = token;
+      socket.emit("Startplaying", roomlengthMembers.size, User);
+      Token = token;
     }
   });
 
-  socket.on("setPlayer", (namePlayer) => {
-    socket.to(Room).emit("getPlayer", namePlayer);
+  socket.on("setPlayer", (player) => {
+    socket.to(Token).emit("getPlayer", player);
   });
 
-  socket.on("setScore", (scores) => {
-    socket.to(Room).emit("getScore", scores);
+  socket.on("setxScore", (xScore, xGameScore) => {
+    socket.to(Token).emit("getxScore", xScore, xGameScore);
   });
 
-  socket.on("setxScore", (xScore) => {
-    socket.to(Room).emit("getxScore", xScore);
-  });
-
-  socket.on("setoScore", (oScore) => {
-    socket.to(Room).emit("getoScore", oScore);
+  socket.on("setoScore", (oScore, oGameScore) => {
+    socket.to(Token).emit("getoScore", oScore, oGameScore);
   });
 
   socket.on("switch_turn", ({ turn, updatedBoard }) => {
-    socket.to(Room).emit("switch", { turn, updatedBoard });
+    socket.to(Token).emit("switch", { turn, updatedBoard });
   });
 
   socket.on("setwin", (winMessage) => {
-    socket.to(Room).emit("getwin", winMessage);
+    socket.to(Token).emit("getwin", winMessage);
   });
 
-  socket.on("setStateRoom", () => {
-    socket.to(Room).emit("getStateRoom");
+  socket.on("setStateRoom", ({ idUser, point, coins, victories, losses, first_name, last_name }) => {
+    socket.to(Token).emit("getStateRoom", { idUser, point, coins, victories, losses, first_name, last_name });
   });
 
-  socket.on("setGameOver", () => {
-    socket.to(Room).emit("getGameOver");
-  });
+  socket.on(
+    "setUsers",
+    ({ idUser, first_name, last_name, point, coins, victories, losses, idHistoryRoom }) => {
+      socket.to(Token).emit("getUsers", {
+        idUser,
+        first_name, last_name,
+        point,
+        coins,
+        victories,
+        losses,
+        idHistoryRoom,
+      });
+    }
+  );
 
-  socket.on("setOver", (MsgOver) => {
-    io.to(Room).emit("getOver", MsgOver);
+  socket.on("setGameOver", (MsgOver) => {
+    io.to(Token).emit("getGameOver", MsgOver);
   });
 
   socket.on("setResetGame", () => {
-    socket.to(Room).emit("getResetGame");
+    socket.to(Token).emit("getResetGame");
+  });
+
+  socket.on("setIdHestoryRoom", (idHistoryRoom) => {
+    socket.to(Token).emit("getIdHestoryRoom", idHistoryRoom);
+  })
+
+  socket.on("disconnect", () => {
+    try {
+
+      const roomIndex = RoomsArray.findIndex((room) => room.roomId === Token);
+
+      const room = RoomsArray[roomIndex]?.UserId;
+
+      room.splice(room.indexOf(EmailsArray[socket.id].email), 1);
+      socket.to(Token).emit("disconnected", EmailsArray[socket.id]);
+
+      delete EmailsArray[socket.id];
+      socket.leave(Token);
+    } catch (error) {
+
+    }
   });
 });
+//  >>>>>>>>> END Sockits <<<<<<<<<<<<
 
 dotenv.config();
 moment.suppressDeprecationWarnings = true;
@@ -199,6 +163,19 @@ app.use(passport.initialize());
 apiRoutes(app);
 
 const { PORT, JWT_SECRET } = process.env || 3000;
+
+app.post("/login", authLocal, async (req, res, next) => {
+  const token = await jwt.sign(req.user, JWT_SECRET);
+  const { role } = jwt_decode(token) || {};
+
+  if (!token) {
+
+    res.status(401).send({ status: 401, message: "User not authenticated" })
+  } else {
+    res.status(200).send(token);
+  }
+  return next();
+});
 
 app.get("/", (req, res) => {
   console.log("Hello World");

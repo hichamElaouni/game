@@ -1,0 +1,74 @@
+#Subjects {
+  display: flex;
+  box-sizing: content-box;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  gap: 2rem;
+}
+
+.listSubject {
+  width: 23rem;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #9eb7b2;
+  background: linear-gradient(to right bottom, #9eb7b2, #a9dbd1);
+  margin-left: 9px;
+  padding: 11px;
+  padding-bottom: 11px;
+  text-align: center;
+  max-height: 35rem;
+  overflow: auto;
+  font-size: 1.2rem;
+  color: black;
+  border-radius: 5px 3px;
+  position: relative;
+}
+.btnadd {
+  display: flex;
+  padding-left: 1rem;
+  gap: 1rem;
+}
+.btnadd > input {
+  padding-left: 3px;
+  border: none;
+  border-radius: 4px;
+  background: bottom;
+  box-shadow: 0px 0px 5px 0px black;
+
+  font-family: initial;
+  text-shadow: #2d2b2f 1px 0px 2px;
+  font-size: 1.3em;
+}
+
+.worning {
+  position: absolute;
+  left: 20%;
+  top: 25%;
+  background: #d5d2ceb3;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0px 0px 174px 40px black;
+  align-items: center;
+  font-size: 1.5rem;
+  font-family: inherit;
+  color: #fd0303;
+  text-shadow: #803e2a 2px 0 10px;
+  flex-direction: column;
+  gap: 2rem;
+  right: 20%;
+  padding: 10px;
+}
+
+.list > input {
+  font-style: oblique;
+  font-family: initial;
+  text-shadow: #fff8dd 1px 0 10px;
+  font-size: 1.7em;
+  border: none;
+  width: inherit;
+  margin-right: 1rem;
+  padding: 0 7px;
+}

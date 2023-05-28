@@ -5,17 +5,52 @@ const EditableRow = ({
   editFormData,
   handleEditFormChange,
   handleCancelClick,
+  subjects,
+  levels,
   selected,
 }) => {
   return (
     <tr>
-      {selected ? (
+      {/* {selected ? (
         <td className="container">
           <Choices type="checkbox" data={editFormData.id} />
         </td>
       ) : (
         ""
-      )}
+      )} */}
+
+      <td style={{ width: "14%" }}>
+        <select
+          name="idLevel"
+          required="required"
+          onChange={handleEditFormChange}
+          defaultValue={editFormData.levelNumber}
+        >
+          {
+            levels.map((level, key) => (
+              <option key={key} value={level.id} > {level.levelNumber}</option>
+
+            )
+            )}
+        </select>
+      </td>
+
+      <td style={{ width: "14%" }}>
+        <select
+          name="idSubject"
+          required="required"
+          onChange={handleEditFormChange}
+          defaultValue={editFormData.idSubject}
+        >
+          {
+            subjects.map((subject, key) => (
+              <option key={key} value={subject.id} > {subject.name}</option>
+
+            )
+            )}
+        </select>
+      </td>
+
       <td>
         <input
           type="text"

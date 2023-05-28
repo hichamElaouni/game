@@ -1,12 +1,13 @@
 import { NavLink } from "react-router-dom";
-import { FaBars, FaHome, FaLock, FaMoneyBill, FaUser } from "react-icons/fa";
-import { MdMessage, MdDeck } from "react-icons/md";
-import { BiAnalyse, BiSearch } from "react-icons/bi";
+import { FaBars, FaGamepad, FaHome, FaLock, FaMoneyBill, FaUser, FaRegQuestionCircle, FaLaravel } from "react-icons/fa";
+import { MdMessage, MdDeck, MdSubject } from "react-icons/md";
+import { BiSearch } from "react-icons/bi";
 import { BiCog } from "react-icons/bi";
 import { AiFillHeart } from "react-icons/ai";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SidebarMenu from "./SidebarMenu";
+import { hasLoggedOut, getUser } from "../service/auth"
 
 const routes = [
   {
@@ -15,19 +16,19 @@ const routes = [
     icon: <FaHome />,
   },
   {
-    path: "/ListStudents",
-    name: "Students",
+    path: "/ListUsers",
+    name: "Users",
     icon: <FaUser />,
   },
-  {
-    path: "/messages",
-    name: "Messages",
-    icon: <MdMessage />,
-  },
+  // {
+  //   path: "/messages",
+  //   name: "Messages",
+  //   icon: <MdMessage />,
+  // },
   {
     path: "/Questions",
     name: "Questions",
-    icon: <BiAnalyse />,
+    icon: <FaRegQuestionCircle />,
   },
 
   {
@@ -35,38 +36,52 @@ const routes = [
     name: "Rooms",
     icon: <MdDeck />,
   },
+
   {
-    path: "/settings",
-    name: "Settings",
-    icon: <BiCog />,
-    exact: true,
-    subRoutes: [
-      {
-        path: "/settings/profile",
-        name: "Profile ",
-        icon: <FaUser />,
-      },
-      {
-        path: "/settings/2fa",
-        name: "2FA",
-        icon: <FaLock />,
-      },
-      {
-        path: "/settings/billing",
-        name: "Billing",
-        icon: <FaMoneyBill />,
-      },
-    ],
+    path: "/subjects",
+    name: "Subjucts",
+    icon: <MdSubject />,
+  }, {
+    path: "/levels",
+    name: "Levels",
+    icon: <FaLaravel />,
   },
+  // {
+  //   path: "/settings",
+  //   name: "Settings",
+  //   icon: <BiCog />,
+  // exact: true,
+  // subRoutes: [
+  //   {
+  //     path: "/settings/game",
+  //     name: "Game",
+  //     icon: <FaGamepad />,
+  //   },
+  //   {
+  //     path: "/settings/Question",
+  //     name: "",
+  //     icon: <FaLock />,
+  //   },
+  //   {
+  //     path: "/settings/billing",
+  //     name: "Billing",
+  //     icon: <FaMoneyBill />,
+  //   },
+  // ],
+  // },
   {
-    path: "/",
-    name: "",
+    path: "/SetingsCusm",
+    name: "SetingsCusm",
     icon: <AiFillHeart />,
   },
 ];
-const nameTeacher = "Name Teacher";
-const SideBar = ({ children }) => {
+
+//getUser
+
+const SideBar = (props) => {
+  const { children } = props;
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = getUser()
   const toggle = () => setIsOpen(!isOpen);
   const inputAnimation = {
     hidden: {
@@ -102,13 +117,17 @@ const SideBar = ({ children }) => {
     },
   };
 
+
   return (
     <>
+
       <div className="main-container">
+
         <motion.div
           animate={{
-            width: isOpen ? "200px" : "30px",
-
+            width: isOpen ? "12rem" : "2rem",
+            zIndex: 10,
+            position: "fixed",
             transition: {
               duration: 0.5,
               type: "spring",
@@ -126,6 +145,10 @@ const SideBar = ({ children }) => {
                   animate="show"
                   exit="hidden"
                   className="logo"
+                  style={{ cursor: "pointer" }}
+                  title="Log Out"
+                  onClick={hasLoggedOut}
+
                 >
                   {/* <Avatar
                     sx={{
@@ -140,7 +163,9 @@ const SideBar = ({ children }) => {
                   >
                     .
                   </Avatar>{" "} */}
-                  {nameTeacher}
+                  {user.first_name + " " + user.last_name}
+
+
                 </motion.h1>
               )}
             </AnimatePresence>
@@ -186,7 +211,7 @@ const SideBar = ({ children }) => {
                   to={route.path}
                   key={index}
                   className="link"
-                  activeClassName="active"
+                  activeclassname="active"
                 >
                   <div className="icon">{route.icon}</div>
                   <AnimatePresence>
@@ -210,6 +235,7 @@ const SideBar = ({ children }) => {
 
         <main>{children}</main>
       </div>
+
     </>
   );
 };

@@ -12,6 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
+  //  await Games.create({ nameGame: "Tic Tac Teo" });
+
   Games.associate = function (models) {
     // associations can be defined here
   };

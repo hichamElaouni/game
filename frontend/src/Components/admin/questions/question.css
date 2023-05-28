@@ -7,7 +7,7 @@
 .gridRooms {
   display: flex;
   flex-direction: row;
-  height: 88vh;
+  height: calc(100% - var(--custmHeight-6));
 }
 
 .grid {
@@ -37,8 +37,9 @@ table {
   color: white;
 }
 tr {
-  height: 2em;
+  height: 1.8em;
 }
+
 .btns {
   width: 45%;
   height: 30px;
@@ -76,19 +77,21 @@ tr {
   flex-wrap: wrap;
   align-content: center;
   height: 100%;
+  min-width: 100px;
   padding: 5px;
 }
-.css-zw3mfo-MuiModal-root-MuiDialog-root {
+/* .css-zw3mfo-MuiModal-root-MuiDialog-root {
   opacity: 0.3;
-}
+} */
 .viewgrid {
   width: 100%;
-  height: 75vh;
+  height: auto;
   display: flex;
   align-items: stretch;
   flex-direction: row;
   flex-wrap: nowrap;
   align-content: stretch;
+  overflow: auto;
 }
 
 .viewgrid form {
@@ -103,8 +106,8 @@ tr {
 }
 
 .addquestion {
-  height: 12vh;
-  width: 100%;
+  height: calc(var(--custmHeight-6));
+  width: -moz-available;
   display: flex;
   justify-content: space-around;
   flex-flow: column wrap;
@@ -112,17 +115,20 @@ tr {
   flex-wrap: nowrap;
   align-content: center;
   text-align: center;
+  position: absolute;
+  bottom: 0;
 }
 
-tr input {
+td input,
+tr select {
   width: 90%;
-  font-size: 1.3em;
+  font-size: 1.2em;
   text-align: center;
   border: none;
-  border-radius: 3px;
+  border-radius: 4px;
   color: #0e2934;
 }
-.addquestion form {
+.formAddQuestion {
   background-color: #134254;
   height: 100%;
   width: 100%;
@@ -133,9 +139,10 @@ tr input {
 
   border-radius: 4px;
 }
-.addquestion input {
+.addquestion input,
+select {
   height: 60%;
-  width: 19%;
+  width: 13.5%;
   font-size: 1.2em;
   text-align: center;
   border: none;
@@ -178,7 +185,7 @@ tr:hover .trActions {
   align-items: flex-start;
   flex-direction: row;
   flex-wrap: wrap;
-  align-content: start;
+  align-content: flex-start;
   row-gap: 2%;
 }
 .RoomsView {
@@ -190,8 +197,8 @@ tr:hover .trActions {
 
 .view {
   display: flex;
-  width: 30%;
-  height: 14vh;
+  width: 170px;
+  height: 170px;
   align-items: center;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -206,16 +213,19 @@ tr:hover .trActions {
   cursor: pointer;
 }
 .view:hover {
-  width: 31;
-  height: 15vh;
+  width: 175px;
+  height: 175px;
   box-shadow: 0px 0px 4px 0px green;
+}
+.view:active {
+  box-shadow: 0px 0px 4px 0px rgb(77, 221, 77);
 }
 .titleRoom {
   border-radius: 4px 4px 0 0;
   align-content: stretch;
   text-align: center;
   width: 100%;
-  font-size: 14px;
+  font-size: 20px;
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
   background: rgb(235, 242, 239);
@@ -253,9 +263,166 @@ tr:hover .trActions {
   width: 100%;
   position: relative;
   display: flex;
+  text-align: initial;
+  padding-left: 5px;
 }
 
 .AnswerNumber {
   box-shadow: 0px 0px 0px 1.5px #e9ff00;
   background: #fdf8e9;
+}
+.titleRooms {
+  cursor: pointer;
+  display: inline;
+}
+.titleRooms:hover {
+  /* background-color: #ddf1f463; */
+  color: #143846;
+  border-radius: 4px;
+  box-shadow: 0px 0px 1px 1px #3f6f822b;
+}
+.titleRooms:active {
+  color: #1a3d12;
+  box-shadow: 0px 0px 1px 1px #35d26f2b;
+}
+.thSubjects {
+  cursor: pointer;
+  position: relative;
+}
+.thSubjects:hover {
+  /* background-color: #ddf1f463; */
+  background: #194a5d;
+  color: #e1ebeb;
+  box-shadow: 0px 0px 0px 0.7px #adff2f75;
+}
+/* .thSubjects:active {
+  background: #215c73;
+  color: #070909;
+  box-shadow: 0px 0px 1px 0.8px #a5e83eba;
+} */
+.classFilter::before {
+  content: "";
+  display: flex;
+  background-color: #142d376b;
+  cursor: not-allowed;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(2px);
+  position: absolute;
+}
+.Filter {
+  background: #364d55ba;
+  padding: 1px;
+  border-radius: 5px;
+  position: absolute;
+  inset: 80% 6% auto;
+  z-index: 1;
+  max-height: 128px;
+  overflow: auto;
+}
+
+.Filter > .option_item > .option_inner {
+  padding: 2px 0px;
+}
+
+.sBtn {
+  background-color: white;
+  width: 90%;
+  color: #3e414a;
+  cursor: pointer;
+  display: inline-table;
+  border-radius: 5px;
+  margin-bottom: 6px;
+  box-shadow: 0px 1px 2px 1.5px #1c2535b5;
+}
+.sBtn:hover {
+  background: #e2f9ea;
+}
+
+.sBtn:active {
+  background: #baeecc;
+}
+
+.PaginationQuestion {
+  position: relative;
+  width: 99%;
+  display: block ruby;
+  right: 3px;
+}
+
+.PaginationQuestion > .pagination {
+  border-radius: 5px;
+  /* background: rgb(54, 108, 130); */
+}
+.selectPagination {
+  width: 50px;
+  position: relative;
+  z-index: 1;
+  height: auto;
+  background: #5fcaa6;
+  bottom: 20%;
+  left: 2%;
+  font-size: 1.2rem;
+}
+
+.thSubjects > .container {
+  position: fixed;
+  width: 8%;
+  z-index: 1;
+}
+
+@media (max-width: 450px) {
+  .loginForm {
+    height: 70%;
+    width: 90%;
+  }
+  .filds > input {
+    font-size: 1.2em;
+  }
+
+  .addquestion {
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    z-index: 11;
+  }
+  .addquestion > input,
+  select {
+    width: 14%;
+    font-size: 0.8em;
+  }
+  .formAddQuestion {
+    background-color: #194a5d;
+  }
+
+  .viewgrid > form > table {
+    font-size: 0.9em;
+  }
+  .viewgrid > form > table > thead > tr > th {
+    padding: 2px;
+  }
+
+  .view {
+    width: 150px;
+    height: 120px;
+  }
+  .view:hover {
+    width: 155px;
+    height: 125px;
+    box-shadow: 0px 0px 4px 0px green;
+  }
+  .titleRoom {
+    font-size: 19px;
+  }
+  .DescRoom {
+    font-size: 12px;
+    overflow: auto;
+    height: 44px;
+  }
+  .MuiPagination-ul :last-child {
+    font-size: 1em;
+  }
+  .selectPagination {
+    font-size: 1em;
+  }
 }

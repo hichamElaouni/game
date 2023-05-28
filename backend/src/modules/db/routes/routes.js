@@ -12,11 +12,11 @@ route.delete("/question/:id", ctrl.deleteQuestion);
 route.get("/games", ctrl.getAllGames);
 route.get("/game/:id", ctrl.getGameById);
 
-route.get("/students", ctrl.getAllStudents);
-route.get("/student/:id", ctrl.getStudentById);
-route.post("/student", ctrl.addStudent);
-route.put("/student", ctrl.updateStudent);
-route.delete("/student/:id", ctrl.deleteStudent);
+route.get("/users", ctrl.getAllUsers);
+route.get("/user/:id", ctrl.getUserById);
+route.post("/user", ctrl.addUser);
+route.put("/user", ctrl.updateUser);
+route.delete("/user/:id", ctrl.deleteUser);
 
 route.get("/rooms", ctrl.getAllRooms);
 route.get("/room/:id", ctrl.getRoomById);
@@ -27,7 +27,31 @@ route.put("/room", ctrl.updateRoom);
 route.delete("/room/:id", ctrl.deleteRoom);
 route.get("/roomgames", ctrl.getRoomGame);
 
-route.post("/addQuestionsRoom", ctrl.addQuestionsRoom);
 route.post("/questionByRoom", ctrl.getQuestionByRoom);
+route.post("/userByEmail", ctrl.getUserByEmail);
+route.post("/studentByEmail", ctrl.getStudentByEmail);
+
+
+/****** History ***** */
+route.post("/roomHistory", ctrl.addRoomHistory);
+route.post("/questionHistory", ctrl.addQuestionHistory);
+
+route.put("/roomHistory", ctrl.updateRoomHistory);
+route.post("/roomsHistory", ctrl.getRoomsHistory);
+route.post("/questionsHistory", ctrl.getAllHistoryQuestions);
+route.post("/countRooms", ctrl.getCountRooms);
+
+route.get("/subjects", ctrl.getSubjects);
+route.post("/subject", ctrl.addSubject);
+route.put("/subject", ctrl.updateSubject);
+route.delete("/subject/:id", ctrl.deleteSubject);
+
+route.get("/levels", ctrl.getLevels);
+route.post("/level", ctrl.addLevel);
+route.put("/level", ctrl.updateLevel);
+
+route.delete("/level/:id", ctrl.deleteLevel);
+
+
 
 export default route;

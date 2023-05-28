@@ -1,27 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./scoreBoard.css";
-import { socket } from "../service/socket";
 
-export const ScoreBoard = ({ scores, xPlaying, namePlayer }) => {
-  const { xScore, oScore } = scores;
-
-  const [secondPlayer, setSecondPlayer] = useState("");
-
-  socket.emit("setPlayer", namePlayer);
-
-  useEffect(() => {
-    socket.on("getPlayer", (namePlayer) => {
-      setSecondPlayer(namePlayer);
-    });
-  }, []);
+export const ScoreBoard = (props) => {
+  const { xPlaying, usersPlay, scores } = props;
 
   return (
     <div className="scoreboard">
       <span className={`score x-score ${!xPlaying && "inactive"}`}>
-        Turn {xPlaying ? namePlayer : secondPlayer} is : {xScore}
+        Score: {usersPlay[0].first_name + " " + usersPlay[0].last_name} is : {scores.current.xScore} /
+        {scores.current.xGameScore}
       </span>
       <span className={`score o-score ${xPlaying && "inactive"}`}>
-        Turn {!xPlaying ? namePlayer : secondPlayer} is : {oScore}
+        Score: {usersPlay[1].first_name + " " + usersPlay[1].last_name} is : {scores.current.oScore}/
+        {scores.current.oGameScore}
       </span>
     </div>
   );

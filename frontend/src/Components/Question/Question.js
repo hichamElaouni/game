@@ -1,88 +1,107 @@
 import { useState } from "react";
 import ListChoices from "../Choice/ListChoices";
-import Timer from "../Timer/Timer";
+import CountDown from "../Timer/CountDown";
 import { socket } from "../service/socket";
+import { NextQuestion } from "../Setings/Controllers";
 
-const NextQuestion = (
+
+const NextQuestions = async (
   setVisible,
   setlastId,
+  lastId,
   setPauseGame,
   checkAnswer,
-  idPlayer,
-  scores,
-  setScores,
+  indexPlayer,
   point,
-  idQuestion
+  idQuestion,
+  answerSelected,
+  idUser,
+  addQuestionHistory,
+  scores,
+  idHistoryRoom,
+  AddRoomHistory
 ) => {
-  setlastId(idQuestion);
-  setPauseGame(false);
-  setVisible(false);
+
+
+  const data = lastId === 0 && parseInt(indexPlayer) === 1 ? await AddRoomHistory(idUser, lastId) : idHistoryRoom;
+
+
+  const questionshistory = {
+    idQuestion: idQuestion,
+    idUser: idUser,
+    selectedAnswer: !answerSelected ? 0 : answerSelected,
+    idRoomHistory: idHistoryRoom === 0 ? data.idHistoryRoom : idHistoryRoom,
+  };
+
+  await addQuestionHistory(questionshistory);
 
   if (checkAnswer) {
-    if (idPlayer * 1 === 1) {
-      let { xScore } = scores;
-      xScore += point;
-      setScores({ ...scores, xScore });
-      socket.emit("setxScore", xScore);
-    } else if (idPlayer * 1 === 2) {
-      let { oScore } = scores;
-      oScore += point;
-      setScores({ ...scores, oScore });
-      socket.emit("setoScore", oScore);
+    if (parseInt(indexPlayer) === 1) {
+      scores.current.xScore += point;
+      socket.emit("setxScore", scores.current.xScore);
+    } else if (parseInt(indexPlayer) === 2) {
+      scores.current.oScore += point;
+      socket.emit("setoScore", scores.current.oScore);
     }
   }
+
+
+  setPauseGame(false);
+  setVisible(false);
+  setlastId(idQuestion);
 };
 
 export default function Question(props) {
   const {
-    idPlayer,
-    namePlayer,
+    indexPlayer,
     questions = {},
     setVisible,
     setlastId,
+    lastId,
     setPauseGame,
-    countDown,
-    setCountDown,
+    count,
+    user,
+    idHistoryRoom,
     scores,
-    setScores,
+    AddRoomHistory,
   } = props;
 
   const [checkAnswer, setChaeckAnswer] = useState(false);
+  const [answerSelected, setAnswerSelected] = useState();
+
   let idQuestion = questions.id;
-  console.log(
-    "🚀 ~ file: Question.js ~ line 52 ~ Question ~ questions",
-    questions
-  );
+
+
   const onclick = (event) => {
-    if (questions?.answer === event?.target?.value * 1) {
-      setChaeckAnswer(true);
-    } else {
-      setChaeckAnswer(false);
-    }
+    setAnswerSelected(event?.target?.value);
+    setChaeckAnswer(questions?.answer === parseInt(event?.target?.value));
   };
   let Choices = ";";
 
   if (!(questions?.choices === undefined))
     Choices = questions?.choices.toString();
 
-  const point = 2;
+  const point = questions?.point;
 
   return (
     <div className="players ">
-      <h1>{namePlayer}</h1>
+      <h1>{user.current.first_name + " " + user.current.last_name}</h1>
       <div className="boardquetion">
-        <Timer
-          setPauseGame={setPauseGame}
-          idQuestion={idQuestion}
+        <CountDown
           setVisible={setVisible}
-          checkAnswer={checkAnswer}
-          idPlayer={idPlayer}
-          scores={scores}
-          setScores={setScores}
-          point={point}
           setlastId={setlastId}
-          countDown={countDown}
-          setCountDown={setCountDown}
+          lastId={lastId}
+          setPauseGame={setPauseGame}
+          checkAnswer={checkAnswer}
+          indexPlayer={indexPlayer}
+          point={point}
+          idQuestion={idQuestion}
+          answerSelected={answerSelected}
+          idUser={user.current.id}
+          scores={scores}
+          idHistoryRoom={idHistoryRoom}
+          AddRoomHistory={AddRoomHistory}
+          count={count}
         />
         <h2 className="TitleQuestion">{questions?.title}</h2>
 
@@ -98,14 +117,19 @@ export default function Question(props) {
             NextQuestion(
               setVisible,
               setlastId,
+              lastId,
               setPauseGame,
               checkAnswer,
-
-              idPlayer,
-              scores,
-              setScores,
+              indexPlayer,
               point,
-              idQuestion
+              idQuestion,
+              answerSelected,
+              user.current.id,
+              addQuestionHistory,
+              scores,
+              idHistoryRoom,
+              AddRoomHistory,
+
             )
           }
         ></input>

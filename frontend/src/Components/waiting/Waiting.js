@@ -1,32 +1,27 @@
 import React from "react";
+
 import "./waiting.css";
 import CircularIndeterminate from "./CircularIndeterminate";
-import { useNavigate } from "react-router-dom";
 
 export default function Waiting(props) {
-  let navigate = useNavigate();
-  const { namePlayer, text, waitState, token } = props;
+  const { namePlayer, State, Message, quitGame } = props;
 
   return (
     <div className="players ">
       <h1>{namePlayer}</h1>
-      <div
-        className={`boardquetion flexboardquetion ${
-          waitState ? "waitForm" : ""
-        }`}
-      >
-        <h1> {text} </h1>
-        {waitState ? (
+      <div className={`boardquetion flexboardquetion ${State && "waitForm"}`}>
+        <h1> {Message} </h1>
+        {State ? (
           <div className="divWaitForm">
-            <button
-              className="btnReturn"
-              onClick={() => navigate(`/JoinRoom/?token=${token}`)}
-            >
+            <button className="btnReturn" onClick={() => quitGame()}>
               Go To Join Room
             </button>
           </div>
         ) : (
-          <CircularIndeterminate />
+          <>
+            <CircularIndeterminate />
+
+          </>
         )}
       </div>
     </div>

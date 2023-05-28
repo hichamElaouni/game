@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return await queryInterface.createTable("Games", {
+    await queryInterface.createTable("Games", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,6 +12,7 @@ module.exports = {
       nameGame: {
         type: Sequelize.STRING,
         allowNull: false,
+
       },
       typeGame: {
         type: Sequelize.INTEGER(11),
@@ -19,6 +20,7 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
+
         type: Sequelize.DATE,
       },
       updatedAt: {
@@ -26,9 +28,17 @@ module.exports = {
         type: Sequelize.DATE,
       },
     });
+    await queryInterface.bulkInsert('Games', [{
+      nameGame: 'Tic Tac Toe',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }], {});
   },
 
+
   async down(queryInterface, Sequelize) {
+
+
     /**
      * Add reverting commands here.
      *

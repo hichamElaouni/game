@@ -8,9 +8,11 @@ const ReadOnlyRow = ({
   getselectedQuestions,
   selected,
 }) => {
+
+
   return (
     <tr>
-      {selected ? (
+      {selected && (
         <td className="container FromStudent">
           <Choices
             type="checkbox"
@@ -19,14 +21,15 @@ const ReadOnlyRow = ({
             onclick={getselectedQuestions}
           />
         </td>
-      ) : (
-        ""
       )}
+      <td>{question.levelNumber}</td>
+      <td>{question.nameSubject}</td>
       <td>{question.title}</td>
       <td>{question.choices}</td>
       <td>{question.answer}</td>
       <td>{question.point}</td>
-      <td className="trActions">
+      {/* to make btn Actions deosn't show if you add room */}
+      {selected ? "" : <td className="trActions">
         <button
           style={{ color: "#8fe88f" }}
           type="button"
@@ -43,7 +46,7 @@ const ReadOnlyRow = ({
         >
           Delete
         </button>
-      </td>
+      </td>}
     </tr>
   );
 };
