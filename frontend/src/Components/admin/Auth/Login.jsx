@@ -72,8 +72,6 @@ export default function Login({ setConnectionState }) {
                     const credentials = { username: refEmail.current.value, password: refPassword.current.value };
 
                     const { status, data } = await getLogin(credentials);
-                    console.log("🚀 ~ file: Login.jsx:75 ~ GoLogIn ~ status, data:", status, data)
-
 
                     if (status === 200) {
                         setAuthJwt(data);

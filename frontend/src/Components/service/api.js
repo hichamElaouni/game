@@ -196,8 +196,7 @@ const getLogin = async (credentials) => {
     const { status, data } = await axios.post(`http://${fullUrl}/login`, credentials)
     return { status, data };
   } catch (error) {
-    const { status } = error.response;
-    return { status }
+    return error.response.status
   }
 }
 
