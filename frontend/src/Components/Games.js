@@ -25,7 +25,6 @@ const App = memo(() => {
   const [turn, setTurn] = useState(true);
   const [pauseGame, setPauseGame] = useState(true);
 
-
   const idHistoryRoom = useRef(0);
 
   const [timerWating, setTimerWating] = useState(30);
@@ -42,11 +41,9 @@ const App = memo(() => {
   const scores = useRef({ xScore: 0, oScore: 0, xGameScore: 0, oGameScore: 0 });
   const usersPlay = useRef([{}, {}]);
 
-
-
   const waitState = useRef({
     state: false,
-    message: "Wait to anothor Player to Join",
+    message: "Wait for another Player to Join",
   });
 
 
@@ -59,20 +56,18 @@ const App = memo(() => {
   const flagGame = useRef(true);
   const refRoom = useRef(false);
 
-
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
-
   useEffect(() => {
-    if (timerWating > 0 && parseInt(indexPlayer) === 1 && stateRoom) {
+    console.log(timerWating);
+    if (timerWating > 0 && parseInt(indexPlayer) === 1) {
       const interval = setInterval(() => {
         setTimerWating((prev) => prev - 1);
       }, 1000);
       return () => clearInterval(interval);
     }
   }, [timerWating])
-
 
   const quitGame = () => {
     localStorage.clear();
@@ -427,7 +422,7 @@ const App = memo(() => {
 
 
   return (
-    <>
+    <div style={{ display: 'flex' }}>
       <div className="PartGames">
         <section className="SectionP1">
           {visible && turn ? (
@@ -436,7 +431,7 @@ const App = memo(() => {
               setVisible={setVisible}
               setPauseGame={setPauseGame}
               scores={scores}
-              count={Room.TimeTurn * 10 || 15}
+              count={Room.TimeTurn || 15}
               setlastId={setlastId}
               lastId={lastId}
               indexPlayer={indexPlayer}
@@ -471,7 +466,7 @@ const App = memo(() => {
               scores={scores}
               roundGameOver={roundGameOver}
               flagGame={flagGame}
-              count={Room.TimeTurn * 21 || 15}
+              count={Room.TimeTurn / 2 || 15}
               NotificationManager={NotificationManager}
               quitGame={() => {
                 quitGame();
@@ -479,7 +474,6 @@ const App = memo(() => {
             />
           </section>
         </div>
-
 
       </div>
       <div className={`div-wait ${stateRoom ? "start-Playing" : ""} `}>
@@ -491,9 +485,9 @@ const App = memo(() => {
             quitGame();
           }}
         />
-        {timerWating === 0 && <h3>{fullUrl + "/JoinRoom?token=" + token}</h3>}
+        {timerWating === 0 && <h3 style={{ cursor: "text" }}>{fullUrl + "/JoinRoom?token=" + token}</h3>}
       </div>
-    </>
+    </div>
   );
 })
 

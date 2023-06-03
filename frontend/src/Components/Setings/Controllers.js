@@ -2,10 +2,10 @@ import { socket } from "../service/socket";
 import { addQuestionHistory } from "../service/api";
 
 
-const passwordCheck = (password) => {
+const PasswordCheck = (password) => {
   return password.match("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$") ? true : false;
 }
-const emailCheck = (email) => {
+const EmailCheck = (email) => {
   return email.match("[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$") ? true : false;
 }
 
@@ -24,6 +24,7 @@ const NextQuestion = async (
   idHistoryRoom,
   AddRoomHistory,
 ) => {
+
   const data = lastId === 0 && parseInt(indexPlayer) === 1 ? await AddRoomHistory(idUser, lastId) : idHistoryRoom;
 
 
@@ -51,8 +52,10 @@ const NextQuestion = async (
   setVisible(false);
   setlastId(idQuestion);
 }
+
+
 export {
-  passwordCheck,
-  emailCheck,
+  PasswordCheck,
+  EmailCheck,
   NextQuestion
 }

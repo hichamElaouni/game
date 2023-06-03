@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { socket } from "../service/socket";
 import { NextQuestion } from "../Setings/Controllers";
 
 export default function Timer(props) {
@@ -30,15 +29,15 @@ export default function Timer(props) {
       setlastId,
       lastId,
       setPauseGame,
-      idQuestion,
+      checkAnswer,
       indexPlayer,
       point,
-      checkAnswer,
-      idUser,
+      idQuestion,
       answerSelected,
-      AddRoomHistory,
-      idHistoryRoom,
+      idUser,
       scores,
+      idHistoryRoom,
+      AddRoomHistory,
     )
 
   }

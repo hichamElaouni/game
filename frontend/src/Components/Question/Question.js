@@ -125,7 +125,6 @@ export default function Question(props) {
               idQuestion,
               answerSelected,
               user.current.id,
-              addQuestionHistory,
               scores,
               idHistoryRoom,
               AddRoomHistory,

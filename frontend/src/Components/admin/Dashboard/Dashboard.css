@@ -2,12 +2,11 @@
   width: 100%;
   height: auto;
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
   gap: 3px;
-
   flex-direction: column;
   align-items: center;
+  padding-top: 5px;
 }
 
 .dashboard > h1 > .selectPagination {

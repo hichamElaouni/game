@@ -4,22 +4,27 @@ import { getRoomByToken, getStudentByEmail } from "../service/api";
 import {
   NotificationManager,
 } from "react-notifications";
-import { passwordCheck, emailCheck } from "../Setings/Controllers"
+import { PasswordCheck, EmailCheck } from "../Setings/Controllers"
 
 import { socket } from "../service/socket";
 import "./join.css";
 import { BsInfoCircle } from "react-icons/bs";
 import FildCustem from "../Setings/FildCustem";
-import Email from '@mui/icons-material/ContactMail';
+import FormLogin from '../Setings/FormLogin';
 
-import Login from "../admin/Auth/Login"
+
 
 export default function Join() {
   let navigate = useNavigate();
   const [alert, setAlert] = useState({ state: false, message: "" });
-  const [singIn, setSingIn] = useState(true);
-  const email = useRef();
-  const password = useRef("");
+  const [singIn, setSingIn] = useState(false);
+
+
+  const Email = useRef();
+  const Password = useRef();
+  const Confirm = useRef();
+  const First = useRef();
+  const Last = useRef();
 
   const [room, setRoom] = useState({});
 
@@ -27,10 +32,9 @@ export default function Join() {
   const tokenParams = searchParams.get("token");
 
 
-
   useEffect(() => {
     getRoom(tokenParams);
-    email.current.focus();
+    Email.current.focus();
   }, []);
 
   const getRoom = async (token) => {
@@ -64,14 +68,14 @@ export default function Join() {
   });
 
   const Join_room = async () => {
-    if (email.current.value !== "") {
-      if (emailCheck(email.current.value)) {
+    if (Email.current.value !== "") {
+      if (EmailCheck(Email.current.value)) {
         if (
-          passwordCheck(password.current.value)
+          PasswordCheck(Password.current.value)
         ) {
           const {
             data: { data, success, message },
-          } = await getStudentByEmail(email.current.value, password.current.value);
+          } = await getStudentByEmail(Email.current.value, Password.current.value);
           if (!success) {
             setAlert({ state: true, message: message });
           } else {
@@ -102,56 +106,42 @@ export default function Join() {
   };
 
 
-  const Style = {
-    borderRadius: "15px",
-    background: "linear-gradient( to right bottom, rgba(255, 255, 255, 0.7), rgba(191, 240, 240, 0.3) )"
+  const styleFild = {
+    borderRadius: " 25px",
+    background: "linear-gradient(to right bottom, #ececec,#c4e8e0,#8de6e5)",
+    border: "1px solid #10495a59",
+    color: "#052a35",
+  }
+  const CustStyle = {
+    background: " #147171",
+    color: "white",
+    border: "1px solid #e1f8f6b8"
+  }
+
+  const StyleForm = {
+    width: "90%",
+    gap: "4rem",
+    padding: "4rem 0"
   }
 
   return (
     <>
       <div className="join">
         <section className="glass">
-          {alert.state ? (
-            <div className="alert">
-              <BsInfoCircle />
-              <h2>{alert.message}</h2>
-            </div>
-          ) : (
-            <br />
-          )}
-          <h1>Singin To Join Room</h1>
+          <FormLogin btnFirst="Join Room" btnSecond="Create Account"
+            messageError={alert}
+            CustStyle={CustStyle}
+            StyleForm={StyleForm}
+            setMessageError={setAlert}
+            StartedFunction={Join_room}
+            styleFild={styleFild}
+            refs={{ Email, Password, Confirm, Last, First }}
+          />
 
-
-          <div className="divJoin">
-
-            <FildCustem refFild={email} Icon={<Email />} type="text" placeholder="Email" Style={Style} />
-            <FildCustem refFild={password} type="password" placeholder="Password" Style={Style} />
-
-
-            <button
-              className="btn-join"
-              onClick={() => {
-                Join_room();
-              }}
-            >
-              Join Room
-            </button>
-            <button
-              className="btn-join"
-              onClick={() => setSingIn(true)}
-            >
-              Sing in
-            </button>
-          </div>
-          {/* <SignIn /> */}
         </section>
       </div>
       <div className="circle1"></div>
       <div className="circle2"></div>
-      {singIn && <div className="login-join">
-        <Login />
-      </div>}
-
     </>
   );
 }

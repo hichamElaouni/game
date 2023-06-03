@@ -56,10 +56,9 @@ a {
   height: 100%;
   background: #404a46;
   text-align: center;
-  /* border: 1px solid black; */
   border-radius: 16px;
   color: white;
-  margin-left: 3px;
+  padding-top: 1rem;
 }
 /*=*/
 form {
@@ -417,12 +416,11 @@ form {
 
 .div-wait {
   display: none;
-
   width: 100vw;
   height: 100vh;
-  position: fixed;
-  top: 0;
+  position: absolute;
   justify-content: center;
+  z-index: 11;
 }
 
 .start-Playing {
