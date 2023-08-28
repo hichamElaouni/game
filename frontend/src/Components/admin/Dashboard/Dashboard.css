@@ -3,7 +3,7 @@
   height: auto;
   display: flex;
   flex-wrap: wrap;
-  gap: 3px;
+  gap: 2rem;
   flex-direction: column;
   align-items: center;
   padding-top: 5px;
@@ -32,4 +32,133 @@
 
 .sliders > img {
   width: 98%;
+}
+
+.sections {
+  width: inherit;
+  text-align: center;
+  gap: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 27rem;
+}
+
+.titleSlides {
+  position: absolute;
+  top: 5rem;
+  color: white;
+  background: #0009;
+  padding: 1rem;
+  border-radius: 20px;
+}
+
+/*================Services============*/
+
+.Services {
+  display: grid;
+  width: 99%;
+  height: 30rem;
+  text-align: center;
+  align-self: center;
+  padding: 0.5rem;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  font-size: calc(var(--custmFontDisc));
+}
+
+.descServices {
+  text-align: justify;
+  padding: 1rem 2rem;
+}
+
+/* ==== CardPrings ==== */
+.Prices {
+  display: grid;
+  padding: 0 2rem;
+  gap: 2.8rem;
+}
+.cardPricing {
+  display: flex;
+  position: relative;
+  max-width: 40rem;
+  height: 25rem;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  align-items: center;
+  border-top: 0.6rem solid;
+  box-shadow: 0px 0px 3px 1px #43444070;
+  transition: transform 0.5s ease;
+}
+
+.cardPricing:hover {
+  background-color: #eee9e499;
+  box-shadow: 0px 2px 4px 0.13rem #3d7d3875;
+  transform: scale(1.03);
+  transform-origin: bottom;
+}
+.colorCard {
+  width: 100%;
+  color: green;
+  height: 0.6rem;
+}
+.cardPricing > h1 {
+  width: 100%;
+  font-size: 2.6rem;
+}
+
+.cardPricing > h2 {
+  position: absolute;
+  top: 5rem;
+  font-size: 3rem;
+  background-color: #8bb535b0;
+  color: white;
+  width: 100%;
+  font-weight: 500;
+}
+.optionsCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  position: absolute;
+  bottom: 5rem;
+  top: 9rem;
+  width: 75%;
+  font-size: 1.1rem;
+  align-items: first baseline;
+}
+
+.cardPricing > button {
+  width: 80%;
+  font-size: 1.7rem;
+  margin-bottom: 5px;
+  list-style: none;
+  color: #fff;
+}
+/* ==========About ==========*/
+.About {
+  display: grid;
+  width: 97%;
+  align-self: center;
+  gap: 2rem;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 1rem;
+}
+.About > p {
+  font-size: 1.2rem;
+  text-align: justify;
+  padding: 1rem;
+  text-shadow: 0px 0px 0.07rem #000000b2;
+}
+.About > img {
+  width: inherit;
+  border-radius: 4px;
+  box-shadow: 0px 0px 4px 1px black;
+}
+/*========== content =====*/
+.content {
+  width: 98%;
+  display: grid;
+  text-align: center;
+  grid-template-columns: repeat(2, 1fr);
 }
