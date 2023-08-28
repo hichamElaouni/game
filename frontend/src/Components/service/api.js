@@ -109,7 +109,6 @@ const getAllUsers = async (limit, page) =>
   await axios.get(`http://${fullUrl}/db/users?limit=${limit}&page=${page}`);
 
 const addUser = async (data) => {
-  console.log("🚀 ~ file: api.js:112 ~ addUser ~ data:", data)
 
   try {
     return await axios.post(`http://${fullUrl}/db/user`, data);

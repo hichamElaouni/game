@@ -8,8 +8,7 @@ import { PasswordCheck, EmailCheck } from "../Setings/Controllers"
 
 import { socket } from "../service/socket";
 import "./join.css";
-import { BsInfoCircle } from "react-icons/bs";
-import FildCustem from "../Setings/FildCustem";
+
 import FormLogin from '../Setings/FormLogin';
 
 
@@ -17,8 +16,6 @@ import FormLogin from '../Setings/FormLogin';
 export default function Join() {
   let navigate = useNavigate();
   const [alert, setAlert] = useState({ state: false, message: "" });
-  const [singIn, setSingIn] = useState(false);
-
 
   const Email = useRef();
   const Password = useRef();
@@ -45,6 +42,7 @@ export default function Join() {
       console.log("error data");
     } else {
       if (!data.token) {
+        //! room not existing
         navigate("/RoomNotAvailable");
       }
       else {
@@ -53,8 +51,7 @@ export default function Join() {
     }
   };
 
-
-
+  //! if room is not available
   socket.on("RoomNotAvailable", (page) => {
     navigate("/" + page);
   });
@@ -79,8 +76,8 @@ export default function Join() {
           if (!success) {
             setAlert({ state: true, message: message });
           } else {
-            const user = data;
-            socket.emit("joinRoom", tokenParams, user);
+
+            socket.emit("joinRoom", tokenParams, data);
           }
         } else {
           NotificationManager.warning(
@@ -135,6 +132,7 @@ export default function Join() {
             setMessageError={setAlert}
             StartedFunction={Join_room}
             styleFild={styleFild}
+            tokenParams={tokenParams}
             refs={{ Email, Password, Confirm, Last, First }}
           />
 

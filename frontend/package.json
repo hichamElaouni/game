@@ -41,6 +41,7 @@
     "react-modal": "^3.15.1",
     "react-moment": "^1.1.2",
     "react-notifications": "^1.7.3",
+    "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-widgets": "^5.8.4",

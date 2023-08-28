@@ -1,1 +1,3 @@
 for combobox ==>  npm install @headlessui/react &&& npm install @heroicons/react
+
+for sections ==> npm install --save react-router-hash-link

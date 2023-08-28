@@ -32,7 +32,6 @@ export default function FildCustem(props) {
                 placeholder={placeholder}
                 ref={refFild}
                 style={Style}
-
             />
         </div>
     )

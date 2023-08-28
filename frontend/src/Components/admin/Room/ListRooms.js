@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Room from "./Room";
 import { getAllRooms, deleteRoom, updateRoom } from "../../service/api";
 import IconButton from "@material-ui/core/IconButton";
@@ -12,7 +12,6 @@ export default function ListRooms() {
   const [adding, setAdding] = useState(false);
   const [titlePage, setTitlePage] = useState("Rooms");
   const [token, setToken] = useState("");
-
 
   const getRooms = async (setRooms) => {
     const {
@@ -69,14 +68,13 @@ export default function ListRooms() {
     <>
       <div className="listRooms">
         <h1 style={{ fontSize: "2.4em" }}>{titlePage}</h1>
-        <div className="filterRooms ">
-
-        </div>
+        <div className="filterRooms "></div>
         <div className="ListRooms">
           {rooms.map((room, index) => (
-
             <div className="Room" key={index}>
-              <h2 className="nameRoom">{room.nameRoom} with {room.coin} Coins</h2>
+              <h2 className="nameRoom">
+                {room.nameRoom} with {room.coin} Coins
+              </h2>
               <Room
                 room={room}
                 deleted_Room={deleted_Room}
@@ -85,7 +83,6 @@ export default function ListRooms() {
                 link={"JoinRoom?token=" + room.token}
               />
             </div>
-
           ))}
         </div>
         <div className="btnAddRoom" onClick={add_Room}>
@@ -100,7 +97,6 @@ export default function ListRooms() {
           </IconButton>
         </div>
       </div>
-
 
       {adding && (
         <div
@@ -123,6 +119,5 @@ export default function ListRooms() {
     </>
   );
 }
-
 
 let games = [{ id: 1, name: "Tic tac toe" }];

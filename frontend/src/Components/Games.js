@@ -60,7 +60,7 @@ const App = memo(() => {
   const token = searchParams.get("token");
 
   useEffect(() => {
-    console.log(timerWating);
+
     if (timerWating > 0 && parseInt(indexPlayer) === 1) {
       const interval = setInterval(() => {
         setTimerWating((prev) => prev - 1);
@@ -185,12 +185,12 @@ const App = memo(() => {
 
     playerloses = { point, coins, losses, victories };
 
+    setTimerWating(30);
 
     await updateUser(disconnectPlayer.id, playerloses);
 
 
     await updateRoomHistory(idHistoryRoom.current, roomHistory);
-
 
     socket.emit("setGameOver", message);
 

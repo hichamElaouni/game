@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function ResponsiveAppBar(props) {
 
-    const { pages, profiles, profileImage, hasLoggedOut, state, Messages, Notifications } = props;
+    const { pages, profiles, profileImage, hasLoggedOut, state, Messages, Notifications, scrollDown, refs } = props;
 
 
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -37,7 +37,8 @@ export default function ResponsiveAppBar(props) {
         setAnchorElUser(event.currentTarget);
     };
 
-    const handleCloseNavMenu = () => {
+    const handleCloseNavMenu = (refs) => {
+        scrollDown(refs);
         setAnchorElNav(null);
     };
 
@@ -116,7 +117,7 @@ export default function ResponsiveAppBar(props) {
                         >
                             {pages.map((page) => (
                                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
+                                    <Typography textAlign="center" >{page}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
@@ -141,10 +142,10 @@ export default function ResponsiveAppBar(props) {
                         Games
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', gap: '2rem' } }}>
-                        {pages.map((page) => (
+                        {pages.map((page, i) => (
                             <Button
                                 key={page}
-                                onClick={handleCloseNavMenu}
+                                onClick={() => handleCloseNavMenu(refs[i])}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
                                 {page}

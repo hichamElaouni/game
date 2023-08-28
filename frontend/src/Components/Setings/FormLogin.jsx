@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { socket } from "../service/socket";
 
 import { Button } from '@mui/material';
 import IEmail from '@mui/icons-material/ContactMail';
@@ -28,8 +29,9 @@ export default function FormLogin(props) {
         messageError,
         setMessageError,
         StartedFunction,
+        CustStyle,
+        tokenParams,
         refs,
-        CustStyle
     } = props;
 
     const { Email, Password, Confirm, First, Last } = refs;
@@ -73,13 +75,18 @@ export default function FormLogin(props) {
                     const user = { last_name: Last.current.value, first_name: First.current.value, email: Email.current.value, password: Password.current.value }
                     let auth = true;
                     const { status, data } = await addUser(user);
+
                     if (auth) {
                         if (status === 203) {
                             setMessageError({ state: true, message: "Email already exists Try Login or Another Email" });
                         } else if (status === 201) {
-                            setAuthJwt(data);
-                            setMessageError({ state: false, message: "Sing in" });
-                            navigate(from, { replace: true });
+                            if (tokenParams) {
+                                socket.emit("joinRoom", tokenParams, data.result);
+                            } else {
+                                setAuthJwt(data);
+                                setMessageError({ state: false, message: "Sing in" });
+                                navigate(from, { replace: true });
+                            }
                         }
                         else {
                             setMessageError({ state: true, message: "Email or password incorrect!" });
