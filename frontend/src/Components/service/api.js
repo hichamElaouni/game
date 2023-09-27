@@ -1,4 +1,4 @@
-import axios, { Axios } from "axios";
+import axios from "axios";
 
 const { REACT_APP_BACKEND_URL, REACT_APP_BACKEND_PORT, REACT_APP_IMAGE_URL } =
   process.env || {};
@@ -66,8 +66,9 @@ const addRoom = async (data) => {
 const deleteRoom = async (id) =>
   await axios.delete(`http://${fullUrl}/db/room/${id}`);
 
-const updateRoom = async (id, token) =>
+const updateRoom = async (id, token) => {
   await axios.put(`http://${fullUrl}/db/room`, { id, token });
+};
 
 // const getAllRoomsGames = async (idroom) => {
 //   await axios.get(`http://${fullUrl}/db/roomgames?idroom=${idroom}`);
@@ -109,7 +110,6 @@ const getAllUsers = async (limit, page) =>
   await axios.get(`http://${fullUrl}/db/users?limit=${limit}&page=${page}`);
 
 const addUser = async (data) => {
-
   try {
     return await axios.post(`http://${fullUrl}/db/user`, data);
   } catch (error) {
@@ -145,10 +145,12 @@ const getRoomsHistory = async (idUser, limit, page) =>
     page,
   });
 
-const getAllHistoryQuestions = async (idRoomHistory, idUser) =>
+const getAllHistoryQuestions = async (idRoomHistory, idUser, page, limit) =>
   await axios.post(`http://${fullUrl}/db/questionsHistory`, {
     idRoomHistory,
     idUser,
+    page,
+    limit,
   });
 
 const login = async (email, password) => {
@@ -165,14 +167,13 @@ const getLevels = async () => await axios.get(`http://${fullUrl}/db/levels`);
 
 const addLevel = async (levelNumber) => {
   await axios.post(`http://${fullUrl}/db/level`, { levelNumber });
-}
+};
 
 const updateLevel = async () => await axios.put(`http://${fullUrl}/db/level`);
 
 const deleteLevel = async (id) => {
-
   await axios.delete(`http://${fullUrl}/db/level/${id}`);
-}
+};
 
 const getSubjects = async () =>
   await axios.get(`http://${fullUrl}/db/subjects`);
@@ -181,23 +182,25 @@ const addSubject = async (name) => {
   await axios.post(`http://${fullUrl}/db/subject`, { name });
 };
 
-
 const updateSubject = async (id, name) =>
   await axios.put(`http://${fullUrl}/db/subject`, { id, name });
 
 const deleteSubject = async (id) =>
   await axios.delete(`http://${fullUrl}/db/subject/${id}`);
 
-
 const getLogin = async (credentials) => {
-  if (credentials.username === undefined && credentials.password === undefined) return;
+  if (credentials.username === undefined && credentials.password === undefined)
+    return;
   try {
-    const { status, data } = await axios.post(`http://${fullUrl}/login`, credentials)
+    const { status, data } = await axios.post(
+      `http://${fullUrl}/login`,
+      credentials
+    );
     return { status, data };
   } catch (error) {
-    return error.response.status
+    return error.response.status;
   }
-}
+};
 
 export {
   getLogin,

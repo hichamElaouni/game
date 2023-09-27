@@ -21,24 +21,31 @@
   width: 100%;
   height: inherit;
   display: flex;
+  padding: 0.5rem;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
-  gap: 5px;
+  gap: 1rem;
+  overflow: auto;
 }
+
 .Room {
   display: flex;
   flex-direction: column;
   width: 15em;
   height: 15em;
-  padding: 0;
-  margin: 0;
-  gap: 0;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 1px 1px 1px black;
+  box-shadow: 0px 0px 3px 1px #000000ab;
   cursor: pointer;
+  position: relative;
+  transition: transform 0.5s ease;
+}
+.Room:hover {
+  box-shadow: 0px 0px 3px 1px #0a510fc2;
+  transform: scale(1.03);
+}
+
+.Room:hover .infoRoom {
+  display: flex;
 }
 .nameRoom {
   text-align: center;
@@ -49,52 +56,39 @@
   width: 100%;
   padding: 1px 5px;
 }
-.backGroundRoom {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-  background-image: url(http://localhost:3000/static/media/game.790bebc5408cc3daf663.png);
-  background-size: cover;
-  background-repeat: no-repeat;
-  margin: 3px;
-  background-position: top left;
-  align-items: center;
-  border-radius: 3px;
-}
 
 .btnRoom {
   display: flex;
-  width: 100%;
-  flex-direction: row;
   flex-wrap: nowrap;
-  align-content: stretch;
   justify-content: space-around;
-  text-align: center;
   padding: 3px;
-  gap: 20px;
+  gap: 0.5rem;
+  position: absolute;
+  bottom: 0.2rem;
+  left: 0;
+  right: 0;
   z-index: 3;
+  backdrop-filter: blur(1.2px);
+}
+.btnRoom > button {
+  box-shadow: 0 0 2px 0.5px;
+  height: 100%;
 }
 .infoRoom {
   display: none;
-  width: 100%;
   justify-content: center;
-  text-align: center;
-  position: relative;
-  bottom: 0%;
-  z-index: 0;
+  position: absolute;
+  font-size: 1.2rem;
+  inset: 50% 0 auto;
+}
+.Room > img {
+  position: absolute;
+  width: 100%;
+  height: 90%;
+  top: 10%;
+  image-rendering: optimizespeed;
 }
 
-.Room:hover {
-  width: 16em;
-  height: 16em;
-  box-shadow: 1px 1px 1px rgba(26, 218, 26, 0.807);
-}
-
-.Room:hover .infoRoom {
-  display: flex;
-}
 /********  div-History for history Rounds  *********/
 .div-Add-Room,
 .div-History {

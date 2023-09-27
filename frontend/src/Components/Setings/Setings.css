@@ -9,7 +9,12 @@
   width: -webkit-fill-available;
   width: -moz-available;
 }
-
+.selectPagination {
+  z-index: 1;
+  background: transparent;
+  left: 2%;
+  font-size: 1.2rem;
+}
 /* .MuiPagination-ul :last-child {
   font-size: 1.2rem;
 } */
@@ -180,8 +185,23 @@
   }
 }
 
+.List-Btns {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  padding: 3px;
+  backdrop-filter: blur(1.2px);
+  gap: 1rem;
+}
+.List-Btns > button {
+  box-shadow: 0 0 2px 0.5px;
+}
+
 @media (max-width: 450px) {
   :root {
     --defultFont: 5rem;
+  }
+  .selectPagination {
+    font-size: 1em;
   }
 }

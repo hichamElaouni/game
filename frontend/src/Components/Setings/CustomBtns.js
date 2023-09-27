@@ -24,9 +24,8 @@ export default function CustomBtns(props) {
     deleteData,
     updateData,
     cancelData,
-    dashboard
+    dashboard,
   } = props;
-
 
   return (
     <div className="btnRoom">
@@ -76,9 +75,8 @@ export default function CustomBtns(props) {
           </Fragment>
         )
       ) : (
-
         <Fragment>
-          {!dashboard &&
+          {!dashboard && (
             <>
               <IconButton
                 aria-label="delete"
@@ -109,7 +107,7 @@ export default function CustomBtns(props) {
                 <Update />
               </IconButton>
             </>
-          }
+          )}
         </Fragment>
       )}
 

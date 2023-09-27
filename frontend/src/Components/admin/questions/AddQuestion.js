@@ -27,7 +27,6 @@ export default function AddQuestion(props) {
 
   // setAddFormData(newFormData);
 
-
   // };
 
   const addNewQuestion = async (event) => {
@@ -37,7 +36,10 @@ export default function AddQuestion(props) {
     const NbChoices = choices.split(";").length;
     const answer = event.target[4].value;
 
-    if (parseInt(event.target[0].value) !== 0 || parseInt(event.target[1].value) !== 0) {
+    if (
+      parseInt(event.target[0].value) !== 0 ||
+      parseInt(event.target[1].value) !== 0
+    ) {
       if (answer <= NbChoices) {
         const newQuestion = {
           idSubject: event.target[1].value,
@@ -46,28 +48,39 @@ export default function AddQuestion(props) {
           choices,
           answer,
           point: event.target[5].value,
-          nameSubject: subjects[subjects.findIndex((subject) => subject.id === parseInt(event.target[1].value))].name,
-          levelNumber: levels[levels.findIndex((level) => level.id === parseInt(event.target[0].value))].levelNumber,
-
+          nameSubject:
+            subjects[
+              subjects.findIndex(
+                (subject) => subject.id === parseInt(event.target[1].value)
+              )
+            ].name,
+          levelNumber:
+            levels[
+              levels.findIndex(
+                (level) => level.id === parseInt(event.target[0].value)
+              )
+            ].levelNumber,
         };
 
-        NotificationManager.success("succufully added", newQuestion.title, 3000, await addQuestion(newQuestion));
+        NotificationManager.success(
+          "succufully added",
+          newQuestion.title,
+          3000,
+          await addQuestion(newQuestion)
+        );
 
         const newQuestions = [...questions, newQuestion];
 
-
         setQuestions(newQuestions);
 
-        // event.target[0].value = 0;
-        // event.target[1].value = 0;
-        // event.target[2].value = "";
-        // event.target[3].value = "";
-        // event.target[4].value = "";
-        // event.target[5].value = "";
-
+        event.target[0].value = 0;
+        event.target[1].value = 0;
+        event.target[2].value = "";
+        event.target[3].value = "";
+        event.target[4].value = "";
+        event.target[5].value = "";
 
         setAnswerNumber(false);
-
       } else {
         NotificationManager.error(
           "The answer number must be less than or equal to the number of Choices",
@@ -77,53 +90,45 @@ export default function AddQuestion(props) {
         );
       }
     } else {
-      NotificationManager.error(
-        "select Subject & Class",
-        "error",
-        3000,
-
-      );
+      NotificationManager.error("select Subject & Class", "error", 3000);
     }
-
   };
 
   return (
     <form className="formAddQuestion" onSubmit={addNewQuestion}>
-      <select
-        name="idLevel"
-        defaultValue={0}
-      >
-        <option value="0" disabled >Select  Level</option>
-        {
-          levels.map((level, key) => (
-            <option key={key} value={level.id} required>{level.levelNumber}</option>
-          )
-          )}
+      <select name="idLevel" defaultValue={0}>
+        <option value="0" disabled>
+          Select Level
+        </option>
+        {levels.map((level, key) => (
+          <option key={key} value={level.id} required>
+            {level.levelNumber}
+          </option>
+        ))}
       </select>
-      <select
-        name="subject"
-        defaultValue={0}
-      >
-        <option value="0" disabled >Select  Subject</option>
-        {
-          subjects.map((subject, key) => (
-            <option key={key} value={subject.id} required>{subject.name}</option>
-          )
-          )}
+      <select name="subject" defaultValue={0}>
+        <option value="0" disabled>
+          Select Subject
+        </option>
+        {subjects.map((subject, key) => (
+          <option key={key} value={subject.id} required>
+            {subject.name}
+          </option>
+        ))}
       </select>
       <input
         type="text"
         name="Question"
         required="required"
         placeholder="Enter a Question ..."
-      // onChange={handleAddFormChange}
+        // onChange={handleAddFormChange}
       />
       <input
         type="text"
         name="Choices"
         required="required"
         placeholder="Enter an Choices..."
-      // onChange={handleAddFormChange}
+        // onChange={handleAddFormChange}
       />
       <input
         type="text"
@@ -145,7 +150,7 @@ export default function AddQuestion(props) {
         title="please enter number only"
       />
 
-      <button type="submit" className="btns btnAddQuestion" >
+      <button type="submit" className="btns btnAddQuestion">
         Add
       </button>
     </form>

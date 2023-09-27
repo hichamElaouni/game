@@ -2,23 +2,22 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return await queryInterface.createTable("Rooms", {
+    return await queryInterface.createTable("MessageUsers", {
       id: {
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER(11),
       },
 
       state: {
-        type: Sequelize.INTEGER(11),
+        type: Sequelize.STRING,
         allowNull: false,
         defaultValue: "",
       },
       idUser: {
         allowNull: false,
         type: Sequelize.INTEGER(11),
-        defaultValue: 1,
         references: {
           model: {
             tableName: "users",
@@ -31,7 +30,6 @@ module.exports = {
       idMessage: {
         allowNull: false,
         type: Sequelize.INTEGER(11),
-        defaultValue: 1,
         references: {
           model: {
             tableName: "Messages",

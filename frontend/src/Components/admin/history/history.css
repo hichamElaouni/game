@@ -1,0 +1,62 @@
+.profile {
+  display: flex;
+  position: relative;
+}
+
+.user-Profile {
+  display: flex;
+  justify-content: center;
+}
+
+.historyRooms {
+  display: flex;
+  width: 100%;
+  gap: 1rem;
+  padding: 1rem;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  overflow: auto;
+}
+
+/************* questiosHistory *************/
+
+.questiosHistory {
+  position: absolute;
+  inset: 0.4rem;
+  background: #639ed1a1;
+  z-index: 3;
+  text-align: end;
+  /* clip-path: polygon(0% 100%, 0% 8%, 95% 7.5%, 95% 0%, 100% 0%, 100% 100%); */
+  backdrop-filter: blur(0.3rem);
+  box-shadow: 0px 0 24px 0.5rem #8babceba;
+}
+
+.history-Tab {
+  padding: 0.2rem;
+  background: rgba(255, 255, 255, 0.67);
+  position: absolute;
+  overflow: auto;
+  inset: 4.5rem 0.3rem 0.5rem;
+  border-radius: 5px;
+}
+
+.history-Tab td {
+  height: 7rem;
+  width: 4rem;
+}
+
+.history-Tab img {
+  height: 7rem;
+  image-rendering: optimizespeed;
+  cursor: pointer;
+  position: relative;
+}
+
+.history-Tab img:hover {
+  height: 35rem;
+  position: fixed;
+  z-index: 3;
+  right: 50%;
+  transform: translate(50%, 50%);
+  bottom: 50%;
+}

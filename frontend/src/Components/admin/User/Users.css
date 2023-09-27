@@ -8,117 +8,74 @@
   width: 100%;
   background: rgb(0, 0, 0);
 }
-.boxs {
-  display: flex;
 
-  align-items: stretch;
-  /* flex-flow: column nowrap; */
+/**************Users**********/
+
+.Users {
+  width: 100%;
+  display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  gap: 2px;
-  width: inherit;
 }
-
-.Boxuser {
-  display: flex;
-  /* justify-content: space-around; */
-  align-items: stretch;
-  /* flex-flow: row wrap; */
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-content: stretch;
-  padding: 8px;
-  gap: 5px;
+.userSelected {
+  /* background-color: #226f26; */
   position: relative;
-  min-height: 15rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 80% 1fr;
+  padding: 0.5rem;
 }
 
-.imgsingel {
-  /* height: 100%; */
-  width: 15em;
-  height: 15em;
-  position: absolute;
-  border-radius: 5px;
-  right: 4px;
-  top: 3%;
-  background-image: url("../../Image/prof.png");
-  background-size: cover;
+.userSelected > img {
+  width: 15rem;
 }
-
-.textBox {
-  width: 100%;
-  height: 100%;
-  /* position: absolute;
-  float: right;
-  right: 5px; */
+.filds {
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+  gap: 1rem;
   flex-direction: column;
-  flex-wrap: wrap;
-  gap: 10px;
-  z-index: 1;
-  opacity: 0.87;
+  align-items: baseline;
+  padding: 0.9rem;
 }
 
-.titlebox {
-  display: flex;
-  flex-flow: row nowrap;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  background: #194a5d;
-  width: 32%;
-  color: white;
-  padding: 3px;
-  border-radius: 4px;
-  scale: revert;
-  box-shadow: 1px 2px 6px 0px #2b85a8;
-  padding-left: 7px;
-  padding-right: 7px;
-}
-
-.titlebox > h2 {
-  box-shadow: 0px 1px 3px;
-  border-radius: 4px 0px 0px 4px;
-}
-
-.titlebox > svg {
-  position: absolute;
-  right: 2%;
-  color: black;
-  margin-top: 1px;
-}
-
-.titlebox > input {
-  width: 63%;
-  border-style: none;
-  padding-left: 10px;
-  border-radius: 3px;
-  /* margin-right: 5px; */
-  box-shadow: 0px 0px 4px 0px #b5ab79;
-  font-size: 1.2em;
-}
-.titlebox > input:focus {
-  box-shadow: 0px 0px 4px 0px #2ae076;
-  border: 1px solid rgb(126, 213, 232);
-}
-
-.Boxfilter {
-  margin-top: 5px;
-  background-color: rgb(25, 74, 93);
-  padding: 10px;
-}
-
-.filters {
-  display: flex;
-  justify-content: space-around;
+.fild {
+  display: grid;
+  gap: 0.5rem;
   align-items: center;
-  /* flex-flow: row wrap; */
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-content: center;
+  background: #106275eb;
+  width: 32rem;
+  grid-template-columns: repeat(2, 1fr);
+  box-shadow: 0 0 4px 1px #1c221fe8;
+  color: #fff;
 }
+
+.fild > h1 {
+  text-shadow: 0 0px 10px black;
+  background: #327f91e0;
+  box-shadow: 1px 0 4px 1px;
+}
+
+.fild > input,
+.fild > select {
+  background: #a9d3df;
+  height: 100%;
+  border-style: none;
+  padding: 0 6px;
+  font-size: 1.3rem;
+  color: #0b1220;
+}
+/******************btns*****************/
+.Btns-singl-User {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 1rem;
+}
+/************Filter Users************/
+.filterUsers {
+  display: flex;
+  height: 1rem;
+  background-color: #366171;
+}
+/************************/
 
 .ListUsers {
   display: flex;
@@ -139,19 +96,20 @@
   height: 15em;
   align-items: center;
   flex-direction: column;
-  flex-wrap: nowrap;
-  align-content: stretch;
   border-radius: 4px;
   box-shadow: 0 3px 4px #404a467a;
-  backdrop-filter: blur(10.8px);
-  -webkit-backdrop-filter: blur(10.8px);
   border: 1px solid rgba(255, 250, 250, 0.44);
-  background: #ebf2ef69;
-  color: #000;
   cursor: pointer;
-  background-image: url("../../Image/prof.png");
-  background-size: cover;
   transition: width 0.5s, height 0.5s;
+  position: relative;
+}
+
+.user > img {
+  position: absolute;
+  width: 100%;
+  height: 90%;
+  top: 10%;
+  image-rendering: optimizespeed;
 }
 
 .nameUsers {
@@ -159,15 +117,12 @@
   align-content: stretch;
   text-align: center;
   width: 100%;
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
   background: rgb(235, 242, 239);
   background: linear-gradient(
     to right bottom,
     rgba(217, 232, 210, 0.7),
     rgba(33, 95, 98, 0.68)
   );
-  color: #000;
   font-size: 1.2em;
   padding: 1px 5px;
 }
@@ -202,19 +157,18 @@
   position: absolute;
   display: none;
   width: 100%;
-  border-radius: px;
+  height: 55%;
   box-shadow: 1px 4px 3px 1px #112218c7;
   color: #fffdfd;
-  margin-bottom: 2px;
   background: linear-gradient(
     to right bottom,
     rgba(15, 32, 18, 0.81),
     rgba(15, 38, 20, 0.77)
   );
   padding: 2px;
-  bottom: 1%;
+  bottom: 0.18rem;
+
   flex-direction: column;
-  row-gap: 4px;
 }
 
 .user:active {
@@ -295,30 +249,21 @@
 .falseAnswer:hover {
   background: #ac3b3be0;
 }
-.titlebox:has(h3:empty) {
-  display: none;
-}
-
-.selectRole {
-  font-size: 1.5rem;
-  width: auto;
-  height: auto;
-  background: #366171;
-  color: white;
-}
-
-.profile {
-  display: flex;
-  justify-content: center;
-}
 
 .btnAddUser {
   position: absolute;
   bottom: 0%;
-  right: 2%;
+  right: 2rem;
   z-index: 3;
+  left: 90%;
 }
 
+/*? ************* Profile **************/
+.profile {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
 @media (max-width: 450px) {
   .boxs {
     gap: 0px;
@@ -328,7 +273,7 @@
     width: auto;
     position: absolute;
   }
-  .titlebox {
+  .fildes {
     width: auto;
     gap: 7px;
   }
@@ -337,9 +282,7 @@
     right: -5%;
     bottom: -18%;
   }
-  /* .infoUsers > .btnRoom > .MuiIconButton-root {
-    padding: 7px;
-  } */
+
   .infoUsers {
     height: 56%;
   }

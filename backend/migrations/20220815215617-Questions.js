@@ -13,20 +13,20 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      image: {
-        type: Sequelize.STRING,
-        defaultValue: 'noImage',
-      },
       choices: {
         type: Sequelize.STRING,
         allowNull: false,
       },
 
       answer: {
-        type: Sequelize.INTEGER(11),
+        type: Sequelize.STRING,
         allowNull: false,
 
         defaultValue: 1,
+      },
+      picture: {
+        type: Sequelize.Boolean,
+        defaultValue: false,
       },
       point: {
         type: Sequelize.INTEGER(11),
@@ -46,7 +46,6 @@ module.exports = {
       },
 
       idLevel: {
-
         type: Sequelize.INTEGER(11),
         references: {
           model: {

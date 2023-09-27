@@ -6,11 +6,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       title: DataTypes.STRING,
       choices: DataTypes.STRING,
-      answer: DataTypes.INTEGER(11),
+      answer: DataTypes.STRING,
+      picture: DataTypes.BOOLEAN,
       point: DataTypes.INTEGER(11),
       idSubject: DataTypes.INTEGER(11),
       idLevel: DataTypes.INTEGER(11),
-
     },
     {
       tableName: "Questions",

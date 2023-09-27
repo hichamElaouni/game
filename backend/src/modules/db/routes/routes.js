@@ -31,7 +31,6 @@ route.post("/questionByRoom", ctrl.getQuestionByRoom);
 route.post("/userByEmail", ctrl.getUserByEmail);
 route.post("/studentByEmail", ctrl.getStudentByEmail);
 
-
 /****** History ***** */
 route.post("/roomHistory", ctrl.addRoomHistory);
 route.post("/questionHistory", ctrl.addQuestionHistory);
@@ -51,7 +50,5 @@ route.post("/level", ctrl.addLevel);
 route.put("/level", ctrl.updateLevel);
 
 route.delete("/level/:id", ctrl.deleteLevel);
-
-
 
 export default route;

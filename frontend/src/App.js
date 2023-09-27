@@ -129,7 +129,7 @@ const App = () => {
           path="/ListUsers"
           element={
             <ProtectedRoute>
-              <ListUsers role={user?.role_id} />
+              <ListUsers userSection={user} />
             </ProtectedRoute>
           }
         />

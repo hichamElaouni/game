@@ -139,8 +139,8 @@ tr select {
 
   border-radius: 4px;
 }
-.addquestion input,
-select {
+.addquestion > input,
+.addquestion > select {
   height: 60%;
   width: 13.5%;
   font-size: 1.2em;
@@ -354,16 +354,6 @@ tr:hover .trActions {
   border-radius: 5px;
   /* background: rgb(54, 108, 130); */
 }
-.selectPagination {
-  width: 50px;
-  position: relative;
-  z-index: 1;
-  height: auto;
-  background: #5fcaa6;
-  bottom: 20%;
-  left: 2%;
-  font-size: 1.2rem;
-}
 
 .thSubjects > .container {
   position: fixed;
@@ -420,9 +410,6 @@ tr:hover .trActions {
     height: 44px;
   }
   .MuiPagination-ul :last-child {
-    font-size: 1em;
-  }
-  .selectPagination {
     font-size: 1em;
   }
 }

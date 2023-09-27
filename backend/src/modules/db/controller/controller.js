@@ -1,7 +1,7 @@
 import * as db from "../../../../models";
-import bcrypt from "bcrypt";
-const { Op, } = require("sequelize");
-const crypto = require('crypto');
+// import bcrypt from "bcrypt";
+const { Op } = require("sequelize");
+const crypto = require("crypto");
 /**
  *
  * @param {number} limit
@@ -29,15 +29,14 @@ const getAllQUestions = async (req, res) => {
       sourceKey: "idLevel",
     });
 
-
     let Filter = "";
 
     if (idSubject > 0 && idLevel > 0) {
-      Filter = { where: { idSubject: idSubject, idLevel: idLevel } }
+      Filter = { where: { idSubject: idSubject, idLevel: idLevel } };
     } else if (idLevel > 0) {
-      Filter = { where: { idLevel: idLevel } }
+      Filter = { where: { idLevel: idLevel } };
     } else if (idSubject > 0) {
-      Filter = { where: { idSubject: idSubject } }
+      Filter = { where: { idSubject: idSubject } };
     }
 
     const questions = await db.Questions.findAll({
@@ -46,21 +45,27 @@ const getAllQUestions = async (req, res) => {
       include: [
         {
           model: db.Subjects,
-          attributes: ["name"]
+          attributes: ["name"],
         },
         {
           model: db.Levels,
-          attributes: ["levelNumber"]
+          attributes: ["levelNumber"],
         },
       ],
       ...Filter,
     });
-    const lengthTable = await db.Questions.count()
+    const lengthTable = await db.Questions.count();
 
     const subjects = await db.Subjects.findAll();
     const levels = await db.Levels.findAll();
 
-    res.status(200).json({ success: true, data: questions, subjects: subjects, levels: levels, lengthTable: lengthTable });
+    res.status(200).json({
+      success: true,
+      data: questions,
+      subjects: subjects,
+      levels: levels,
+      lengthTable: lengthTable,
+    });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, message: error.message });
@@ -149,12 +154,9 @@ const deleteQuestion = async (req, res) => {
   }
 };
 
-
-
 const getAllUsers = async (req, res) => {
   try {
     const { limit, page } = req.query;
-
 
     const lengthTable = await db.Users.count();
     const offset = getOffset(limit, page);
@@ -163,7 +165,9 @@ const getAllUsers = async (req, res) => {
       limit: parseInt(limit) || null,
       offset: parseInt(offset) || null,
     });
-    res.status(200).json({ success: true, data: users, lengthTable: lengthTable });
+    res
+      .status(200)
+      .json({ success: true, data: users, lengthTable: lengthTable });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, message: error.message });
@@ -198,10 +202,12 @@ const addUser = async (req, res) => {
       })
     );
 
-
     if (!data.email) {
       const { password, ...restData } = rest;
-      const hashedPassword = crypto.createHash('sha1').update(password).digest('hex');
+      const hashedPassword = crypto
+        .createHash("sha1")
+        .update(password)
+        .digest("hex");
       const user = { ...restData, password: hashedPassword };
       const result = await db.Users.create(user);
 
@@ -423,11 +429,11 @@ const getQuestionByRoom = async (req, res) => {
 
     let additionalData = token
       ? {
-        where: {
-          idQuestion: { [Op.gt]: id },
-        },
-        limit: 1,
-      }
+          where: {
+            idQuestion: { [Op.gt]: id },
+          },
+          limit: 1,
+        }
       : {};
 
     QuestionsRoom.belongsTo(Questions, {
@@ -443,13 +449,13 @@ const getQuestionByRoom = async (req, res) => {
       foreignKey: "id",
       sourceKey: "idSubject",
     });
-    const lengthTable = !!idRoom ? await QuestionsRoom.count({
-      where: { idroom: idRoom }
-    }) : 0;
-
+    const lengthTable = !!idRoom
+      ? await QuestionsRoom.count({
+          where: { idroom: idRoom },
+        })
+      : 0;
 
     QuestionsRoom.hasMany(Rooms, { foreignKey: "id", sourceKey: "idRoom" });
-
 
     const data = await QuestionsRoom.findAll({
       include: [
@@ -465,15 +471,15 @@ const getQuestionByRoom = async (req, res) => {
           attributes: {
             exclude: ["createdAt", "updatedAt"],
           },
-          include: [{
-            model: Subjects,
-          },
-          {
-            model: Levels,
-          }
-          ]
-        }
-
+          include: [
+            {
+              model: Subjects,
+            },
+            {
+              model: Levels,
+            },
+          ],
+        },
       ],
       ...additionalData,
 
@@ -482,11 +488,12 @@ const getQuestionByRoom = async (req, res) => {
       },
     });
 
-
-
-    res
-      .status(200)
-      .json({ success: true, data, limit: data.length ? false : true, lengthTable: lengthTable });
+    res.status(200).json({
+      success: true,
+      data,
+      limit: data.length ? false : true,
+      lengthTable: lengthTable,
+    });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -497,18 +504,14 @@ const getStudentByEmail = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-
     const data = await db.Users.findOne({
       where: { email: email },
     });
     if (data) {
-
-
       // const checkPassword = bcrypt.compareSync(password, data.password)
 
-      const sha1Hash = crypto.createHash('sha1').update(password).digest('hex');
-      const checkPassword = sha1Hash === data.password
-
+      const sha1Hash = crypto.createHash("sha1").update(password).digest("hex");
+      const checkPassword = sha1Hash === data.password;
 
       if (checkPassword) {
         res.status(200).json({ success: true, data: data });
@@ -528,7 +531,6 @@ const getStudentByEmail = async (req, res) => {
 };
 //<<<<<<<<<<<<<<<<<< join room
 const getUserByEmail = async (email) => {
-
   try {
     let result = {};
     const dataValues = await db.Users.findOne({
@@ -536,10 +538,9 @@ const getUserByEmail = async (email) => {
     });
 
     if (dataValues) {
-      result = { status: 200, data: dataValues }
-    }
-    else {
-      result = { status: 400, data: "Email does not exist" }
+      result = { status: 200, data: dataValues };
+    } else {
+      result = { status: 400, data: "Email does not exist" };
     }
 
     return result;
@@ -558,7 +559,7 @@ const getUserByEmail = async (email) => {
     //     .json({ success: false, data: [], message: "Email does not exist" });
     // }
   } catch (error) {
-    return error
+    return error;
   }
 };
 
@@ -589,7 +590,6 @@ const addQuestionHistory = async (req, res) => {
 const updateRoomHistory = async (req, res) => {
   try {
     const { idHistoryRoom, roomHistory } = req.body;
-    console.log("🚀 ~ file: controller.js:590 ~ updateRoomHistory ~ idHistoryRoom, roomHistory:", idHistoryRoom, roomHistory)
 
     const result = await db.RoomHistory.update(roomHistory, {
       where: { id: idHistoryRoom },
@@ -604,7 +604,7 @@ const getRoomsHistory = async (req, res) => {
   try {
     const { idUser, limit, page } = req.body;
     const offset = getOffset(limit, page);
-    const { RoomHistory, Users, Rooms } = db;
+    const { RoomHistory, Users, Rooms, Games } = db;
 
     RoomHistory.belongsTo(Users, {
       foreignKey: "idUser_2",
@@ -612,13 +612,18 @@ const getRoomsHistory = async (req, res) => {
     });
     RoomHistory.hasMany(Rooms, { foreignKey: "id", sourceKey: "idRoom" });
 
+    Rooms.belongsTo(Games, {
+      foreignKey: "idGame",
+      sourceKey: "id",
+    });
+
     const { count, rows } = await RoomHistory.findAndCountAll({
       limit: parseInt(limit) || null,
       offset: parseInt(offset) || null,
       include: [
         {
           model: Rooms,
-
+          include: [{ model: Games, attributes: ["Image"] }],
         },
         {
           model: Users,
@@ -639,70 +644,87 @@ const getRoomsHistory = async (req, res) => {
 
 const getAllHistoryQuestions = async (req, res) => {
   try {
-    const { idRoomHistory, idUser } = req.body;
-
+    const { idRoomHistory, idUser, page, limit } = req.body;
     const { QuestionsHistory, Questions } = db;
+
+    const offset = getOffset(limit, page);
 
     QuestionsHistory.belongsTo(Questions, {
       foreignKey: "idQuestion",
       sourceKey: "id",
     });
 
-    const questionsHistory = await QuestionsHistory.findAll({
+    const { count, rows } = await QuestionsHistory.findAndCountAll({
+      limit: parseInt(limit) || null,
+      offset: parseInt(offset) || null,
       include: [
         {
           model: Questions,
-          //attributes: ["nameRoom"],
         },
       ],
       where: { idUser: idUser, idRoomHistory: idRoomHistory },
+      raw: true,
+      nest: true,
     });
 
-    res.status(200).json({ success: true, data: questionsHistory });
+    let history = [];
+
+    rows.map((result) => {
+      const { Question } = result;
+      history = [
+        ...history,
+        {
+          id: result.id,
+          title: Question.title,
+          picture: Question.picture,
+          currentAnswer: Question.choices.split(";")[Question.answer - 1],
+          currentselected:
+            Question.choices.split(";")[result.selectedAnswer - 1],
+        },
+      ];
+    });
+
+    res.status(200).json({ success: true, data: history, lengthTable: count });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
 };
 
 const getCountRooms = async (req, res) => {
-
-
   const { TopRooms } = req.body;
 
   try {
-
-    db.RoomHistory.belongsTo(db.Rooms, { foreignKey: 'idRoom' });
-    db.RoomHistory.belongsTo(db.Users, { foreignKey: 'idUser_1' });
-    const count = db.sequelize.fn('COUNT', db.sequelize.col('idRoom'));
+    db.RoomHistory.belongsTo(db.Rooms, { foreignKey: "idRoom" });
+    db.RoomHistory.belongsTo(db.Users, { foreignKey: "idUser_1" });
+    const count = db.sequelize.fn("COUNT", db.sequelize.col("idRoom"));
     const countRoom = await db.RoomHistory.findAll({
-
       limit: parseInt(TopRooms),
-      order: [[count, 'DESC']],
+      order: [[count, "DESC"]],
 
       include: [{ model: db.Rooms }],
-      attributes: ['idUser_1', 'idUser_2', 'victories', 'losses', 'roundPlay', 'createdAt', 'updatedAt', [count, 'countRoom']],
-      group: ['idRoom']
-    })
+      attributes: [
+        "idUser_1",
+        "idUser_2",
+        "victories",
+        "losses",
+        "roundPlay",
+        "createdAt",
+        "updatedAt",
+        [count, "countRoom"],
+      ],
+      group: ["idRoom"],
+    });
 
     res.status(200).json({ success: true, data: countRoom });
-
-
-
   } catch (error) {
     console.log(error);
   }
-
-}
+};
 
 const getSubjects = async (req, res) => {
   try {
-
-    const subjects = await db.Subjects.findAll({
-
-    });
-    res
-      .status(200)
-      .json({ success: true, data: subjects });
+    const subjects = await db.Subjects.findAll({});
+    res.status(200).json({ success: true, data: subjects });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, message: error.message });
@@ -711,8 +733,6 @@ const getSubjects = async (req, res) => {
 
 const addSubject = async (req, res) => {
   try {
-
-
     const result = await db.Subjects.create(req.body);
 
     res.status(201).json({ success: true, result });
@@ -734,7 +754,11 @@ const deleteSubject = async (req, res) => {
 const updateSubject = async (req, res) => {
   try {
     const { id, name } = req.body;
-    console.log("🚀 ~ file: controller.js:735 ~ updateSubject ~ id, name:", id, name)
+    console.log(
+      "🚀 ~ file: controller.js:735 ~ updateSubject ~ id, name:",
+      id,
+      name
+    );
 
     const result = await db.Subjects.update(name, {
       where: { id: id },
@@ -748,9 +772,7 @@ const updateSubject = async (req, res) => {
 const getLevels = async (req, res) => {
   try {
     const levels = await db.Levels.findAll({});
-    res
-      .status(200)
-      .json({ success: true, data: levels });
+    res.status(200).json({ success: true, data: levels });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, message: error.message });
@@ -758,8 +780,6 @@ const getLevels = async (req, res) => {
 };
 const addLevel = async (req, res) => {
   try {
-
-
     const result = await db.Levels.create(req.body);
 
     res.status(201).json({ success: true, result });
@@ -791,7 +811,6 @@ const updateLevel = async (req, res) => {
   }
 };
 module.exports = {
-
   getCountRooms,
 
   getAllQUestions,
@@ -842,5 +861,4 @@ module.exports = {
   addLevel,
   deleteLevel,
   updateLevel,
-
 };

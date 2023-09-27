@@ -6,6 +6,7 @@ import Add from "@material-ui/icons/Add";
 import { NotificationManager } from "react-notifications";
 import FormAddRoom from "./FormAddRoom";
 import md5 from "md5";
+import { EscPress } from "../../Setings/Controllers";
 
 export default function ListRooms() {
   const [rooms, setRooms] = useState([]);
@@ -52,12 +53,6 @@ export default function ListRooms() {
     getRooms(setRooms);
   }, [token]);
 
-  const escPress = (event) => {
-    if (event.keyCode === 27) {
-      setAdding(false);
-    }
-  };
-
   const add_Room = () => {
     setAdding(true);
     setTitlePage("Add Room");
@@ -71,18 +66,15 @@ export default function ListRooms() {
         <div className="filterRooms "></div>
         <div className="ListRooms">
           {rooms.map((room, index) => (
-            <div className="Room" key={index}>
-              <h2 className="nameRoom">
-                {room.nameRoom} with {room.coin} Coins
-              </h2>
-              <Room
-                room={room}
-                deleted_Room={deleted_Room}
-                updateToken={updateToken}
-                NotificationManager={NotificationManager}
-                link={"JoinRoom?token=" + room.token}
-              />
-            </div>
+            <Room
+              key={index}
+              room={room}
+              img={room?.Game?.Image}
+              deleted_Room={deleted_Room}
+              updateToken={updateToken}
+              NotificationManager={NotificationManager}
+              link={"JoinRoom?token=" + room.token}
+            />
           ))}
         </div>
         <div className="btnAddRoom" onClick={add_Room}>
@@ -91,6 +83,7 @@ export default function ListRooms() {
             style={{
               color: "rgb(25, 74, 93)",
               background: "rgba(58, 239, 51, 0.87)",
+              zIndex: "5",
             }}
           >
             <Add />
@@ -103,7 +96,7 @@ export default function ListRooms() {
           className="div-Add-Room"
           tabIndex={0}
           onKeyDown={(event) => {
-            escPress(event);
+            EscPress(event, setAdding);
           }}
         >
           <FormAddRoom

@@ -1,12 +1,22 @@
 import { socket } from "../service/socket";
 import { addQuestionHistory } from "../service/api";
+import { NotificationManager } from "react-notifications";
 
 
 const PasswordCheck = (password) => {
-  return password.match("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$") ? true : false;
+  console.log("🚀 ~ file: Controllers.jsx:7 ~ PasswordCheck ~ password:", password)
+  return password.match("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$") ? true :
+    NotificationManager.warning(
+      "password not correct.Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters ",
+      "Warning",
+      5000
+    )
+
 }
 const EmailCheck = (email) => {
-  return email.match("[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$") ? true : false;
+  return email.match("[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$") ?
+    true : NotificationManager.warning("Warning", "Email Not Correct", 3000)
+
 }
 
 const NextQuestion = async (
@@ -54,8 +64,15 @@ const NextQuestion = async (
 }
 
 
+const EscPress = (event, setState) => {
+  if (event.keyCode === 27) {
+    setState(false);
+  }
+};
+
 export {
   PasswordCheck,
   EmailCheck,
-  NextQuestion
+  NextQuestion,
+  EscPress
 }
